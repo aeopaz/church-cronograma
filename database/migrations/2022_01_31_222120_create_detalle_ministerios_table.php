@@ -15,6 +15,9 @@ class CreateDetalleMinisteriosTable extends Migration
     {
         Schema::create('detalle_ministerios', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_ministerio');
+            $table->integer('id_integrante');
+            $table->integer('id_rol');
             $table->timestamps();
         });
     }

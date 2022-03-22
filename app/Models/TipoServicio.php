@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ministerio extends Model
+class TipoServicio extends Model
 {
     use HasFactory;
-    protected $table='ministerios';
+    protected $table='tipo_servicios';
     protected $fillabe=[
         'nombre',
-        'id_iglesia',
-        'id_lider',
-
+       
+       
+        
     ];
 }

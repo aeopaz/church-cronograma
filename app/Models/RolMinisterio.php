@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class RolMinisterio extends Model
 {
     use HasFactory;
+    protected $table='rol_ministerios';
+    protected $fillabe=[
+        'id_ministerio',
+        'nombre',
+       
+        
+    ];
 }

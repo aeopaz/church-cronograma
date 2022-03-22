@@ -15,6 +15,9 @@ class CreateDetalleServiciosTable extends Migration
     {
         Schema::create('detalle_servicios', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_servicio');
+            $table->integer('id_privilegio');
+            $table->integer('id_responsable');
             $table->timestamps();
         });
     }

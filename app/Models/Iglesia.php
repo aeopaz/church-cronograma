@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Iglesia extends Model
 {
     use HasFactory;
+    protected $table='iglesias';
+    protected $fillabe=[
+        'nombre',
+        'direccion',
+        'telefono',
+        'email'
+    ];
 }

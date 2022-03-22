@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Servicio extends Model
 {
     use HasFactory;
+    protected $table='servicios';
+    protected $fillabe=[
+        'id_tipo_servicio',
+        'fecha',
+        'hora',
+       
+        
+    ];
 }
