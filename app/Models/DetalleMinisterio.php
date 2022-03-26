@@ -9,7 +9,7 @@ class DetalleMinisterio extends Model
 {
     use HasFactory;
     protected $table='detalle_ministerios';
-    protected $fillabe=[
+    protected $fillable=[
         'id_ministerio',
         'id_integrante',
         'id_rol'

@@ -9,8 +9,8 @@ class Privilegio extends Model
 {
     use HasFactory;
     protected $table='privilegios';
-    protected $fillabe=[
+    protected $fillable=[
         'nombre',
-        
+
     ];
 }

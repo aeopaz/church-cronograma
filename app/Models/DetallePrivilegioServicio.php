@@ -9,7 +9,7 @@ class DetallePrivilegioServicio extends Model
 {
     use HasFactory;
     protected $table='detalle_privilegio_servicios';
-    protected $fillabe=[
+    protected $fillable=[
         'id_servicio',
         'id_privilegio',
         'id_publicacion'

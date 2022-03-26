@@ -252,6 +252,12 @@ return [
             'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
         ],
+        [
+            'text'        => 'Ministerio',
+            'url'         => 'ministerio/index',
+            'icon'        => 'fa fa-fw fa-building',
+            'label_color' => 'success',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',

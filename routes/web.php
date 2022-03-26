@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\IglesiaController;
+use App\Http\Controllers\MinisterioController;
+use App\Http\Livewire\Ministerio\MinisterioIndex;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +25,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/iglesia/index',[IglesiaController::class,'index'])->name('iglesia.index');
+Route::get('/ministerio/index',[MinisterioController::class,'index'])->name('ministerio.index');
+
 
 

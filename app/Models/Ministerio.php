@@ -9,7 +9,7 @@ class Ministerio extends Model
 {
     use HasFactory;
     protected $table='ministerios';
-    protected $fillabe=[
+    protected $fillable=[
         'nombre',
         'id_iglesia',
         'id_lider',

@@ -9,10 +9,10 @@ class TipoServicio extends Model
 {
     use HasFactory;
     protected $table='tipo_servicios';
-    protected $fillabe=[
+    protected $fillable=[
         'nombre',
-       
-       
-        
+
+
+
     ];
 }

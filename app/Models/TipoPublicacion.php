@@ -9,10 +9,10 @@ class TipoPublicacion extends Model
 {
     use HasFactory;
     protected $table='tipo_publicacions';
-    protected $fillabe=[
+    protected $fillable=[
         'nombre',
-       
-       
-        
+
+
+
     ];
 }

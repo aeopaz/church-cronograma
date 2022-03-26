@@ -9,12 +9,12 @@ class Publicacion extends Model
 {
     use HasFactory;
     protected $table='publicacions';
-    protected $fillabe=[
+    protected $fillable=[
         'id_usuario',
         'id_tipo_publicacion',
         'titulo',
         'cuerpo',
         'ruta_archivo',
-        
+
     ];
 }

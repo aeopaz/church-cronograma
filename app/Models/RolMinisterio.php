@@ -9,10 +9,10 @@ class RolMinisterio extends Model
 {
     use HasFactory;
     protected $table='rol_ministerios';
-    protected $fillabe=[
+    protected $fillable=[
         'id_ministerio',
         'nombre',
-       
-        
+
+
     ];
 }
