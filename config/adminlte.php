@@ -102,11 +102,11 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
-    'classes_auth_header' => '',
+    'classes_auth_card' => '',
+    'classes_auth_header' => 'bg-gradient-info',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
-    'classes_auth_icon' => '',
+    'classes_auth_footer' => 'text-center',
+    'classes_auth_icon' => 'fa-lg text-info',
     'classes_auth_btn' => 'btn-flat btn-primary',
 
     /*
@@ -247,10 +247,9 @@ return [
             'can'  => 'manage-blog',
         ],
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
+            'text'        => 'Iglesia',
+            'url'         => 'iglesia/index',
+            'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
         ],
         ['header' => 'account_settings'],
@@ -472,5 +471,5 @@ return [
     |
     */
 
-    'livewire' => false,
+    'livewire' => true,
 ];
