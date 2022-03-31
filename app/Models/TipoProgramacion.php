@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Privilegio extends Model
+class TipoProgramacion extends Model
 {
     use HasFactory;
-    protected $table='privilegios';
+    protected $table='tipo_programacions';
     protected $fillable=[
         'nombre',
-
+       
+       
     ];
 }

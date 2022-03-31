@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTipoPublicacionsTable extends Migration
+class CreateTipoProgramacionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateTipoPublicacionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tipo_publicacions', function (Blueprint $table) {
+        Schema::create('tipo_programacions', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('nombre',60)->default('');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateTipoPublicacionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tipo_publicacions');
+        Schema::dropIfExists('tipo_programacions');
     }
 }

@@ -11,8 +11,8 @@ class Ministerio extends Model
     protected $table='ministerios';
     protected $fillable=[
         'nombre',
-        'id_iglesia',
-        'id_lider',
+        'iglesia_id',
+        'lider_id',
 
     ];
 }

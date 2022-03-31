@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRolMinisteriosTable extends Migration
+class CreateRecursoProgramacionMinisteriosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateRolMinisteriosTable extends Migration
      */
     public function up()
     {
-        Schema::create('rol_ministerios', function (Blueprint $table) {
+        Schema::create('recurso_programacion_ministerios', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_ministerio');
-            $table->string('nombre');
+            $table->unsignedBigInteger('programacion_id')->default(0);
+            $table->unsignedBigInteger('ministerio_id')->default(0);
+            $table->unsignedBigInteger('recurso_id')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateRolMinisteriosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rol_ministerios');
+        Schema::dropIfExists('recurso_programacion_ministerios');
     }
 }

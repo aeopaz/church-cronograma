@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePublicacionsTable extends Migration
+class CreateProgramacionMinisteriosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreatePublicacionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('publicacions', function (Blueprint $table) {
+        Schema::create('programacion_ministerios', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_usuario');
-            $table->integer('id_tipo_publicacion');
-            $table->string('titulo');
-            $table->string('cuerpo')->nullable();
-            $table->string('ruta_archivo')->nullable();
+            $table->unsignedBigInteger('programacion_id')->default(0);
+            $table->unsignedBigInteger('ministerio_id')->default(0);
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreatePublicacionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('publicacions');
+        Schema::dropIfExists('programacion_ministerios');
     }
 }

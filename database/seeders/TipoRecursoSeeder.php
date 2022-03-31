@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\TipoPublicacion;
+use App\Models\TipoRecurso;
 use Illuminate\Database\Seeder;
 
-class TipoPublicacionSeeder extends Seeder
+class TipoRecursoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,14 +14,14 @@ class TipoPublicacionSeeder extends Seeder
      */
     public function run()
     {
-        TipoPublicacion::create([
-            'nombre'=>'Prédica',
+        TipoRecurso::create([
+            'nombre'=>'Video',
         ]);
-        TipoPublicacion::create([
+        TipoRecurso::create([
             'nombre'=>'Canción',
         ]);
-        TipoPublicacion::create([
-            'nombre'=>'Enseñanza',
+        TipoRecurso::create([
+            'nombre'=>'Documento',
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TipoUsuario;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,12 +16,17 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call(IglesiaSeeder::class);
-        $this->call(UsuarioSeeder::class);
+        $this->call(TipoUsuarioSeeder::class);
+        $this->call(TipoProgramacionSeeder::class);
+        $this->call(TipoRecursoSeeder::class);
         $this->call(MinisterioSeeder::class);
-        $this->call(RolMinisterioSeeder::class);
-        $this->call(TipoPublicacionSeeder::class);
-        $this->call(TipoServicioSeeder::class);
-        $this->call(PrivilegioSeeder::class);
+        $this->call(RolSeeder::class);
+        $this->call(RecursoSeeder::class);
+        $this->call(UsuarioSeeder::class);
+        $this->call(ProgramacionSeeder::class);
+        $this->call(ProgramacionMinisterioSeeder::class);
+        $this->call(ParticipantesProgramacionMinisterioSeeder::class);
+        $this->call(RecursoProgramacionMinisterioSeeder::class);
 
     }
 }

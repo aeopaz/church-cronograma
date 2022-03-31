@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoPublicacion extends Model
+class Rol extends Model
 {
     use HasFactory;
-    protected $table='tipo_publicacions';
+    protected $table='rols';
     protected $fillable=[
         'nombre',
-
-
-
+       
+       
     ];
 }

@@ -23,14 +23,14 @@ class IglesiaSeeder extends Seeder
             'email'=>'ibjehovareina@gmail.com'
         ]);
 
-        for ($i=0; $i <100 ; $i++) {
-            Iglesia::create([
-                'nombre'=>'Iglesia '.$faker->company(),
-                'direccion'=>$faker->address(),
-                'telefono'=>rand(1111111111,9999999999),
-                'email'=>$faker->email(),
-            ]);
-        }
+        // for ($i=0; $i <100 ; $i++) {
+        //     Iglesia::create([
+        //         'nombre'=>'Iglesia '.$faker->company(),
+        //         'direccion'=>$faker->address(),
+        //         'telefono'=>rand(1111111111,9999999999),
+        //         'email'=>$faker->email(),
+        //     ]);
+        // }
 
 
     }

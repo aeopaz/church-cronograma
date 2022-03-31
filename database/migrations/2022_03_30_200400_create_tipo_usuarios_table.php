@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDetallePrivilegioServiciosTable extends Migration
+class CreateTipoUsuariosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateDetallePrivilegioServiciosTable extends Migration
      */
     public function up()
     {
-        Schema::create('detalle_privilegio_servicios', function (Blueprint $table) {
+        Schema::create('tipo_usuarios', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_servicio');
-            $table->integer('id_privilegio');
-            $table->integer('id_publicacion');
+            $table->string('nombre',60)->default('');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateDetallePrivilegioServiciosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detalle_privilegio_servicios');
+        Schema::dropIfExists('tipo_usuarios');
     }
 }
