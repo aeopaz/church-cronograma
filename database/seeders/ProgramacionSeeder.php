@@ -23,7 +23,7 @@ class ProgramacionSeeder extends Seeder
                 'tipo_programacion_id' => $tipoProgramacion->id,
                 'iglesia_id' => 1,
                 'nombre' => $tipoProgramacion->nombre,
-                'fecha' => $faker->date($format = 'Y-m-d', $max = '2022-12-31'),
+                'fecha' => $faker->date(),
                 'hora'=>$faker->time('H:i','now')
             ]);
         }

@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    'ttl' => env('JWT_TTL', null),//Se coloca en null para que el token no caduque
 
     /*
     |--------------------------------------------------------------------------
@@ -150,7 +150,7 @@ return [
     'required_claims' => [
         'iss',
         'iat',
-        'exp',
+        //'exp',//Se comenta para que el token no expire
         'nbf',
         'sub',
         'jti',
