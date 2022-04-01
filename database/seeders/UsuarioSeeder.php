@@ -16,7 +16,7 @@ class UsuarioSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Factory::create('es_VEN');
+        $faker = Factory::create('es_VE');
         User::create([
             'name' => 'Alvaro Ocampo',
             'email' => 'aeopaz@gmail.com',
@@ -25,7 +25,7 @@ class UsuarioSeeder extends Seeder
             'tipo_usuario_id' => 1,
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             User::create([
                 'name' => $faker->name(),
                 'email' => $faker->email(),

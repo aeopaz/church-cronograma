@@ -17,7 +17,7 @@ class ProgramacionSeeder extends Seeder
     public function run()
     {
         $faker = Factory::create('es_VEN');
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $tipoProgramacion = TipoProgramacion::inRandomOrder()->take(1)->first();
             Programacion::create([
                 'tipo_programacion_id' => $tipoProgramacion->id,

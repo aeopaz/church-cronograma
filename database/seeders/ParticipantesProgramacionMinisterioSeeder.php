@@ -19,7 +19,7 @@ class ParticipantesProgramacionMinisterioSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0; $i <20 ; $i++) { 
+        for ($i=0; $i <200 ; $i++) { 
             ParticipantesProgramacionMinisterio::create([
                 'programacion_id'=>Programacion::inRandomOrder()->take(1)->first()->id,
                 'ministerio_id'=>Ministerio::inRandomOrder()->take(1)->first()->id,
