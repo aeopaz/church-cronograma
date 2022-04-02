@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Ministerio;
 use App\Models\ProgramacionMinisterio;
 use App\Models\Recurso;
 use App\Models\RecursoProgramacionMinisterio;
@@ -16,10 +17,13 @@ class RecursoProgramacionMinisterioSeeder extends Seeder
      */
     public function run()
     {
-        RecursoProgramacionMinisterio::create([
-            'programacion_id'=>ProgramacionMinisterio::inRandomOrder()->take(1)->first()->id,
-            'ministerio_id'=>ProgramacionMinisterio::inRandomOrder()->take(1)->first()->id,
-            'recurso_id'=>Recurso::inRandomOrder()->take(1)->first()->id,
-        ]);
+        for ($i=0; $i <200 ; $i++) { 
+            RecursoProgramacionMinisterio::create([
+                'programacion_id'=>ProgramacionMinisterio::inRandomOrder()->take(1)->first()->id,
+                'ministerio_id'=>Ministerio::inRandomOrder()->take(1)->first()->id,
+                'recurso_id'=>Recurso::inRandomOrder()->take(1)->first()->id,
+            ]);
+        }
+      
     }
 }

@@ -12,6 +12,7 @@ class Programacion extends Model
     protected $fillable=[
         'tipo_programacion_id',
         'iglesia_id',
+        'user_id',
         'nombre',
         'fecha',
         'hora'

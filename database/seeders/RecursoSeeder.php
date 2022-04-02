@@ -17,12 +17,14 @@ class RecursoSeeder extends Seeder
      */
     public function run()
     {
-        $faker=Factory::create();
-        Recurso::create([
-            'nombre'=>$faker->title(),
-            'url'=>$faker->url(),
-            'tipo_recurso_id'=>TipoRecurso::inRandomOrder()->take(1)->first()->id,
-            'ministerio_id'=>Ministerio::inRandomOrder()->take(1)->first()->id,
-        ]);
+        $faker = Factory::create();
+        for ($i = 0; $i < 100; $i++) {
+            Recurso::create([
+                'nombre' => $faker->title(),
+                'url' => $faker->url(),
+                'tipo_recurso_id' => TipoRecurso::inRandomOrder()->take(1)->first()->id,
+                'ministerio_id' => Ministerio::inRandomOrder()->take(1)->first()->id,
+            ]);
+        }
     }
 }

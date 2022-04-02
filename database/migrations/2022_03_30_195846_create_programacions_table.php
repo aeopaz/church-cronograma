@@ -18,6 +18,7 @@ class CreateProgramacionsTable extends Migration
             $table->unsignedBigInteger('tipo_programacion_id')->default(0);
             $table->unsignedBigInteger('iglesia_id')->default(0);
             $table->string('nombre',60)->default('');
+            $table->unsignedBigInteger('user_id')->default(0);
             $table->date('fecha');
             $table->time('hora');
             $table->timestamps();

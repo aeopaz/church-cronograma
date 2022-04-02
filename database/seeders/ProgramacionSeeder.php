@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Programacion;
 use App\Models\TipoProgramacion;
+use App\Models\User;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
 
@@ -19,12 +20,14 @@ class ProgramacionSeeder extends Seeder
         $faker = Factory::create('es_VEN');
         for ($i = 0; $i < 200; $i++) {
             $tipoProgramacion = TipoProgramacion::inRandomOrder()->take(1)->first();
+            $user = User::inRandomOrder()->take(1)->first();
             Programacion::create([
                 'tipo_programacion_id' => $tipoProgramacion->id,
                 'iglesia_id' => 1,
                 'nombre' => $tipoProgramacion->nombre,
+                'user_id'=>$user->id,
                 'fecha' => $faker->date(),
-                'hora'=>$faker->time('H:i','now')
+                'hora' => $faker->time('H:i', 'now')
             ]);
         }
     }

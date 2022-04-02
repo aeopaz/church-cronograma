@@ -35,7 +35,9 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('/iglesias/index', [IglesiaController::class, 'index']);
 
     Route::get('/program/user_program', [ProgramacionController::class,'user_program']);
-    Route::get('/program/participantes_program/{ministerio_id}', [ProgramacionController::class,'participantes_program']);
+    Route::get('/program/participantes_program/{programa_id}', [ProgramacionController::class,'participantes_program']);
+    Route::get('/program/recursos_program/{programa_id}', [ProgramacionController::class,'recursos_program']);
+    Route::get('/program/own_program', [ProgramacionController::class,'own_program']);
 });
 
 

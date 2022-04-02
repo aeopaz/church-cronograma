@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ParticipantesProgramacionMinisterio;
+use App\Models\Programacion;
+use App\Models\RecursoProgramacionMinisterio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +32,7 @@ class ProgramacionController extends Controller
         return response()->json(compact('data'));
     }
 
-    //Traer la información de un sólo programa
+    //Traer los participantes de un sólo programa
     public function participantes_program($programacion_id)
     {
         
@@ -50,4 +52,40 @@ class ProgramacionController extends Controller
             ]);
         return response()->json(compact('data'));
     }
+     //Traer los recursos de un sólo programa
+     public function recursos_program($programacion_id)
+     {
+         
+        $data= RecursoProgramacionMinisterio::join('programacions', 'programacions.id', 'programacion_id')
+             ->join('ministerios', 'ministerios.id', 'ministerio_id')
+             ->join('recursos', 'recursos.id', 'recurso_id')
+             ->join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
+             ->where('programacion_id',$programacion_id)
+             ->get([
+                 'programacion_id',
+                 'ministerios.id as ministerio_id',
+                 'ministerios.nombre as nombre_ministerio',
+                 'recurso_id',
+                 'tipo_recursos.nombre as tipo_recurso',
+                 'recursos.nombre as nombre_recurso',
+             ]);
+        
+         return response()->json(compact('data'));
+     }
+      //Traer los programas que ha creado el usuario autenticado
+    public function own_program()
+    {
+        $data = User::find(Auth::user()->id)->programacionPropia()->
+        join('tipo_programacions','tipo_programacions.id','tipo_programacion_id')->get(
+            ['programacions.id as programacion_id',
+            'tipo_programacion_id',
+            'tipo_programacions.nombre as nombre_tipo_programacion',
+            'programacions.nombre as nombre_programa',
+            'programacions.fecha as fecha_programa',
+            'programacions.hora as hora_programa',]
+
+        );
+        return response()->json(compact('data'));
+    }
+
 }
