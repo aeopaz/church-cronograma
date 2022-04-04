@@ -25,6 +25,7 @@ class ParticipantesProgramacionMinisterioSeeder extends Seeder
                 'ministerio_id'=>Ministerio::inRandomOrder()->take(1)->first()->id,
                 'user_id'=>User::inRandomOrder()->take(1)->first()->id,
                 'rol_id'=>Rol::inRandomOrder()->take(1)->first()->id,
+                'user_created_id'=>1
             ]);
         }
     }

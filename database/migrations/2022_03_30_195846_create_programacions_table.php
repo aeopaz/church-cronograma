@@ -20,7 +20,7 @@ class CreateProgramacionsTable extends Migration
             $table->string('nombre',60)->default('');
             $table->unsignedBigInteger('user_id')->default(0);
             $table->date('fecha');
-            $table->time('hora');
+            $table->string('hora');
             $table->timestamps();
         });
     }

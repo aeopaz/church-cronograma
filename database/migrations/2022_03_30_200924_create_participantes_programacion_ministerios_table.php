@@ -19,6 +19,7 @@ class CreateParticipantesProgramacionMinisteriosTable extends Migration
             $table->unsignedBigInteger('ministerio_id')->default(0);
             $table->unsignedBigInteger('user_id')->default(0);
             $table->unsignedBigInteger('rol_id')->default(0);
+            $table->unsignedBigInteger('user_created_id')->default(0);
             $table->timestamps();
         });
     }

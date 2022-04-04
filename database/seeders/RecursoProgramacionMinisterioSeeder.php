@@ -22,6 +22,7 @@ class RecursoProgramacionMinisterioSeeder extends Seeder
                 'programacion_id'=>ProgramacionMinisterio::inRandomOrder()->take(1)->first()->id,
                 'ministerio_id'=>Ministerio::inRandomOrder()->take(1)->first()->id,
                 'recurso_id'=>Recurso::inRandomOrder()->take(1)->first()->id,
+                'user_created_id'=>1
             ]);
         }
       

@@ -18,6 +18,7 @@ class CreateRecursoProgramacionMinisteriosTable extends Migration
             $table->unsignedBigInteger('programacion_id')->default(0);
             $table->unsignedBigInteger('ministerio_id')->default(0);
             $table->unsignedBigInteger('recurso_id')->default(0);
+            $table->unsignedBigInteger('user_created_id')->default(0);
             $table->timestamps();
         });
     }
