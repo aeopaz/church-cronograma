@@ -4,11 +4,15 @@ use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\ProgramacionController;
 use App\Http\Controllers\UserController;
 use App\Models\Iglesia;
+use App\Models\Ministerio;
 use App\Models\ParticipantesProgramacionMinisterio;
 use App\Models\Programacion;
+use App\Models\Recurso;
+use App\Models\Rol;
 use App\Models\TipoProgramacion;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,6 +53,18 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('/tipo_program/index', function(){
         $data=TipoProgramacion::all(['id','nombre']);
         return response()->json(compact('data'));
+    });
+
+    Route::get('/listas1/index', function(){
+        $ministerios=Ministerio::orderBy('nombre','asc')->get(['id','nombre']);
+        $usuarios=User::orderBy('name','asc')->get(['id','name']);
+        $roles=Rol::orderBy('nombre','asc')->get(['id','nombre']);
+        return response()->json(compact('ministerios','usuarios','roles'));
+    });
+    Route::get('/listas2/index', function(){
+        $ministerios=Ministerio::orderBy('nombre','asc')->get(['id','nombre']);
+        $recursos=Recurso::orderBy('nombre','asc')->get(['id','nombre']);
+        return response()->json(compact('ministerios','recursos'));
     });
 });
 

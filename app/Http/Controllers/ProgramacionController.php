@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProgramacionController extends Controller
@@ -20,6 +21,7 @@ class ProgramacionController extends Controller
             ->join('programacions', 'programacions.id', 'programacion_id')
             ->join('rols', 'rols.id', 'rol_id')
             ->join('ministerios', 'ministerios.id', 'ministerio_id')
+            ->where('programacions.estado', 'Activo')
             ->orderBy('programacions.fecha', 'desc')
             ->get([
                 'programacion_id',
@@ -29,8 +31,9 @@ class ProgramacionController extends Controller
                 'programacions.fecha as fecha_programa',
                 'programacions.hora as hora_programa',
                 'rol_id',
-                'rols.nombre as nombre_rol'
+                'rols.nombre as nombre_rol',
             ]);
+
         return response()->json(compact('data'));
     }
 
@@ -50,7 +53,8 @@ class ProgramacionController extends Controller
                 'rol_id',
                 'rols.nombre as nombre_rol',
                 'users.id as user_id_participante',
-                'users.name as nombre_user'
+                'users.name as nombre_user',
+                'participantes_programacion_ministerios.id as participanteProgramaId'
             ]);
         return response()->json(compact('data'));
     }
@@ -70,6 +74,7 @@ class ProgramacionController extends Controller
                 'recurso_id',
                 'tipo_recursos.nombre as tipo_recurso',
                 'recursos.nombre as nombre_recurso',
+                'recurso_programacion_ministerios.id as recursoProgramaId',
             ]);
 
         return response()->json(compact('data'));
@@ -77,17 +82,21 @@ class ProgramacionController extends Controller
     //Traer los programas que ha creado el usuario autenticado
     public function own_program()
     {
-        $data = User::find(Auth::user()->id)->programacionPropia()->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')->orderBy('programacions.fecha', 'desc')->get(
-            [
-                'programacions.id as programacion_id',
-                'tipo_programacion_id',
-                'tipo_programacions.nombre as nombre_tipo_programacion',
-                'programacions.nombre as nombre_programa',
-                'programacions.fecha as fecha_programa',
-                'programacions.hora as hora_programa',
-            ]
+        $data = User::find(Auth::user()->id)
+            ->programacionPropia()
+            ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
+            ->orderBy('programacions.fecha', 'desc')->get(
+                [
+                    'programacions.id as programacion_id',
+                    'tipo_programacion_id',
+                    'tipo_programacions.nombre as nombre_tipo_programacion',
+                    'programacions.nombre as nombre_programa',
+                    'programacions.fecha as fecha_programa',
+                    'programacions.hora as hora_programa',
+                    'estado'
+                ]
 
-        );
+            );
         return response()->json(compact('data'));
     }
     //Crear una agenda o programacion
@@ -118,7 +127,7 @@ class ProgramacionController extends Controller
     //Consulta una agenda o programacion
     public function show($programacion_id)
     {
-        $programacion = Programacion::find($programacion_id, ['tipo_programacion_id', 'nombre', 'fecha', 'hora']);
+        $programacion = Programacion::find($programacion_id, ['tipo_programacion_id', 'nombre', 'fecha', 'hora', 'estado']);
 
         return response()->json(compact('programacion'));
     }
@@ -141,12 +150,14 @@ class ProgramacionController extends Controller
             $programacion->nombre = $request->nombre;
             $programacion->fecha = $request->fecha;
             $programacion->hora = $request->hora;
+            $programacion->estado = $request->estado;
             $programacion->save();
             return response()->json(compact('programacion'), 201);
         } else {
             return response()->json('El programa no existe', 404);
         }
     }
+
 
     //Agregar Participante a programación
     public function add_users(Request $request, $programacion_id)
@@ -170,7 +181,7 @@ class ProgramacionController extends Controller
             ->where('rol_id', $request->rol_id)->first();
 
         if ($validarParticipanete) {
-            return response()->json('El usuario ya existe', 403);
+            return response()->json('El usuario ya existe para ese ministerio y rol', 403);
         }
         $participante = ParticipantesProgramacionMinisterio::create([
             'programacion_id' => $programacion_id,
@@ -227,10 +238,10 @@ class ProgramacionController extends Controller
 
         return response()->json(compact('recurso'), 201);
     }
-    public function delete_recurso($participanteProgramaId)
+    public function delete_recurso($recursoProgramaId)
     {
         //Buscar el participante en el programa
-        $recurso = RecursoProgramacionMinisterio::find($participanteProgramaId);
+        $recurso = RecursoProgramacionMinisterio::find($recursoProgramaId);
         //validar si el participanete existe
         if ($recurso) {
             $recurso->delete();
