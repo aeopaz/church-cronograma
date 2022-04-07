@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ArchivoController;
 use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\ProgramacionController;
+use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\UserController;
 use App\Models\Iglesia;
 use App\Models\Ministerio;
@@ -10,6 +12,7 @@ use App\Models\Programacion;
 use App\Models\Recurso;
 use App\Models\Rol;
 use App\Models\TipoProgramacion;
+use App\Models\TipoRecurso;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,10 +36,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/users/register', [UserController::class, 'register']);
 Route::post('/users/login', [UserController::class, 'authenticate']);
 
+Route::post('/addimage', [ArchivoController::class,'addimage']);  
+
 Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('/users/user', [UserController::class, 'getAuthenticatedUser']);
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::get('/iglesias/index', [IglesiaController::class, 'index']);
+
+    Route::get('/recursos/index', [RecursoController::class,'index']);
+    Route::post('/recursos/store', [RecursoController::class,'store']);   
+    Route::get('/recursos/show/{recuros_id}', [RecursoController::class,'index']);  
+    
+
 
     Route::post('/program/store', [ProgramacionController::class,'store']);
     Route::get('/program/show/{programa_id}', [ProgramacionController::class,'show']);
@@ -50,21 +61,30 @@ Route::group(['middleware' => 'jwt.verify'], function () {
     Route::delete('/program/delete_recurso/{programa_id}', [ProgramacionController::class,'delete_recurso']);
     Route::delete('/program/delete_participante/{programa_id}', [ProgramacionController::class,'delete_participante']);
 
+
     Route::get('/tipo_program/index', function(){
         $data=TipoProgramacion::all(['id','nombre']);
         return response()->json(compact('data'));
     });
 
+    //Listas para agregar participantes a programas
     Route::get('/listas1/index', function(){
         $ministerios=Ministerio::orderBy('nombre','asc')->get(['id','nombre']);
         $usuarios=User::orderBy('name','asc')->get(['id','name']);
         $roles=Rol::orderBy('nombre','asc')->get(['id','nombre']);
         return response()->json(compact('ministerios','usuarios','roles'));
     });
+    //Listas para agregar recuros a programa
     Route::get('/listas2/index', function(){
         $ministerios=Ministerio::orderBy('nombre','asc')->get(['id','nombre']);
         $recursos=Recurso::orderBy('nombre','asc')->get(['id','nombre']);
         return response()->json(compact('ministerios','recursos'));
+    });
+     //Listas para crear nuevos recursos
+     Route::get('/listas3/index', function(){
+        $ministerios=Ministerio::orderBy('nombre','asc')->get(['id','nombre']);
+        $tipoRecursos=TipoRecurso::orderBy('nombre','asc')->get(['id','nombre']);
+        return response()->json(compact('ministerios','tipoRecursos'));
     });
 });
 

@@ -19,6 +19,7 @@ class CreateRecursosTable extends Migration
             $table->string('url',200)->default('');
             $table->unsignedBigInteger('tipo_recurso_id')->default(0);
             $table->unsignedBigInteger('ministerio_id')->default(0);
+            $table->unsignedBigInteger('user_created_id')->default(0);
             $table->timestamps();
         });
     }

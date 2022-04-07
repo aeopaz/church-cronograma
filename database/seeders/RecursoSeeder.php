@@ -21,7 +21,7 @@ class RecursoSeeder extends Seeder
         for ($i = 0; $i < 100; $i++) {
             Recurso::create([
                 'nombre' => TipoRecurso::inRandomOrder()->take(1)->first()->nombre,
-                'url' => $faker->url(),
+                'url' => 'https://picsum.photos/150/150',
                 'tipo_recurso_id' => TipoRecurso::inRandomOrder()->take(1)->first()->id,
                 'ministerio_id' => Ministerio::inRandomOrder()->take(1)->first()->id,
             ]);
