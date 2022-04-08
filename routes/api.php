@@ -40,6 +40,7 @@ Route::post('/addimage', [ArchivoController::class,'addimage']);
 
 Route::group(['middleware' => 'jwt.verify'], function () {
     Route::get('/users/user', [UserController::class, 'getAuthenticatedUser']);
+    Route::put('/users/update', [UserController::class, 'update']);
     Route::post('/users/logout', [UserController::class, 'logout']);
     Route::get('/iglesias/index', [IglesiaController::class, 'index']);
 

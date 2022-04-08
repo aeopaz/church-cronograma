@@ -20,7 +20,8 @@ class UsuarioSeeder extends Seeder
         User::create([
             'name' => 'Alvaro Ocampo',
             'email' => 'aeopaz@gmail.com',
-            'password' => Hash::make(12345678),
+            'celular'=>'3207236182',
+            'password' => Hash::make(123123),
             'iglesia_id' => 1,
             'tipo_usuario_id' => 1,
         ]);
@@ -29,6 +30,8 @@ class UsuarioSeeder extends Seeder
             User::create([
                 'name' => $faker->name(),
                 'email' => $faker->email(),
+                'avatar'=>"",
+                'celular'=>rand(1111111111,9999999999),
                 'password' => Hash::make(123123),
                 'iglesia_id' => 1,
                 'tipo_usuario_id' => 2,

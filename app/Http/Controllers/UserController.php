@@ -20,20 +20,80 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'celular' => 'required|numeric|max:9999999999',
             'password' => 'required|string|min:6|confirmed',
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
         $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'iglesia_id'=>1,
-            'tipo_usuario_id'=>1,
+            'name' => $request->name,
+            'email' => $request->email,
+            'celular' => $request->celular,
+            'iglesia_id' => 1,
+            'tipo_usuario_id' => 1,
             'password' => Hash::make($request->get('password')),
         ]);
         $token = JWTAuth::fromUser($user);
         return response()->json(compact('user', 'token'), 201);
+    }
+    //Actualizar usuario
+    public function update(Request $request)
+    {
+        return response()->json($request->celular, 400);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'celular' => 'required|numeric|max:9999999999',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user = User::find(Auth::user()->id);
+        $user->name = $request->name;
+        $user->celular = $request->celular;
+        $user->save();
+        return response()->json(compact('user'), 200);
+    }
+
+    //Cambiar contraseña
+    public function change_password(Request $request, $idUsuario)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|string|min:6|confirmed',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $user = User::find($idUsuario);
+
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->password = $request->new_password;
+            $user->save();
+            return response()->json(compact('user'), 200);
+        } else {
+            return response()->json('Contraseña anterior inválida', 400);
+        }
+    }
+    //Cambiar avatar
+    public function change_avatar(Request $request, $idUsuario)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $user = User::find($idUsuario);
+
+        if($request->hasFile('image')){
+            $path=$request->file('image')->storeAs('public/images/profile',$user->email.time().'.'.$request->image->extension());
+            $path=str_replace('public','storage',$path);
+            $user->avatar=$path;
+            $user->save();
+        }
+        return response()->json(compact('user'), 200);
     }
     //Iniciar sesión
     public function authenticate(Request $request)
@@ -46,8 +106,8 @@ class UserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        $user=User::find(Auth::user()->id,['name','email']);
-        return response()->json(compact('token','user'));
+        $user = User::find(Auth::user()->id, ['name', 'email']);
+        return response()->json(compact('token', 'user'));
     }
 
     //Cerrar sesion
@@ -67,7 +127,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unsuccessful logout'
-            ],500);
+            ], 500);
         }
     }
 
