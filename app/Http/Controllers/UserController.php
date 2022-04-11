@@ -40,7 +40,7 @@ class UserController extends Controller
     //Actualizar usuario
     public function update(Request $request)
     {
-        return response()->json($request->celular, 400);
+       
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'celular' => 'required|numeric|max:9999999999',
@@ -60,7 +60,7 @@ class UserController extends Controller
     public function change_password(Request $request, $idUsuario)
     {
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required|string|min:6|confirmed',
+            'old_password' => 'required|string|min:6',
             'new_password' => 'required|string|min:6|confirmed',
         ]);
         if ($validator->fails()) {
@@ -77,7 +77,7 @@ class UserController extends Controller
         }
     }
     //Cambiar avatar
-    public function change_avatar(Request $request, $idUsuario)
+    public function change_avatar(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'image' => 'required|image'
@@ -85,7 +85,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-        $user = User::find($idUsuario);
+        $user = User::find(Auth::user()->id);
 
         if($request->hasFile('image')){
             $path=$request->file('image')->storeAs('public/images/profile',$user->email.time().'.'.$request->image->extension());
