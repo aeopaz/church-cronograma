@@ -258,6 +258,12 @@ return [
             'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
         ],
+        ['header' => 'OPCIONES DE PARAMETRIZACIÓN'],
+        [
+            'text' => 'Rol Ministerios',
+            'url'  => 'parametrizacion/roles/index',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',

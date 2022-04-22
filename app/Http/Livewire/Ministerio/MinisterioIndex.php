@@ -14,13 +14,13 @@ class MinisterioIndex extends Component
     public $columna="ministerios.id", $orden="asc",$registrosXPagina=5;
     public $idMinisterio;
     public $nombre;
-    public $id_iglesia;
-    public $id_lider;
+    public $iglesia_id;
+    public $user_id;
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
-        $ministerios=Ministerio::join('iglesias','iglesias.id','id_iglesia')
-        ->join('users','users.id','id_lider')
+        $ministerios=Ministerio::join('iglesias','iglesias.id','iglesia_id')
+        ->join('users','users.id','user_id')
         ->orderBy($this->columna,$this->orden)
         ->paginate($this->registrosXPagina,[
             'ministerios.nombre as nombreMinisterio',
@@ -46,10 +46,11 @@ class MinisterioIndex extends Component
     {
         $validateData=$this->validate([
             'nombre'=>'required|max:190',
-            'id_iglesia'=>'required|numeric',
-            'id_lider'=>'required|numeric',
+            'iglesia_id'=>'required|numeric',
+            'user_id'=>'required|numeric',
         ]);
 
+        
         Ministerio::create($validateData);
         $this->limpiarCampos();
         $this->emit('modal', 'crearMinisterioModal', 'hide');
@@ -59,22 +60,22 @@ class MinisterioIndex extends Component
     {
         $this->idMinisterio=$ministerio->id;
         $this->nombre=$ministerio->nombre;
-        $this->id_iglesia=$ministerio->id_iglesia;
-        $this->id_lider=$ministerio->id_lider;
+        $this->iglesia_id=$ministerio->iglesia_id;
+        $this->user_id=$ministerio->user_id;
         $this->emit('modal', 'editarMinisterioModal', 'show');
     }
     public function update($id)
     {
         $validateData=$this->validate([
             'nombre'=>'required|max:190',
-            'id_iglesia'=>'required|numeric',
-            'id_lider'=>'required|numeric',
+            'iglesia_id'=>'required|numeric',
+            'user_id'=>'required|numeric',
         ]);
 
         $ministerio=Ministerio::find($id);
         $ministerio->nombre=$this->nombre;
-        $ministerio->id_iglesia=$this->id_iglesia;
-        $ministerio->id_lider=$this->id_lider;
+        $ministerio->iglesia_id=$this->iglesia_id;
+        $ministerio->user_id=$this->user_id;
         $ministerio->save();
         $this->limpiarCampos();
         $this->emit('modal', 'editarMinisterioModal', 'hide');
@@ -98,6 +99,6 @@ class MinisterioIndex extends Component
 
     public function limpiarCampos()
     {
-        $this->reset(['idMinisterio','nombre','id_iglesia','id_lider']);
+        $this->reset(['idMinisterio','nombre','iglesia_id','user_id']);
     }
 }

@@ -9,7 +9,7 @@ class IglesiaController extends Controller
 {
     public function index()
     {
-        return Iglesia::all();
-        //return view('iglesia.index');
+        //return Iglesia::all();
+        return view('iglesia.index');
     }
 }

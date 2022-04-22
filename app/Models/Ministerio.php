@@ -12,7 +12,7 @@ class Ministerio extends Model
     protected $fillable=[
         'nombre',
         'iglesia_id',
-        'lider_id',
+        'user_id',
 
     ];
 }

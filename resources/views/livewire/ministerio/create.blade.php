@@ -17,7 +17,7 @@
                     </span>
                 @enderror
                 <label for="">Iglesia</label>
-                <select name="" id="" class="form-control @error('id_iglesia') is-invalid @enderror" wire:model='id_iglesia'>
+                <select name="" id="" class="form-control @error('iglesia_id') is-invalid @enderror" wire:model='iglesia_id'>
                     <option value="">Seleccione...</option>
                     @foreach ($iglesias as $iglesia )
                         <option value="{{ $iglesia->id }}"
@@ -25,19 +25,19 @@
                             >{{ $iglesia->nombre }}</option>
                     @endforeach
                 </select>
-                @error('id_iglesia')
+                @error('iglesia_id')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="">Líder</label>
-                <select name="" id="" class="form-control @error('id_lider') is-invalid @enderror" wire:model='id_lider'>
+                <select name="" id="" class="form-control @error('user_id') is-invalid @enderror" wire:model='user_id'>
                     <option value="">Seleccione...</option>
                     @foreach ($lideres as $lider )
                         <option value="{{ $lider->id }}">{{ $lider->name }}</option>
                     @endforeach
                 </select>
-                @error('id_lider')
+                @error('user_id')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
