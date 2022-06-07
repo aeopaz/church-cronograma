@@ -57,16 +57,16 @@ class UserController extends Controller
     }
 
     //Cambiar contraseña
-    public function change_password(Request $request, $idUsuario)
+    public function change_password(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required|string|min:6',
+            'old_password' => 'required',
             'new_password' => 'required|string|min:6|confirmed',
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-        $user = User::find($idUsuario);
+        $user = User::find(auth()->user()->id);
 
         if (Hash::check($request->old_password, $user->password)) {
             $user->password = $request->new_password;
@@ -88,7 +88,8 @@ class UserController extends Controller
         $user = User::find(Auth::user()->id);
 
         if($request->hasFile('image')){
-            $path=$request->file('image')->storeAs('public/images/profile',$user->email.time().'.'.$request->image->extension());
+            //$path=$request->file('image')->storeAs('public/images/profile',$user->email.time().'.'.$request->image->extension());
+            $path=$request->file('image')->store('public/images/profile');
             $path=str_replace('public','storage',$path);
             $user->avatar=$path;
             $user->save();
@@ -106,7 +107,7 @@ class UserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        $user = User::find(Auth::user()->id, ['name', 'email']);
+        $user = User::find(Auth::user()->id, ['name', 'email','avatar']);
         return response()->json(compact('token', 'user'));
     }
 

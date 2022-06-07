@@ -1,7 +1,7 @@
 <div>
     <x-adminlte-button label="Crear Iglesia" theme="primary" wire:click='create' /> <br>
     @include('componentes.paginador')
-    <table class="table table-hover">
+    <table class="table table-hover table-sm">
         <thead>
             <tr>
                 <th wire:click='ordenar("id")'>ID

@@ -30,7 +30,7 @@ class UsuarioSeeder extends Seeder
             User::create([
                 'name' => $faker->name(),
                 'email' => $faker->email(),
-                'avatar'=>"",
+                'avatar'=>$faker->imageUrl(),
                 'celular'=>rand(1111111111,9999999999),
                 'password' => Hash::make(123123),
                 'iglesia_id' => 1,

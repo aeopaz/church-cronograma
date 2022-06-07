@@ -19,6 +19,7 @@ class CreateProgramacionsTable extends Migration
             $table->unsignedBigInteger('iglesia_id')->default(0);
             $table->string('nombre',60)->default('');
             $table->string('estado',10)->default('Activo');
+            $table->string('nivel',10)->default('');
             $table->unsignedBigInteger('user_id')->default(0);
             $table->date('fecha');
             $table->string('hora');

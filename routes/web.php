@@ -26,9 +26,21 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/iglesia/index',[IglesiaController::class,'index'])->name('iglesia.index');
-Route::get('/ministerio/index',[MinisterioController::class,'index'])->name('ministerio.index');
-Route::get('/parametrizacion/roles/index',[RolController::class,'index'])->name('rol.index');
 
+Route::get('/usuario/index', function () {
+    return view('usuario.index');
+})->name('usuario.index');
 
+Route::get('/usuario/perfil', function () {
+    return view('usuario.perfil');
+})->name('usuario.perfil');
 
+Route::get('/iglesia/index', [IglesiaController::class, 'index'])->name('iglesia.index');
+Route::get('/ministerio/index', [MinisterioController::class, 'index'])->name('ministerio.index');
+Route::get('/parametrizacion/roles/index', [RolController::class, 'index'])->name('rol.index');
+Route::get('/programacion/index', function () {
+    return view('programacion.index');
+})->name('programacion.index');
+Route::get('/programacion/general', function () {
+    return view('programacion.general');
+})->name('programacion.general');

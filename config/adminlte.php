@@ -247,6 +247,24 @@ return [
             'can'  => 'manage-blog',
         ],
         [
+            'text' => 'Programación General',
+            'url'  => 'programacion/general',
+            'icon' => 'fas fa-fw fa-home',
+        ],
+        [
+            'text' => 'Mis Programas',
+            'url'  => 'programacion/index',
+            'icon' => 'fas fa-fw fa-home',
+        ],
+       
+        ['header' => 'OPCIONES DE ADMINISTRADOR'],
+        [
+            'text'        => 'Usuarios',
+            'url'         => 'usuario/index',
+            'icon'        => 'fa fa-fw fa-user',
+            'label_color' => 'success',
+        ],
+        [
             'text'        => 'Iglesia',
             'url'         => 'iglesia/index',
             'icon'        => 'fa fa-fw fa-building',
@@ -258,7 +276,6 @@ return [
             'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
         ],
-        ['header' => 'OPCIONES DE PARAMETRIZACIÓN'],
         [
             'text' => 'Rol Ministerios',
             'url'  => 'parametrizacion/roles/index',
@@ -267,7 +284,7 @@ return [
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
-            'url'  => 'admin/settings',
+            'url'  => '/usuario/perfil',
             'icon' => 'fas fa-fw fa-user',
         ],
         [

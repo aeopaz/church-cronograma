@@ -1,7 +1,7 @@
 <div>
     <x-adminlte-button label="Crear Ministerio" theme="primary" wire:click='create' /> <br>
     @include('componentes.paginador')
-    <table class="table table-hover">
+    <table class="table table-hover table-sm">
         <thead>
             <tr>
                 <th wire:click='ordenar("ministerios.id")'>ID
@@ -24,6 +24,7 @@
                         <div class="fa fa-sort"></div>
                     @endif
                 </th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
