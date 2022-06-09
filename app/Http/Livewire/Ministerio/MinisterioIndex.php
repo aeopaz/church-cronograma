@@ -16,10 +16,14 @@ class MinisterioIndex extends Component
     public $nombre;
     public $iglesia_id;
     public $user_id;
+    public $textoBuscar;
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
         $ministerios=Ministerio::join('iglesias','iglesias.id','iglesia_id')
+        ->Orwhere('iglesias.nombre', 'like', '%' . $this->textoBuscar . '%')
+        ->Orwhere('ministerios.nombre', 'like', '%' . $this->textoBuscar . '%')
+        ->Orwhere('users.name', 'like', '%' . $this->textoBuscar . '%')
         ->join('users','users.id','user_id')
         ->orderBy($this->columna,$this->orden)
         ->paginate($this->registrosXPagina,[

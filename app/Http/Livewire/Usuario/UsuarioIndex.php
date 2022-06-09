@@ -19,10 +19,16 @@ class UsuarioIndex extends Component
     public $email;
     public $celular;
     public $ministeriosUsuario = [];
+    public $textoBuscar;
     public function render()
     {
         //Listar usuarios
-        $usuarios = User::orderBy($this->columna, $this->orden)->where('id', '<>', auth()->id())
+        $usuarios = User::where('id', '<>', auth()->id())
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->textoBuscar . '%')
+                    ->Orwhere('email', 'like', '%' . $this->textoBuscar . '%')
+                    ->Orwhere('celular', 'like', '%' . $this->textoBuscar . '%');
+            })->orderBy($this->columna, $this->orden)
             ->paginate($this->registrosXPagina);
         //Lista de ministerios
         $listaMinisterios = Ministerio::all(['id', 'nombre']);
@@ -31,11 +37,11 @@ class UsuarioIndex extends Component
             ->where('usuario_ministerio.estado', 'A')
             ->where('id_user', $this->idUsuario)
             ->get(['id_user', 'id_ministerio']);
-            //Crear array de los ministerios asociados al usuario para mostrar en la vista
+        //Crear array de los ministerios asociados al usuario para mostrar en la vista
         foreach ($ministeriosUsuario as $ministerio) {
             $this->ministeriosUsuario[$ministerio->id_ministerio] = $ministerio->id_ministerio;
         }
-       
+
 
         return view('livewire.usuario.usuario-index', compact('usuarios', 'listaMinisterios'));
     }

@@ -1,4 +1,6 @@
 <div>
+    {{-- Opciones de búsqueda --}}
+    @include('componentes.buscador')
     <!-- <x-adminlte-button label="Crear Usuario" theme="primary" wire:click='create' /> <br> -->
     @include('componentes.paginador')
     <table class="table table-hover table-sm">

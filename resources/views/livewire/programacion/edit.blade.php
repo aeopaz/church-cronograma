@@ -1,5 +1,5 @@
-<div class="modal fade" id="editarProgramaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true" wire:ignore.self>
+<div class="modal fade" id="editarProgramaModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -83,6 +83,28 @@
                                 </span>
                             @enderror
                         </div>
+                        {{-- Lugar Programa --}}
+                        <div class="input-group mb-3">
+                            <select name="" id="" class="form-control @error('idLugarPrograma') is-invalid @enderror"
+                                wire:model='idLugarPrograma'>
+                                <option value="">Seleccione</option>
+                                @foreach ($listaLugares as $lugar)
+                                    <option value="{{ $lugar->id }}">{{ $lugar->nombre }}</option>
+                                @endforeach
+                            </select>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span
+                                        class="fas fa-building   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                </div>
+                            </div>
+
+                            @error('idLugarPrograma')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         {{-- Fecha Programa --}}
                         <div class="input-group mb-3">
                             <input type="date" name="fechaPrograma"
@@ -125,8 +147,8 @@
                             <select name="" id="" class="form-control @error('estadoPrograma') is-invalid @enderror"
                                 wire:model='estadoPrograma'>
                                 <option value="">Seleccione</option>
-                                <option value="Activo">Activo</option>
-                                <option value="Cancelado">Cancelado</option>
+                                <option value="A">Activo</option>
+                                <option value="C">Cancelado</option>
 
                             </select>
                             <div class="input-group-append">
@@ -143,10 +165,12 @@
                             @enderror
                         </div>
                         @if ($tipoVista == 'propia')
-                            <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
-                                wire:loading.remove wire:target='update'>Guardar</button>
-                            <div wire:loading wire:target='update'>
-                                @include('componentes.carga')
+                            <div class="row justify-content-center">
+                                <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
+                                    wire:loading.remove wire:target='update'>Guardar</button>
+                                <div wire:loading wire:target='update'>
+                                    @include('componentes.carga')
+                                </div>
                             </div>
                         @endif
 
@@ -154,7 +178,33 @@
                     {{-- Lista de participantes --}}
                     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                         <div id="listaParticipantes" @if (!$mostrarListaParticipantes) hidden @endif>
-                            @foreach ($participantes as $participante)
+                            <div class="row div-centrar-tabla">
+                                <table class="table table-hover table-sm centrar-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Foto</th>
+                                            <th>Nombre</th>
+                                            <th>Rol</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($participantes as $index => $participante)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td><img src="{{ asset($participante->avatar) }}" alt=""
+                                                    class="rounded-circle" style="width: 30%; height: 10%;">
+                                                </td>
+                                                <td>{{ $participante->nombreParticipante }}</td>
+                                                <td>{{ $participante->nombreRol }}</td>
+                                                <td><button class="btn btn-sm btn-danger" wire:click='eliminarParticipante({{$participante->idParticipacion}})'><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            {{-- @foreach ($participantes as $participante)
                                 <div class="info-box bg-gradient-primary">
                                     <span class="info-box-icon"><img src="{{ asset($participante->avatar) }}" alt=""
                                             class="rounded-circle"></span>
@@ -167,11 +217,14 @@
                                         @endif
                                     </div>
                                 </div>
-                            @endforeach
+                            @endforeach --}}
                             @if ($tipoVista == 'propia')
                                 {{-- Boton mostrar form participante --}}
-                                <button class="btn btn-secondary float-md-right"
-                                    wire:click="$set('mostrarListaParticipantes',false)">Adicionar Participante</button>
+                                <div class="row justify-content-center">
+                                    <button class="btn btn-secondary float-md-right"
+                                        wire:click="$set('mostrarListaParticipantes',false)">Adicionar
+                                        Participante</button>
+                                </div>
                             @endif
                         </div>
                         @if ($tipoVista == 'propia')
@@ -242,19 +295,25 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <button class="btn btn-primary" wire:click='agregarParticipantes'>Agregar
-                                    Participante</button>
-                                {{-- Boton ocultar form participante --}}
-                                <button class="btn btn-secondary float-md-right"
-                                    wire:click="$set('mostrarListaParticipantes',true)">Cancelar</button>
+                                <div class="row justify-content-center">
+                                    <button class="btn btn-primary mr-2" wire:click='agregarParticipantes'>Agregar
+                                        Participante</button>
+                                    {{-- Boton ocultar form participante --}}
+                                    <button class="btn btn-secondary"
+                                        wire:click="$set('mostrarListaParticipantes',true)">Cancelar</button>
+
+                                </div>
+
                             </div>
                         @endif
                     </div>
                     {{-- Lista de Recursos --}}
+                    {{-- @if (!isset($recurso->url))  wire:click='verRecurso({{$recurso->url}})' @endif --}}
                     <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                         <div @if (!$mostrarListaRecursos) hidden @endif>
                             @foreach ($recursosPrograma as $recurso)
-                                <div class="info-box bg-gradient-success">
+                                <div class="puntero info-box bg-gradient-success"
+                                    wire:click='verRecurso({{ $recurso->recurso_id }})'>
                                     <span class="info-box-icon"><img src="{{ asset($recurso->url) }}" alt=""
                                             class="rounded-circle"></span>
                                     <div class="info-box-content">
@@ -268,11 +327,13 @@
                                 </div>
                             @endforeach
                             @if ($tipoVista == 'propia')
-                                <button class="btn btn-secondary float-md-right"
-                                    wire:click="$set('mostrarListaRecursos',false)">Agregar Recurso</button>
+                                <div class="row justify-content-center">
+                                    <button class="btn btn-secondary float-md-right"
+                                        wire:click="$set('mostrarListaRecursos',false)">Agregar Recurso</button>
+                                </div>
                             @endif
                         </div>
-                        {{-- Agregar participantes programa --}}
+                        {{-- Agregar recursos programa --}}
                         @if ($tipoVista == 'propia')
                             <div @if ($mostrarListaRecursos) hidden @endif>
                                 {{-- Lista Ministerios --}}
@@ -304,7 +365,8 @@
                                             Recurso
                                         </div>
                                     </div>
-                                    <select name="" id="" class="form-control @error('idRecurso') is-invalid @enderror"
+                                    <select name="" id=""
+                                        class="form-control @error('idRecurso') is-invalid @enderror"
                                         wire:model.defer='idRecurso'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaRecursos as $recurso)
@@ -319,29 +381,92 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <button class="btn btn-primary" wire:click='agregarRecursosPrograma'>Agregar
-                                    Recurso</button>
-                                {{-- Boton ocultar form recursos --}}
-                                <button class="btn btn-secondary float-md-right"
-                                    wire:click="$set('mostrarListaRecursos',true)">Cancelar</button>
-
+                                <div class="row justify-content-center">
+                                    <button class="btn btn-primary mr-2" wire:click='agregarRecursosPrograma'>Agregar
+                                        Recurso</button>
+                                    {{-- Boton ocultar form recursos --}}
+                                    <button class="btn btn-secondary"
+                                        wire:click="$set('mostrarListaRecursos',true)">Cancelar</button>
+                                </div>
                             </div>
                         @endif
                     </div>
                     {{-- Lista de Asistencia --}}
-                    <div class="tab-pane fade" id="pills-asistencia" role="tabpanel"
-                        aria-labelledby="pills-asistencia-tab">Asistencia</div>
-
-
-
-
-
-
-
-
-
-
-
+                    @if ($tipoVista == 'propia')
+                        <div class="tab-pane fade" id="pills-asistencia" role="tabpanel"
+                            aria-labelledby="pills-asistencia-tab">
+                            {{-- Registrar Miembros --}}
+                            <div class="input-group mb-3">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        Miembro
+                                    </div>
+                                </div>
+                                <select name="" id="" class="form-control @error('idMiembro') is-invalid @enderror"
+                                    wire:model.defer='idMiembro'>
+                                    <option value="">Seleccione...</option>
+                                    @foreach ($miembros as $miembro)
+                                        <option value="{{ $miembro->id }}">
+                                            {{ $miembro->nombre . ' ' . $miembro->apellido }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('idMiembro')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            {{-- Tipo llegada --}}
+                            <div class="input-group mb-3">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        LLegada
+                                    </div>
+                                </div>
+                                <select name="" id="" class="form-control @error('tipoLlegada') is-invalid @enderror"
+                                    wire:model.defer='tipoLlegada'>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Puntual">Puntual</option>
+                                    <option value="Retrazada">Retrazada</option>
+                                    <option value="Final">Al Final</option>
+                                </select>
+                                @error('tipoLlegada')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="row justify-content-center">
+                                <button class="btn btn-primary" wire:click='registrarAsistencia'>Agregar
+                                    Asistencia</button>
+                            </div>
+                            {{-- Miembros que asistieron --}}
+                            <div class="row div-centrar-tabla">
+                                <table class="table table-hover table-sm centrar-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nombre</th>
+                                            <th>LLegada</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($asistenciaMiembros as $index => $asistente)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $asistente->nombreMiembro . ' ' . $asistente->apellidoMiembro }}
+                                                </td>
+                                                <td>{{ $asistente->tipoLlegada }}</td>
+                                                <td><button class="btn btn-sm btn-danger" wire:click='eliminarAsistencia({{$asistente->idAsistencia}})'><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>

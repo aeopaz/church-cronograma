@@ -18,7 +18,6 @@ class Programacion extends Model
         'iglesia_id',
         'user_id',
         'nombre',
-        'fecha',
         'hora'
     ];
 

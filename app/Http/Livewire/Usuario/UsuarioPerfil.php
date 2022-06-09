@@ -80,7 +80,7 @@ class UsuarioPerfil extends Component
     {
         //Validar avatar
         $this->validate([
-            'foto' => 'image|max:1024', // 1MB Max
+            'foto' => 'image|max:2048', // 2MB Max
         ]);
 
         try {

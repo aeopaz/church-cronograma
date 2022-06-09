@@ -55,6 +55,27 @@
                         </span>
                     @enderror
                 </div>
+                {{-- Lugar Programa --}}
+                <div class="input-group mb-3">
+                    <select name="" id="" class="form-control @error('idLugarPrograma') is-invalid @enderror"
+                        wire:model='idLugarPrograma'>
+                        <option value="">Seleccione</option>
+                        @foreach ($listaLugares as $lugar)
+                            <option value="{{ $lugar->id }}">{{ $lugar->nombre }}</option>
+                        @endforeach
+                    </select>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-building   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                        </div>
+                    </div>
+
+                    @error('idLugarPrograma')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
                 {{-- Fecha Programa --}}
                 <div class="input-group mb-3">
                     <input type="date" name="fechaPrograma"

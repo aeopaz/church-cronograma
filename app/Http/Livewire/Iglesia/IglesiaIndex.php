@@ -15,12 +15,14 @@ class IglesiaIndex extends Component
     public $direccion;
     public $telefono;
     public $email;
+    public $textoBuscar;
     protected $paginationTheme = 'bootstrap';
 
 
     public function render()
     {
-        $iglesias=Iglesia::orderBy($this->columna,$this->orden)
+        $iglesias=Iglesia::Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
+        ->orderBy($this->columna,$this->orden)
         ->paginate($this->registrosXPagina);
         return view('livewire.iglesia.iglesia-index',compact('iglesias'));
     }

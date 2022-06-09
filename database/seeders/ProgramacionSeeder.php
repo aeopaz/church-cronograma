@@ -18,6 +18,7 @@ class ProgramacionSeeder extends Seeder
     public function run()
     {
         $nivel=['1','2','3'];
+        $estado=['A','C'];
         $faker = Factory::create('es_VEN');
         for ($i = 0; $i < 200; $i++) {
             $tipoProgramacion = TipoProgramacion::inRandomOrder()->take(1)->first();
@@ -27,6 +28,7 @@ class ProgramacionSeeder extends Seeder
                 'iglesia_id' => 1,
                 'nombre' => $tipoProgramacion->nombre,
                 'nivel'=>$nivel[rand(0,2)],
+                'estado'=>$estado[rand(0,1)],
                 'user_id'=>$user->id,
                 'fecha' => $faker->date(),
                 'hora' => $faker->time('H:i', 'now')

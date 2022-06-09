@@ -44,3 +44,10 @@ Route::get('/programacion/index', function () {
 Route::get('/programacion/general', function () {
     return view('programacion.general');
 })->name('programacion.general');
+Route::get('/recurso/index', function () {
+    return view('recurso.index');
+})->name('recurso.index');
+Route::get('/membrecia/index', function () {
+    return view('membrecia.index');
+})->name('membrecia.index');
+

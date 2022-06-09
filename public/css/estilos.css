@@ -1,0 +1,15 @@
+.puntero:hover {
+    cursor: pointer;
+}
+
+.div-centrar-tabla {
+    text-align: center;
+
+}
+
+.centrar-tabla {
+
+    margin: 0 auto;
+
+
+}

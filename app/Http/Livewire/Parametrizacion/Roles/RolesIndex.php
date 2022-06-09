@@ -12,10 +12,12 @@ class RolesIndex extends Component
     public $columna = "id", $orden = "asc", $registrosXPagina = 5;
     public $idRol;
     public $nombre;
+    public $textoBuscar;
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
-        $roles = Rol::orderBy($this->columna, $this->orden)
+        $roles = Rol::Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
+            ->orderBy($this->columna, $this->orden)
             ->paginate($this->registrosXPagina, [
                 'id',
                 'nombre'
