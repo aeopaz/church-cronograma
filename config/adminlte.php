@@ -247,14 +247,21 @@ return [
             'can'  => 'manage-blog',
         ],
         [
-            'text' => 'Programación General',
-            'url'  => 'programacion/general',
+            'text' => 'Inicio',
+            'url'  => 'panel/index',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Mis Compromisos',
+            'url'  => 'programacion/compromisos',
             'icon' => 'fas fa-fw fa-home',
         ],
         [
             'text' => 'Mis Programas',
             'url'  => 'programacion/index',
             'icon' => 'fas fa-fw fa-home',
+            'can' => ['admin', 'lider'],
         ],
         [
             'text' => 'Recursos',
@@ -265,32 +272,37 @@ return [
             'text' => 'Membrecía',
             'url'  => 'membrecia/index',
             'icon' => 'fas fa-fw fa-home',
+            'can' => ['admin', 'lider'],
         ],
-       
-       
-        ['header' => 'OPCIONES DE ADMINISTRADOR'],
+
+
+        ['header' => 'OPCIONES DE ADMINISTRADOR', 'can' => 'admin'],
         [
             'text'        => 'Usuarios',
             'url'         => 'usuario/index',
             'icon'        => 'fa fa-fw fa-user',
             'label_color' => 'success',
+            'can' => ['admin', 'lider']
         ],
         [
-            'text'        => 'Iglesia',
+            'text'        => 'Lugares',
             'url'         => 'iglesia/index',
             'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
+            'can' => 'admin'
         ],
         [
             'text'        => 'Ministerio',
             'url'         => 'ministerio/index',
             'icon'        => 'fa fa-fw fa-building',
             'label_color' => 'success',
+            'can' => 'admin'
         ],
         [
             'text' => 'Rol Ministerios',
             'url'  => 'parametrizacion/roles/index',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'admin'
         ],
         ['header' => 'account_settings'],
         [
@@ -434,8 +446,9 @@ return [
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
+                    'asset' => true,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
+                    'defer'=>true
                 ],
             ],
         ],

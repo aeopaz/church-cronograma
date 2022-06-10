@@ -20,6 +20,12 @@ class UsuarioIndex extends Component
     public $celular;
     public $ministeriosUsuario = [];
     public $textoBuscar;
+    public $tipoVista;
+
+    public function mount($tipoVista)
+    {
+        $this->tipoVista=$tipoVista;
+    }
     public function render()
     {
         //Listar usuarios

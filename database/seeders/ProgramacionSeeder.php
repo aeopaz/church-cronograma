@@ -31,7 +31,7 @@ class ProgramacionSeeder extends Seeder
                 'estado'=>$estado[rand(0,1)],
                 'user_id'=>$user->id,
                 'fecha' => $faker->date(),
-                'hora' => $faker->time('H:i', 'now')
+                'hora' => $faker->time('H:i')
             ]);
         }
     }

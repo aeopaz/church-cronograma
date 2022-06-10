@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Programación General')
+@section('title', 'Compromisos')
 
 @section('css')
     <style>
@@ -42,7 +42,7 @@
 @stop
 
 @section('content_header')
-    <h1>Programas Generales</h1>
+    <h1>Programas donde Tengo Asignados Compromisos</h1>
 @stop
 
 @section('content')

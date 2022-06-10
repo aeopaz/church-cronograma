@@ -22,7 +22,7 @@ use Livewire\Component;
 
 class ProgramacionIndex extends Component
 {
-    public $idPrograma;
+    public $idPrograma=0;
     public $idTipoPrograma;
     public $nombrePrograma;
     public $idLugarPrograma;
@@ -84,18 +84,20 @@ class ProgramacionIndex extends Component
             //Consultar Programas en los que esta inscrito el usuario
             $programasGenerales = User::find(Auth::user()->id)->programacion()
                 ->join('programacions', 'programacions.id', 'programacion_id')
+                ->join('rols', 'rols.id', 'rol_id')
                 ->join('users', 'users.id', 'programacions.user_id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
                 ->where('programacions.estado', 'A')
-                ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
+                // ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
                 ->where(function ($query) {
                     $query->where('users.name', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('programacions.fecha', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('programacions.hora', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('iglesias.nombre', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('tipo_programacions.nombre', 'like', '%' . $this->textoBuscar . '%');
+                        ->Orwhere('tipo_programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
+                        ->Orwhere('rols.nombre', 'like', '%' . $this->textoBuscar . '%');
                 })->orderBy('fecha', 'asc')
                 ->get([
                     'programacions.id as idPrograma',
@@ -105,8 +107,11 @@ class ProgramacionIndex extends Component
                     'fecha',
                     'programacions.hora as horaPrograma',
                     'users.name as nombreUsuarioCreador',
-                    'iglesias.nombre as nombreLugar'
+                    'iglesias.nombre as nombreLugar',
+                    'rol_id',
+                    'rols.nombre as nombreRol',
                 ]);
+                
         }
 
 
@@ -133,6 +138,7 @@ class ProgramacionIndex extends Component
                 'horaPrograma' => $programa->horaPrograma,
                 'nombreUsuarioCreador' => $programa->nombreUsuarioCreador,
                 'nombreLugar' => $programa->nombreLugar,
+                'nombreRol'=>$programa->nombreRol
             ];
             //Recorrer el array para crear la agrupación
             for ($i = 0; $i < count($grupoxAnoxMes); $i++) {
@@ -233,7 +239,7 @@ class ProgramacionIndex extends Component
             $programa->fecha = $this->fechaPrograma;
             $programa->hora = $this->horaPrograma;
             $programa->user_id = auth()->id();
-            $programa->estado = 'Activo';
+            $programa->estado = 'A';
             $programa->nivel = 1;
             $programa->save();
             $this->limpiarCampos();
@@ -317,7 +323,7 @@ class ProgramacionIndex extends Component
                 ->where('rol_id', $this->idRol)->first();
 
             if ($participante) {
-                return session()->flash('fail', 'El participante ya se encuentra registrado');
+                return session()->flash('fail', 'El participante ya se encuentra registrado para ese rol');
             }
             $participante = ParticipantesProgramacionMinisterio::create([
                 'programacion_id' => $this->idPrograma,

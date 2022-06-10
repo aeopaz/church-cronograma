@@ -42,7 +42,7 @@
 @stop
 
 @section('content_header')
-    <h1>Mis Programas</h1>
+    <h1>Programas que he creado</h1>
 @stop
 
 @section('content')

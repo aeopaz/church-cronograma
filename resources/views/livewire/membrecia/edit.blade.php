@@ -132,7 +132,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='update'>Guardar</button>
+                @canany(['admin', 'lider'])
+                    <button type="button" class="btn btn-primary" wire:click='update'>Guardar</button>
+                @endcanany
             </div>
         </div>
     </div>

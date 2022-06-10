@@ -21,21 +21,26 @@ class UsuarioPerfil extends Component
     public $newPassword;
     public $newPassword_confirmation;
     public $ministeriosUsuario = [];
+    public $tipoVista;
+    public function mount($tipoVista)
+    {
+        $this->tipoVista = $tipoVista;
+    }
     public function render()
     {
         //Consultar usuario
         $usuario = User::find(auth()->id(), ['id', 'name', 'email', 'celular', 'avatar']);
-        $listaMinisterios=Ministerio::all(['id','nombre']);
+        $listaMinisterios = Ministerio::all(['id', 'nombre']);
         //Listad de ministerios asociados al usuario
         $ministeriosUsuario = UsuarioMinisterio::join('users', 'users.id', 'id_user')
             ->where('usuario_ministerio.estado', 'A')
             ->where('id_user', $this->idUsuario)
             ->get(['id_user', 'id_ministerio']);
-            //Crear array de los ministerios asociados al usuario para mostrar en la vista
+        //Crear array de los ministerios asociados al usuario para mostrar en la vista
         foreach ($ministeriosUsuario as $ministerio) {
             $this->ministeriosUsuario[$ministerio->id_ministerio] = $ministerio->id_ministerio;
         }
-        return view('livewire.usuario.usuario-perfil', compact('usuario','listaMinisterios'));
+        return view('livewire.usuario.usuario-perfil', compact('usuario', 'listaMinisterios'));
     }
 
     //Vista actualizar datos usuario
@@ -116,7 +121,7 @@ class UsuarioPerfil extends Component
 
         try {
             $usuario = User::find(auth()->id());
-            if (Hash::check($this->oldPassword,$usuario->password)) {
+            if (Hash::check($this->oldPassword, $usuario->password)) {
                 $usuario->password = Hash::make($this->newPassword);
                 $usuario->save();
                 $this->emit('modal', 'editarContrasenaModal', 'hide');
@@ -128,6 +133,4 @@ class UsuarioPerfil extends Component
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
         }
     }
-
-   
 }

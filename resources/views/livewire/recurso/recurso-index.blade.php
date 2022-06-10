@@ -1,7 +1,10 @@
 <div>
     {{-- Opciones de búsqueda --}}
     @include('componentes.buscador')
-    <x-adminlte-button label="Crear Recurso" theme="primary" wire:click='create' /> <br>
+    @canany(['admin','lider'])
+        <x-adminlte-button label="Crear Recurso" theme="primary" wire:click='create' /> <br>
+    @endcanany
+
     @include('componentes.paginador')
     <table class="table table-hover table-sm">
         <thead>
@@ -31,10 +34,15 @@
                     <td>{{ $recurso->nombreRecurso }}</td>
                     <td>{{ $recurso->nombreTipoRecurso }}</td>
                     <td colspan="2">
-                        <x-adminlte-button theme="primary" icon="fas fa-edit"
+
+                        <x-adminlte-button theme="primary" icon="fas fa-eye"
                             wire:click='edit({{ $recurso->idRecurso }})' />
-                        <x-adminlte-button theme="danger" icon="fas fa-trash"
-                            wire:click='delete({{ $recurso->idRecurso }})' />
+
+                        @can('admin')
+                            <x-adminlte-button theme="danger" icon="fas fa-trash"
+                                wire:click='delete({{ $recurso->idRecurso }})' />
+                        @endcan
+
                     </td>
                 </tr>
             @endforeach

@@ -1,6 +1,8 @@
 <div>
     @include('componentes.buscador')
-    <x-adminlte-button label="Crear Miembro" theme="primary" wire:click='create' /> <br>
+    @canany(['admin', 'lider'])
+        <x-adminlte-button label="Crear Miembro" theme="primary" wire:click='create' /> <br>
+    @endcanany
     @include('componentes.paginador')
     <table class="table table-hover table-sm">
         <thead>
@@ -42,9 +44,12 @@
                     <td>{{ $miembro->celular }}</td>
                     <td>{{ $miembro->email }}</td>
                     <td colspan="2">
-                        <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $miembro }})' />
-                        <x-adminlte-button theme="danger" icon="fas fa-trash"
-                            wire:click='delete({{ $miembro }})' />
+
+                        <x-adminlte-button theme="primary" icon="fas fa-eye" wire:click='edit({{ $miembro }})' />
+                        @can('admin')
+                            <x-adminlte-button theme="danger" icon="fas fa-trash"
+                                wire:click='delete({{ $miembro }})' />
+                        @endcan
                     </td>
                 </tr>
             @endforeach

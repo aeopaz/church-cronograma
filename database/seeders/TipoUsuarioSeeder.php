@@ -18,6 +18,9 @@ class TipoUsuarioSeeder extends Seeder
             'nombre'=>'admin',
         ]);
         TipoUsuario::create([
+            'nombre'=>'lider',
+        ]);
+        TipoUsuario::create([
             'nombre'=>'usuario',
         ]);
     }

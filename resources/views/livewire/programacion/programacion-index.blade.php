@@ -41,19 +41,24 @@
         @for ($j = 0; $j < count($grupoxAnoxMes); $j++)
             {{-- Validar si el índice se encuentra definido en la variable - --}}
             @if (isset($grupoxAnoxMes[$j][$anosPrograma[$i]]))
-                <div class="puntero info-box @if ($grupoxAnoxMes[$j][$anosPrograma[$i]][0]["estadoPrograma"]=="C") bg-secondary @else bg-success @endif"
+                <div class="puntero info-box @if ($grupoxAnoxMes[$j][$anosPrograma[$i]][0]['estadoPrograma'] == 'C') bg-secondary @else bg-success @endif"
                     wire:click='edit({{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['idPrograma'] }})'>
                     <span class="info-box-icon bg-light"
                         style="width: 150px">{{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['diaPrograma'] }}</span>
                     <div class="info-box-content">
-                        <span
-                            class="info-box-number">Nombre Programa: {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombrePrograma'] }}-Tipo: {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreTipoPrograma'] }} </span>
+                        <span class="info-box-number">Nombre Programa:
+                            {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombrePrograma'] }}-Tipo:
+                            {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreTipoPrograma'] }} </span>
                         <span class="info-box-text">Hora:
                             {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['horaPrograma'] }}</span>
                         <span class="info-box-text">Organizador:
                             {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreUsuarioCreador'] }}</span>
                         <span class="info-box-text">Lugar:
                             {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreLugar'] }}</span>
+                        @if ($tipoVista == 'general')
+                            <span class="info-box-text">Compromiso:
+                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreRol'] }}</span>
+                        @endif
                     </div>
                 </div>
             @endif

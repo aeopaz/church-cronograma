@@ -38,8 +38,10 @@
                     <td>{{ $usuario->celular }}</td>
                     <td colspan="2">
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $usuario->id }})' />
-                        <x-adminlte-button theme="danger" icon="fas fa-trash"
-                            wire:click='delete({{ $usuario->id }})' />
+                        @can('admin')
+                            <x-adminlte-button theme="danger" icon="fas fa-trash"
+                                wire:click='delete({{ $usuario->id }})' />
+                        @endcan
                     </td>
                 </tr>
             @endforeach

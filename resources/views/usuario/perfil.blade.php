@@ -19,7 +19,7 @@
 @stop
 
 @section('content')
-@livewire('usuario.usuario-perfil')
+@livewire('usuario.usuario-perfil',['tipoVista'=>'perfil'])
 @stop
 
 @section('js')

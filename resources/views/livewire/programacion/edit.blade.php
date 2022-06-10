@@ -32,10 +32,14 @@
                         <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact"
                             role="tab" aria-controls="pills-contact" aria-selected="false">Recursos</a>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="pills-asistencia-tab" data-toggle="pill" href="#pills-asistencia"
-                            role="tab" aria-controls="pills-asistencia" aria-selected="false">Asistencia</a>
-                    </li>
+                    {{-- Permiso para ver pestaña asistencia --}}
+                    @canany(['admin', 'lider'])
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pills-asistencia-tab" data-toggle="pill" href="#pills-asistencia"
+                                role="tab" aria-controls="pills-asistencia" aria-selected="false">Asistencia</a>
+                        </li>
+                    @endcanany
+
                 </ul>
                 <div class="tab-content" id="pills-tabContent">
                     {{-- Programa --}}
@@ -164,7 +168,8 @@
                                 </span>
                             @enderror
                         </div>
-                        @if ($tipoVista == 'propia')
+                        {{-- Solo podrá actualizar el programa si es un admin o si el programa es propio --}}
+                        @if (Auth::user()->can('lider') && $tipoVista == 'propia')
                             <div class="row justify-content-center">
                                 <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
                                     wire:loading.remove wire:target='update'>Guardar</button>
@@ -173,6 +178,17 @@
                                 </div>
                             </div>
                         @endif
+                        @if (Auth::user()->can('admin'))
+                            <div class="row justify-content-center">
+                                <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
+                                    wire:loading.remove wire:target='update'>Guardar</button>
+                                <div wire:loading wire:target='update'>
+                                    @include('componentes.carga')
+                                </div>
+                            </div>
+                        @endif
+
+
 
                     </div>
                     {{-- Lista de participantes --}}
@@ -186,7 +202,7 @@
                                             <th>Foto</th>
                                             <th>Nombre</th>
                                             <th>Rol</th>
-                                            <th>Eliminar</th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -194,11 +210,18 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td><img src="{{ asset($participante->avatar) }}" alt=""
-                                                    class="rounded-circle" style="width: 30%; height: 10%;">
+                                                        class="rounded-circle" style="width: 30%; height: 10%;">
                                                 </td>
                                                 <td>{{ $participante->nombreParticipante }}</td>
                                                 <td>{{ $participante->nombreRol }}</td>
-                                                <td><button class="btn btn-sm btn-danger" wire:click='eliminarParticipante({{$participante->idParticipacion}})'><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                                                <td>
+                                                    {{-- Solo puede eliminar participantes si es admin o lider --}}
+                                                    @canany(['admin', 'lider'])
+                                                        <button class="btn btn-sm btn-danger"
+                                                            wire:click='eliminarParticipante({{ $participante->idParticipacion }})'><i
+                                                                class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    </td>
+                                                @endcanany
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -218,16 +241,18 @@
                                     </div>
                                 </div>
                             @endforeach --}}
-                            @if ($tipoVista == 'propia')
+                            {{-- Solo puede agregar participantes si es admin o lider --}}
+                            @canany(['admin', 'lider'])
                                 {{-- Boton mostrar form participante --}}
                                 <div class="row justify-content-center">
                                     <button class="btn btn-secondary float-md-right"
                                         wire:click="$set('mostrarListaParticipantes',false)">Adicionar
                                         Participante</button>
                                 </div>
-                            @endif
+                            @endcanany
                         </div>
-                        @if ($tipoVista == 'propia')
+                        {{-- Solo puede agregar participantes si es admin o lider --}}
+                        @canany(['admin', 'lider'])
                             {{-- Agregar participantes programa --}}
                             <div id="formAgregarParticipante" @if ($mostrarListaParticipantes) hidden @endif>
                                 {{-- Lista Ministerios --}}
@@ -237,8 +262,7 @@
                                             Ministerio
                                         </div>
                                     </div>
-                                    <select name="" id=""
-                                        class="form-control @error('idMinisterio') is-invalid @enderror"
+                                    <select name="" id="" class="form-control @error('idMinisterio') is-invalid @enderror"
                                         wire:model='idMinisterio'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaMinisterios as $ministerio)
@@ -301,17 +325,49 @@
                                     {{-- Boton ocultar form participante --}}
                                     <button class="btn btn-secondary"
                                         wire:click="$set('mostrarListaParticipantes',true)">Cancelar</button>
-
                                 </div>
-
                             </div>
-                        @endif
+                        @endcanany
                     </div>
                     {{-- Lista de Recursos --}}
                     {{-- @if (!isset($recurso->url))  wire:click='verRecurso({{$recurso->url}})' @endif --}}
                     <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
                         <div @if (!$mostrarListaRecursos) hidden @endif>
-                            @foreach ($recursosPrograma as $recurso)
+                            <div class="row div-centrar-tabla">
+                                <table class="table table-hover table-sm centrar-tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Foto</th>
+                                            <th>Nombre</th>
+                                            <th>Tipo</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($recursosPrograma as $index => $recurso)
+                                            <tr class="puntero"
+                                                wire:click='verRecurso({{ $recurso->recurso_id }})'>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td><img src="{{ asset($recurso->url) }}" alt=""
+                                                        class="rounded-circle" style="width: 30%; height: 10%;">
+                                                </td>
+                                                <td>{{ $recurso->nombreRecurso }}</td>
+                                                <td>{{ $recurso->tipoRecurso }}</td>
+                                                <td>
+                                                    {{-- Solo puede Eliminar recursos si es admin o lider --}}
+                                                    @canany(['admin', 'lider'])
+                                                        <button class="btn btn-sm btn-danger"
+                                                            wire:click='eliminarRecursoPrograma({{ $recurso->idRecursoPrograma }})'><i
+                                                                class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    @endcanany
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            {{-- @foreach ($recursosPrograma as $recurso)
                                 <div class="puntero info-box bg-gradient-success"
                                     wire:click='verRecurso({{ $recurso->recurso_id }})'>
                                     <span class="info-box-icon"><img src="{{ asset($recurso->url) }}" alt=""
@@ -325,16 +381,18 @@
                                         @endif
                                     </div>
                                 </div>
-                            @endforeach
-                            @if ($tipoVista == 'propia')
+                            @endforeach --}}
+                            {{-- Solo puede Agregar recursos si es admin o lider --}}
+                            @canany(['admin', 'lider'])
                                 <div class="row justify-content-center">
                                     <button class="btn btn-secondary float-md-right"
                                         wire:click="$set('mostrarListaRecursos',false)">Agregar Recurso</button>
                                 </div>
-                            @endif
+                            @endcanany
                         </div>
                         {{-- Agregar recursos programa --}}
-                        @if ($tipoVista == 'propia')
+                        {{-- Solo puede Agregar recursos si es admin o lider --}}
+                        @canany(['admin', 'lider'])
                             <div @if ($mostrarListaRecursos) hidden @endif>
                                 {{-- Lista Ministerios --}}
                                 <div class="input-group mb-3">
@@ -343,8 +401,7 @@
                                             Ministerio
                                         </div>
                                     </div>
-                                    <select name="" id=""
-                                        class="form-control @error('idMinisterio') is-invalid @enderror"
+                                    <select name="" id="" class="form-control @error('idMinisterio') is-invalid @enderror"
                                         wire:model='idMinisterio'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaMinisterios as $ministerio)
@@ -365,8 +422,7 @@
                                             Recurso
                                         </div>
                                     </div>
-                                    <select name="" id=""
-                                        class="form-control @error('idRecurso') is-invalid @enderror"
+                                    <select name="" id="" class="form-control @error('idRecurso') is-invalid @enderror"
                                         wire:model.defer='idRecurso'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaRecursos as $recurso)
@@ -389,10 +445,11 @@
                                         wire:click="$set('mostrarListaRecursos',true)">Cancelar</button>
                                 </div>
                             </div>
-                        @endif
+                        @endcanany
                     </div>
                     {{-- Lista de Asistencia --}}
-                    @if ($tipoVista == 'propia')
+                    {{-- Solo puede Agregar asistencia si es admin o lider --}}
+                    @canany(['admin', 'lider'])
                         <div class="tab-pane fade" id="pills-asistencia" role="tabpanel"
                             aria-labelledby="pills-asistencia-tab">
                             {{-- Registrar Miembros --}}
@@ -449,7 +506,7 @@
                                             <th>#</th>
                                             <th>Nombre</th>
                                             <th>LLegada</th>
-                                            <th>Eliminar</th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -459,14 +516,21 @@
                                                 <td>{{ $asistente->nombreMiembro . ' ' . $asistente->apellidoMiembro }}
                                                 </td>
                                                 <td>{{ $asistente->tipoLlegada }}</td>
-                                                <td><button class="btn btn-sm btn-danger" wire:click='eliminarAsistencia({{$asistente->idAsistencia}})'><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                                                <td>
+                                                    @can('admin')
+                                                        <button class="btn btn-sm btn-danger"
+                                                            wire:click='eliminarAsistencia({{ $asistente->idAsistencia }})'><i
+                                                                class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    @endcan
+
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    @endif
+                    @endcanany
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>

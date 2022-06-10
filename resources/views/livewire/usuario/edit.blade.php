@@ -69,26 +69,30 @@
                         @enderror
                     </div>
                 </form>
-                {{-- Asociar ministerios --}}
-                <h5>Asociar Usuario a ministerios</h5>
-                <form>
-                    @if (session()->has('fail'))
-                        <div class="alert alert-danger">
-                            {{ session('fail') }}
-                        </div>
+                @canany(['admin', 'lider'])
+                    @if ($tipoVista == 'index')
+                        {{-- Asociar ministerios --}}
+                        <h5>Asociar Usuario a ministerios</h5>
+                        <form>
+                            @if (session()->has('fail'))
+                                <div class="alert alert-danger">
+                                    {{ session('fail') }}
+                                </div>
+                            @endif
+                            @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            @foreach ($listaMinisterios as $index => $ministerio)
+                                <input type="checkbox"
+                                    wire:click='asociarMinisterio({{ $idUsuario }},{{ $ministerio->id }})'
+                                    @if (in_array($ministerio->id, $ministeriosUsuario)) checked @endif>{{ $ministerio->nombre }}
+                                <br>
+                            @endforeach
+                        </form>
                     @endif
-                    @if (session()->has('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @foreach ($listaMinisterios as $index => $ministerio)
-                        <input type="checkbox"
-                            wire:click='asociarMinisterio({{ $idUsuario }},{{ $ministerio->id }})'
-                            @if (in_array($ministerio->id, $ministeriosUsuario)) checked @endif>{{ $ministerio->nombre }}
-                        <br>
-                    @endforeach
-                </form>
+                @endcanany
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
