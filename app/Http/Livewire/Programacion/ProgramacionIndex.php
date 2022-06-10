@@ -177,7 +177,7 @@ class ProgramacionIndex extends Component
         //Usuarios por ministerio
         $usuariosMinisterio = UsuarioMinisterio::join('users', 'users.id', 'id_user')
             ->where('id_ministerio', $this->idMinisterio)
-            ->where('estado', 'A')
+            ->where('usuario_ministerio.estado', 'A')
             ->orderBy('nombreUsuario', 'asc')
             ->get(['users.name as nombreUsuario', 'users.id as idUsuario']);
         //Roles
@@ -282,7 +282,7 @@ class ProgramacionIndex extends Component
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
                 ->where('tipo_programacion_id', $this->idTipoPrograma)
                 ->where('fecha', $this->fechaPrograma)
-                ->where('id', '<>', $idPrograma)
+                ->where('programacions.id', '<>', $idPrograma)
                 ->where('estado', 'A')->first();
             if ($programa) {
                 return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');

@@ -274,6 +274,12 @@ return [
             'icon' => 'fas fa-fw fa-home',
             'can' => ['admin', 'lider'],
         ],
+        [
+            'text' => 'Reportes',
+            'url'  => 'reportes/index',
+            'icon' => 'fas fa-fw fa-home',
+            'can' => ['admin', 'lider'],
+        ],
 
 
         ['header' => 'OPCIONES DE ADMINISTRADOR', 'can' => 'admin'],

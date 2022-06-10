@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('iglesia_id')->nullable();
+            $table->string('estado',1)->default('I');
             $table->rememberToken();
             $table->timestamps();
         });

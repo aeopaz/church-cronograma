@@ -60,4 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/membrecia/index', function () {
         return view('membrecia.index');
     })->name('membrecia.index')->middleware('perfil:admin|lider');
+
+    Route::get('/reportes/index', function () {
+        return view('reportes.index');
+    })->name('reportes.index')->middleware('perfil:admin|lider');
 });

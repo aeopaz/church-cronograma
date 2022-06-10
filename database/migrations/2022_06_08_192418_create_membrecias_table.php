@@ -27,6 +27,8 @@ class CreateMembreciasTable extends Migration
             $table->string('ciudad',100)->default('');
             $table->string('barrio',100)->default('');
             $table->string('direccion',100)->default('');
+            $table->date('fecha_conversion');
+            $table->string('estado',1)->default('A');
             $table->unsignedBigInteger('id_usuario');
             $table->timestamps();
         });

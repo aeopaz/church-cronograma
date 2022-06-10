@@ -10,7 +10,8 @@ class Membrecia extends Model
     use HasFactory;
     protected $table='membrecias';
     protected $dates=[
-        'fecha_nacimiento'
+        'fecha_nacimiento',
+        'fecha_conversion'
     ];
     protected $fillable=[
         'tipo_documento',
