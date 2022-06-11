@@ -489,24 +489,30 @@ class ProgramacionIndex extends Component
     //Registrar asistencia de miembros al programa
     public function registrarAsistencia()
     {
+        //Validar Campos
         $this->validate([
             'idMiembro' => 'required',
             'tipoLlegada' => 'required'
         ]);
         try {
+            //Validar que si exista en la tabla Miembros
             $miembro = Membrecia::find($this->idMiembro);
             if (!$miembro) {
                 return session()->flash('fail', 'El miembro no se encuentra registrado');
             }
+            //Validar que no se encuentre registrado en la tabla asistencia
             $asistenciaMiembro=AsistenciaPrograma::where('id_programa',$this->idPrograma)->where('id_miembro',$this->idMiembro)->first();
             if ($asistenciaMiembro) {
                 return session()->flash('fail', 'El miembro ya se encuentra registrado');
             }
+            //Traer fecha conversión para calcular tipo de miembro
+            $tipoMiembro=$miembro->fecha_conversion->diffInMonths()<3?'Nuevo':'Antiguo';
             $asistenciaMiembro = AsistenciaPrograma::create();
             $asistenciaMiembro->id_programa = $this->idPrograma;
             $asistenciaMiembro->id_miembro = $this->idMiembro;
             $asistenciaMiembro->id_usuario = auth()->id();
             $asistenciaMiembro->tipo_llegada = $this->tipoLlegada;
+            $asistenciaMiembro->tipo_miembro=$tipoMiembro;
             $asistenciaMiembro->save();
             $this->reset(['idMiembro','tipoLlegada']);
             return session()->flash('success', 'Se ha registrado la asistencia');

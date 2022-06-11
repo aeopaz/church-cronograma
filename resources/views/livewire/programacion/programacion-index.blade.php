@@ -46,7 +46,9 @@
                     <span class="info-box-icon bg-light"
                         style="width: 150px">{{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['diaPrograma'] }}</span>
                     <div class="info-box-content">
-                        <span class="info-box-number">Nombre Programa:
+                        <span class="info-box-number">
+                            No.  {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['idPrograma'] }}
+                            Nombre Programa:
                             {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombrePrograma'] }}-Tipo:
                             {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreTipoPrograma'] }} </span>
                         <span class="info-box-text">Hora:

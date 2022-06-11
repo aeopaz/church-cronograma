@@ -92,4 +92,9 @@ trait FuncionesTrait
         $totales['value'][] = $cantLong;
         return $totales;
     }
+
+    public function mesesMiembroAntiguo()
+    {
+        return 3;
+    }
 }

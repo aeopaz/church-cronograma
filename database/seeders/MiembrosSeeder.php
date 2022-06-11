@@ -24,6 +24,7 @@ class MiembrosSeeder extends Seeder
             $miembro->nombre = $faker->firstNameFemale();
             $miembro->apellido = $faker->lastName;
             $miembro->fecha_nacimiento = $faker->date('Y-m-d');
+            $miembro->fecha_conversion = $faker->date('Y-m-d');
             $miembro->sexo = $faker->randomElement(['F', 'M']);
             $miembro->estado_civil = $faker->randomElement(['S', 'C', 'D', 'U', 'V']);
             $miembro->celular = rand(1111111111, 9999999999);

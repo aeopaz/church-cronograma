@@ -19,6 +19,7 @@ class CreateAsistenciaProgramasTable extends Migration
             $table->unsignedBigInteger('id_miembro');
             $table->unsignedBigInteger('id_usuario');
             $table->string('tipo_llegada')->default('');
+            $table->string('tipo_miembro')->default('');//Nuevo o Antiguo
             $table->timestamps();
         });
     }

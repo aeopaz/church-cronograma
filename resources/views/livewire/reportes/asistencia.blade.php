@@ -9,6 +9,14 @@
             @endforeach
         </select>
     </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <h6>Tipo Miembro:</h6>
+        <select class="form-control" wire:model='tipoMiembro'>
+            <option value="0|2000">Todos</option>
+            <option value="4|2000">Antiguos</option>
+            <option value="0|4">Nuevos</option>
+        </select>
+    </div>
     {{-- Filtrar por sexo --}}
     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
         <h6>Sexo:</h6>
@@ -57,12 +65,10 @@
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Categoría</th>
-                {{-- <th>Sexo</th>
-            <th>Estado Civil</th>
-            <th>Celular</th>
-            <th>Dirección</th> --}}
+                <th>Tipo Miembro</th>
                 <th>No. Asistencias</th>
                 <th>Fecha última asistencia</th>
+                <th>Tiempo que no asiste</th>
                 <th>Lugar última asistencia</th>
                 <th>Último evento asistido</th>
                 <th>Acción</th>
@@ -74,12 +80,10 @@
                     <td>{{ $dato->idMiembro }}</td>
                     <td>{{ $dato->nombreMIembro }}</td>
                     <td>{{ $dato->categoriaEdad }}</td>
-                    {{-- <td>{{$dato->sexo }}</td>
-           <td>{{$dato->estadoCivil }}</td>
-           <td>{{$dato->celular }}</td>
-           <td>{{$dato->direccion }}</td> --}}
+                    <td>{{Carbon\Carbon::parse($dato->fecha_conversion)->diffInMonths()<3?'Nuevo':'Antiguo';}}</td>
                     <td>{{ $dato->numeroAsistencias }}</td>
                     <td>{{ $dato->FechaUltimoPrograma }}</td>
+                    <td>{{Carbon\Carbon::parse($dato->FechaUltimoPrograma)->diffForHumans()}}</td>
                     <td>{{ $dato->nombreUltimoPrograma }}</td>
                     <td>{{ $dato->nombreUltimoLugar }}</td>
                     <td><button class="btn btn-primary" wire:click='verMiembro({{ $dato->idMiembro }})'>Ver</button>
