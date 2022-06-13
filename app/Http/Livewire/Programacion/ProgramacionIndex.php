@@ -15,6 +15,7 @@ use App\Models\Rol;
 use App\Models\TipoProgramacion;
 use App\Models\User;
 use App\Models\UsuarioMinisterio;
+use App\Notifications\AsignacionCompromiso;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,7 @@ use Livewire\Component;
 
 class ProgramacionIndex extends Component
 {
-    public $idPrograma=0;
+    public $idPrograma = 0;
     public $idTipoPrograma;
     public $nombrePrograma;
     public $idLugarPrograma;
@@ -111,7 +112,6 @@ class ProgramacionIndex extends Component
                     'rol_id',
                     'rols.nombre as nombreRol',
                 ]);
-                
         }
 
 
@@ -138,7 +138,7 @@ class ProgramacionIndex extends Component
                 'horaPrograma' => $programa->horaPrograma,
                 'nombreUsuarioCreador' => $programa->nombreUsuarioCreador,
                 'nombreLugar' => $programa->nombreLugar,
-                'nombreRol'=>$programa->nombreRol
+                'nombreRol' => $programa->nombreRol
             ];
             //Recorrer el array para crear la agrupación
             for ($i = 0; $i < count($grupoxAnoxMes); $i++) {
@@ -183,9 +183,9 @@ class ProgramacionIndex extends Component
         //Roles
         $roles = Rol::all(['id', 'nombre']);
         //Obtiene el listado de miembros
-        $miembros=Membrecia::all(['id','nombre','apellido']);
+        $miembros = Membrecia::all(['id', 'nombre', 'apellido']);
         //Obtiene los miembros que asistieron al programa
-        $asistenciaMiembros=$this->asistenciaPrograma($this->idPrograma);
+        $asistenciaMiembros = $this->asistenciaPrograma($this->idPrograma);
         //Retornar datos a la vista
         return view(
             'livewire.programacion.programacion-index',
@@ -333,6 +333,7 @@ class ProgramacionIndex extends Component
                 'user_created_id' => Auth::user()->id
             ]);
             $this->reset(['idMinisterio', 'idUsuarioParticipante', 'idRol']);
+            $this->enviarNotificacion($participante,'Asignar Compromiso');
             return session()->flash('success', 'El participante agregado correctamente');
         } catch (\Throwable $th) {
             report($th);
@@ -349,6 +350,7 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
+                $this->enviarNotificacion($participacion,'Cancelar Compromiso');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
             }
@@ -459,14 +461,13 @@ class ProgramacionIndex extends Component
     //Obtener los miembros que han asistido a un programa
     public function asistenciaPrograma($idPrograma)
     {
-        return AsistenciaPrograma::join('membrecias','membrecias.id','asistencia_programas.id_miembro')
-        ->where('id_programa',$idPrograma)->get([
-            'asistencia_programas.id as idAsistencia',
-            'membrecias.nombre as nombreMiembro',
-            'membrecias.apellido as apellidoMiembro',
-            'tipo_llegada as tipoLlegada']);
-
-            
+        return AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
+            ->where('id_programa', $idPrograma)->get([
+                'asistencia_programas.id as idAsistencia',
+                'membrecias.nombre as nombreMiembro',
+                'membrecias.apellido as apellidoMiembro',
+                'tipo_llegada as tipoLlegada'
+            ]);
     }
     public function limpiarCampos()
     {
@@ -501,39 +502,76 @@ class ProgramacionIndex extends Component
                 return session()->flash('fail', 'El miembro no se encuentra registrado');
             }
             //Validar que no se encuentre registrado en la tabla asistencia
-            $asistenciaMiembro=AsistenciaPrograma::where('id_programa',$this->idPrograma)->where('id_miembro',$this->idMiembro)->first();
+            $asistenciaMiembro = AsistenciaPrograma::where('id_programa', $this->idPrograma)->where('id_miembro', $this->idMiembro)->first();
             if ($asistenciaMiembro) {
                 return session()->flash('fail', 'El miembro ya se encuentra registrado');
             }
             //Traer fecha conversión para calcular tipo de miembro
-            $tipoMiembro=$miembro->fecha_conversion->diffInMonths()<3?'Nuevo':'Antiguo';
+            $tipoMiembro = $miembro->fecha_conversion->diffInMonths() < 3 ? 'Nuevo' : 'Antiguo';
             $asistenciaMiembro = AsistenciaPrograma::create();
             $asistenciaMiembro->id_programa = $this->idPrograma;
             $asistenciaMiembro->id_miembro = $this->idMiembro;
             $asistenciaMiembro->id_usuario = auth()->id();
             $asistenciaMiembro->tipo_llegada = $this->tipoLlegada;
-            $asistenciaMiembro->tipo_miembro=$tipoMiembro;
+            $asistenciaMiembro->tipo_miembro = $tipoMiembro;
             $asistenciaMiembro->save();
-            $this->reset(['idMiembro','tipoLlegada']);
+            $this->reset(['idMiembro', 'tipoLlegada']);
             return session()->flash('success', 'Se ha registrado la asistencia');
         } catch (\Throwable $th) {
             report($th);
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
         }
     }
-        //Eliminar asistencia de miembros al programa
-        public function eliminarAsistencia($idMiembro)
-        {
-            try {
-               
-                $asistenciaMiembro = AsistenciaPrograma::find($idMiembro);
-                $asistenciaMiembro->delete(); 
-                return session()->flash('success', 'Se ha eliminado la asistencia');
-            } catch (\Throwable $th) {
-                report($th);
-                return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
-            }
+    //Eliminar asistencia de miembros al programa
+    public function eliminarAsistencia($idMiembro)
+    {
+        try {
+
+            $asistenciaMiembro = AsistenciaPrograma::find($idMiembro);
+            $asistenciaMiembro->delete();
+            return session()->flash('success', 'Se ha eliminado la asistencia');
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
         }
+    }
+
+    public function enviarNotificacion($participacion,$tipoNotificación)
+    {
+        try {
+            $participantePrograma = ParticipantesProgramacionMinisterio::join('programacions', 'programacions.id', 'programacion_id')
+                ->join('rols', 'rols.id', 'rol_id')
+                ->join('ministerios', 'ministerios.id', 'ministerio_id')
+                ->join('users', 'users.id', 'participantes_programacion_ministerios.user_id')
+                ->join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
+                ->where('participantes_programacion_ministerios.id', $participacion->id)
+                ->first([
+                    'programacion_id',
+                    'programacions.user_id as idOrganizador',
+                    'programacions.nombre as nombrePrograma',
+                    'fecha as fechaPrograma',
+                    'hora as horaProgram',
+                    'iglesias.nombre as lugar',
+                    'ministerio_id',
+                    'ministerios.nombre as nombreMinisterio',
+                    'rol_id',
+                    'rols.nombre as nombreRol',
+                    'users.id as idUserParticipante',
+                    'users.name as nombreParticipante',
+                    'participantes_programacion_ministerios.id as participanteProgramaId',
+                    'participantes_programacion_ministerios.id as idParticipacion',
+                    'avatar'
+
+                ]);
+            //Consultar el usuario al que se le enviará la notificación
+            $usuarioParticipante = User::find($participacion->user_id);
+            //Enviar Notificación
+            $usuarioParticipante->notify(new AsignacionCompromiso($participantePrograma,$tipoNotificación));
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error al Enviar la notificación, contacte al administrador del sistema.');
+        }
+    }
 }
 
 

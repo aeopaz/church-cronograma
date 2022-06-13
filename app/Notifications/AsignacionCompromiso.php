@@ -2,6 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Models\ParticipantesProgramacionMinisterio;
+use App\Models\Programacion;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -10,15 +13,18 @@ use Illuminate\Notifications\Notification;
 class AsignacionCompromiso extends Notification
 {
     use Queueable;
+    public $participantePrograma;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($participantePrograma,$tipoNotificacion)
     {
-        //
+       
+        $this->participantePrograma = $participantePrograma;
+        $this->tipoNotificacion = $tipoNotificacion;
     }
 
     /**
@@ -29,7 +35,7 @@ class AsignacionCompromiso extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -41,9 +47,9 @@ class AsignacionCompromiso extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -54,8 +60,14 @@ class AsignacionCompromiso extends Notification
      */
     public function toArray($notifiable)
     {
+
+
         return [
-            //
+            'Notificacion'=>$this->tipoNotificacion,
+            'Horario' => $this->participantePrograma->fechaPrograma . " Hora: " . $this->participantePrograma->horaProgram,
+            'Programa' => $this->participantePrograma->nombrePrograma,
+            'Funcion' => $this->participantePrograma->nombreRol,
+            'Lugar' => $this->participantePrograma->lugar,
         ];
     }
 }

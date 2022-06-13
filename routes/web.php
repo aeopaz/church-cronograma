@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\RolController;
@@ -26,6 +27,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/home/marcar_notificacion_leida\{notificacion}',[HomeController::class,'marcarNotificacionLeida'])->name('home.marcarNotificacionLeida');
 
 //Middleware para validar que el usuario este autenticado
 Route::middleware('auth')->group(function () {
