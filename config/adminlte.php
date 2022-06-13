@@ -65,11 +65,11 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
-    'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
-    'usermenu_desc' => false,
-    'usermenu_profile_url' => false,
+    'usermenu_header' => true,
+    'usermenu_header_class' => '',
+    'usermenu_image' => true,
+    'usermenu_desc' => true,
+    'usermenu_profile_url' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -248,7 +248,7 @@ return [
         ],
         [
             'text' => 'Inicio',
-            'url'  => 'panel/index',
+            'url'  => 'home',
             'icon' => 'fas fa-fw fa-home',
             'can' => 'admin'
         ],
@@ -307,6 +307,12 @@ return [
         [
             'text' => 'Rol Ministerios',
             'url'  => 'parametrizacion/roles/index',
+            'icon' => 'fas fa-fw fa-user',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Mensajes',
+            'url'  => 'mensaje/index',
             'icon' => 'fas fa-fw fa-user',
             'can' => 'admin'
         ],

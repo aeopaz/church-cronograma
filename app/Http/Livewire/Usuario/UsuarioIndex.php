@@ -24,7 +24,7 @@ class UsuarioIndex extends Component
 
     public function mount($tipoVista)
     {
-        $this->tipoVista=$tipoVista;
+        $this->tipoVista = $tipoVista;
     }
     public function render()
     {
@@ -141,6 +141,23 @@ class UsuarioIndex extends Component
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
         }
     }
+    //Activar o Inactivar Usuario
+    public function estadoUsuario($idUsuario)
+    {
+        try {
+            $usuario = User::find($idUsuario);
+            if ($usuario->estado == 'A') {
+                $usuario->estado = 'I';
+            } else {
+                $usuario->estado = 'A';
+            }
+            $usuario->save();
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+        }
+    }
+
     public function limpiarCampos()
     {
         $this->reset(['nombre', 'email', 'celular', 'ministerios',]);

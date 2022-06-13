@@ -29,39 +29,48 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 //Middleware para validar que el usuario este autenticado
 Route::middleware('auth')->group(function () {
-    Route::get('/usuario/index', function () {
-        return view('usuario.index');
-    })->name('usuario.index')->middleware('perfil:admin|lider');
+    Route::middleware('error.estado.usuario')->group(function () {
+        Route::get('/usuario/index', function () {
+            return view('usuario.index');
+        })->name('usuario.index')->middleware('perfil:admin|lider');
 
-    Route::get('/usuario/perfil', function () {
-        return view('usuario.perfil');
-    })->name('usuario.perfil');
+        Route::get('/usuario/perfil', function () {
+            return view('usuario.perfil');
+        })->name('usuario.perfil');
 
-    Route::get('/iglesia/index', [IglesiaController::class, 'index'])->name('iglesia.index')->middleware('can:admin');
-    Route::get('/ministerio/index', [MinisterioController::class, 'index'])->name('ministerio.index')->middleware('can:admin');
-    Route::get('/parametrizacion/roles/index', [RolController::class, 'index'])->name('rol.index')->middleware('can:admin');
+        Route::get('/iglesia/index', [IglesiaController::class, 'index'])->name('iglesia.index')->middleware('can:admin');
+        Route::get('/ministerio/index', [MinisterioController::class, 'index'])->name('ministerio.index')->middleware('can:admin');
+        Route::get('/parametrizacion/roles/index', [RolController::class, 'index'])->name('rol.index')->middleware('can:admin');
 
-    Route::get('/programacion/index', function () {
-        return view('programacion.index');
-    })->name('programacion.index');
+        Route::get('/programacion/index', function () {
+            return view('programacion.index');
+        })->name('programacion.index');
 
-    Route::get('/programacion/compromisos', function () {
-        return view('programacion.compromisos');
-    })->name('programacion.compromisos');
+        Route::get('/programacion/compromisos', function () {
+            return view('programacion.compromisos');
+        })->name('programacion.compromisos');
 
-    Route::get('/panel/index', function () {
-        return view('panel.index');
-    })->name('panel.index');
+        Route::get('/panel/index', function () {
+            return view('panel.index');
+        })->name('panel.index');
 
-    Route::get('/recurso/index', function () {
-        return view('recurso.index');
-    })->name('recurso.index');
+        Route::get('/recurso/index', function () {
+            return view('recurso.index');
+        })->name('recurso.index');
 
-    Route::get('/membrecia/index', function () {
-        return view('membrecia.index');
-    })->name('membrecia.index')->middleware('perfil:admin|lider');
+        Route::get('/membrecia/index', function () {
+            return view('membrecia.index');
+        })->name('membrecia.index')->middleware('perfil:admin|lider');
 
-    Route::get('/reportes/index', function () {
-        return view('reportes.index');
-    })->name('reportes.index')->middleware('perfil:admin|lider');
-});
+        Route::get('/reportes/index', function () {
+            return view('reportes.index');
+        })->name('reportes.index')->middleware('perfil:admin|lider');
+
+        Route::get('/mensaje/index', function () {
+            return view('mensaje.index');
+        })->name('mensaje.index')->middleware('perfil:admin|lider');
+    }); //Cierra middleware de estado usuario
+    Route::get('/error/error', function () {
+        return view('error.error');
+    })->name('error.error');
+});//Cierra middleware de auth

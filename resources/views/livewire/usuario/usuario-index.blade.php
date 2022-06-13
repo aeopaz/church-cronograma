@@ -26,7 +26,13 @@
                         <div class="fa fa-sort"></div>
                     @endif
                 </th>
+                <th wire:click='ordenar("users.estado")'>Estado
+                    @if ($columna == 'users.estado')
+                        <div class="fa fa-sort"></div>
+                    @endif
+                </th>
                 <th>Opciones</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -36,12 +42,21 @@
                     <td>{{ $usuario->name }}</td>
                     <td>{{ $usuario->email }}</td>
                     <td>{{ $usuario->celular }}</td>
+                    <td> @canany(['admin', 'lider'])
+                            <input type="checkbox" name="" id="" wire:click='estadoUsuario({{ $usuario->id }})'
+                                {{ $usuario->estado == 'A' ? 'checked' : '' }}>
+                        @endcanany
+                        {{ $usuario->estado == 'A' ? 'Activo' : 'Inactivo' }}
+
+                    </td>
                     <td colspan="2">
+
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $usuario->id }})' />
                         @can('admin')
                             <x-adminlte-button theme="danger" icon="fas fa-trash"
                                 wire:click='delete({{ $usuario->id }})' />
                         @endcan
+
                     </td>
                 </tr>
             @endforeach

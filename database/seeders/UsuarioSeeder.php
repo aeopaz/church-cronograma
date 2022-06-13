@@ -24,6 +24,7 @@ class UsuarioSeeder extends Seeder
             'password' => Hash::make(123123),
             'iglesia_id' => 1,
             'tipo_usuario_id' => 1,
+            'estado'=>'A'
         ]);
 
         for ($i = 0; $i < 100; $i++) {

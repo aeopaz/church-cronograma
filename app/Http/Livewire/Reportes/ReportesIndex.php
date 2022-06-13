@@ -5,9 +5,13 @@ namespace App\Http\Livewire\Reportes;
 use App\Models\AsistenciaPrograma;
 use App\Models\Iglesia;
 use App\Models\Membrecia;
+use App\Models\Ministerio;
 use App\Models\ParticipantesProgramacionMinisterio;
 use App\Models\Programacion;
+use App\Models\Recurso;
+use App\Models\Rol;
 use App\Models\TipoProgramacion;
+use App\Models\TipoRecurso;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Traits\FuncionesTrait;
@@ -23,6 +27,7 @@ class ReportesIndex extends Component
     public $tipoReporte;
     public $idUsuarioLogueado;
     public $idOrganizadorPrograma = '%%';
+    public $idParticipante = '%%';
     public $fechaDesde, $fechaHasta;
     public $textoBuscar;
     public $categoriaMiembro, $tipoidMiembro, $numeroIDMiembro, $nombreMiembro, $apellidoMiembro, $fechaNacimiento, $sexo, $estadoCivil, $celular, $email, $ciudad, $direccion, $barrio;
@@ -31,6 +36,9 @@ class ReportesIndex extends Component
     public $datosPrograma;
     public $datosAsistentes;
     public $datosParticipantes;
+    public $idTipoMinisterio = '%%',  $idTipoRecurso = '%%';
+    public $datosRecurso = '';
+    public $idRol = '%%';
     protected $paginationTheme = 'bootstrap';
     public $columna = "id", $orden = "asc", $registrosXPagina = 5;
 
@@ -52,19 +60,35 @@ class ReportesIndex extends Component
         $listaTipoProgramas = TipoProgramacion::all(['id', 'nombre']);
         $listaLugares = Iglesia::all(['id', 'nombre']);
         $listaUsuarios = User::all(['id', 'name']);
+        $listaTipoRecursos = TipoRecurso::all(['id', 'nombre']);
+        $listaMinisterios = Ministerio::all(['id', 'nombre']);
+        $listaRoles = Rol::all(['id', 'nombre']);
         if ($this->tipoReporte == 1) {
             $data = $this->informePrograma();
+        }
+        if ($this->tipoReporte == 2) {
+            $data = $this->cronogramaMinisterio();
+        }
+        if ($this->tipoReporte == 3) {
+            $data = $this->cumpleaneros();
         }
         if ($this->tipoReporte == 4) {
             $data = $this->informeMembrecia();
         }
+        if ($this->tipoReporte == 5) {
+            $data = $this->informeRecurso();
+        }
 
         return view('livewire.reportes.reportes-index', compact(
-            'listaCategoria',
             'data',
+            'listaCategoria',
             'listaTipoProgramas',
             'listaLugares',
-            'listaUsuarios'
+            'listaUsuarios',
+            'listaTipoRecursos',
+            'listaMinisterios',
+            'listaRoles'
+
         ));
     }
 
@@ -159,7 +183,6 @@ class ReportesIndex extends Component
     }
 
     //Generar Reporte Programa
-
     public function informePrograma()
     {
         try {
@@ -192,6 +215,100 @@ class ReportesIndex extends Component
 
             )->fromSub($subquery, "programas")->paginate($this->registrosXPagina);
 
+            return $data;
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+        }
+    }
+
+    //Generar Reporte recursos
+    public function informeRecurso()
+    {
+        try {
+
+            $subquery = DB::query()
+                ->select('*')->from('recursos')
+                ->where('ministerio_id', 'like',  $this->idTipoMinisterio)
+                ->where('tipo_recurso_id', 'like',  $this->idTipoRecurso)
+                ->where('nombre', 'like', '%' . $this->textoBuscar . '%');
+            $data = DB::query()->select(
+                "id as idRecurso",
+                "nombre",
+                "url",
+                "tipo_recurso_id",
+                DB::raw("ifnull((SELECT nombre from tipo_recursos where id=tipo_recurso_id),'')tipoRecurso"),
+                "ministerio_id",
+                DB::raw("ifnull((SELECT nombre from ministerios where id=ministerio_id),'')ministerio"),
+                DB::raw(" ifnull((select count(*) from recurso_programacion_ministerios where recurso_id=idRecurso),0)vecesUtilizado"),
+
+                DB::raw(" ifnull((select nombre from programacions 
+                            where id=(select programacion_id from recurso_programacion_ministerios 
+                            where recurso_id=idRecurso having(max(created_at)))),'')nombreUltimoPrograma"),
+                DB::raw(" ifnull((select fecha from programacions 
+                            where id=(select programacion_id from recurso_programacion_ministerios 
+                            where recurso_id=idRecurso having(max(created_at)))),'0000-00-00')FechaUltimoPrograma"),
+                DB::raw(" ifnull((select nombre from iglesias 
+                            where id=(select iglesia_id from programacions
+                            where id=(select programacion_id from recurso_programacion_ministerios 
+                            where recurso_id=idRecurso having(max(created_at))))),'')nombreUltimoLugar")
+            )->fromSub($subquery, 'recursos')->paginate($this->registrosXPagina);
+
+            return $data;
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+        }
+    }
+    //Generar cronograma de ministerios
+    public function cronogramaMinisterio()
+    {
+        try {
+            $data = ParticipantesProgramacionMinisterio::join('programacions', 'programacions.id', 'programacion_id')
+                ->join('users', 'users.id', 'participantes_programacion_ministerios.user_id')
+                ->join('ministerios', 'ministerios.id', 'ministerio_id')
+                ->join('rols', 'rols.id', 'rol_id')
+                ->where('ministerio_id', 'like', $this->idTipoMinisterio)
+                ->where('rol_id', 'like', $this->idRol)
+                ->where('participantes_programacion_ministerios.user_id', 'like', $this->idParticipante)
+                ->whereDate('programacions.fecha', '>=', $this->fechaDesde)
+                ->whereDate('programacions.fecha', '<=', $this->fechaHasta)
+                ->where(function ($query) {
+                    $query->where('ministerios.nombre', 'like', '%' . $this->textoBuscar . '%')
+                        ->Orwhere('rols.nombre', 'like', '%' . $this->textoBuscar . '%')
+                        ->Orwhere('programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
+                        ->Orwhere('users.name', 'like', '%' . $this->textoBuscar . '%');
+                })
+                ->paginate($this->registrosXPagina, [
+                    'programacions.id as idPrograma',
+                    'programacions.nombre as nombrePrograma',
+                    'programacions.fecha as fechaPrograma',
+                    'programacions.hora as horaPrograma',
+                    'users.name as nombreParticipante',
+                    'ministerios.nombre as nombreMinisterio',
+                    'rols.nombre as nombreRol'
+                ]);
+            return $data;
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+        }
+    }
+    //Generar informe cumpleañeros
+    public function cumpleaneros()
+    {
+        try {
+            $data = Membrecia::select(
+                'id as idMiembro',
+                'nombre',
+                'apellido',
+                'fecha_nacimiento',
+                DB::raw('DAYOFYEAR(fecha_nacimiento) AS diaAnoNacimiento, DAYOFYEAR(curdate()) AS diaAnoActual')
+            )
+                // ->Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
+                // ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%')
+                ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $this->fechaDesde, 'fechaHasta' => $this->fechaHasta])->paginate($this->registrosXPagina);
+               
             return $data;
         } catch (\Throwable $th) {
             report($th);
@@ -234,7 +351,7 @@ class ReportesIndex extends Component
 
             ]);
 
-            // dd($this->datosPrograma);
+        // dd($this->datosPrograma);
         $this->datosAsistentes = AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
             ->where('id_programa', $idPrograma)
             ->select(
@@ -257,7 +374,13 @@ class ReportesIndex extends Component
                 'ministerios.nombre as nombreMinisterio'
             ]);
 
-    
+
         $this->emit('modal', 'verProgramaModal', 'show');
+    }
+    //Mostrar Detalle Recurso
+    public function verRecurso($idRecurso)
+    {
+        $this->datosRecurso = Recurso::find($idRecurso, ['nombre', 'url']);
+        $this->emit('modal', 'verRecursoModal', 'show');
     }
 }

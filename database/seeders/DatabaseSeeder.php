@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Mensaje;
 use App\Models\TipoUsuario;
 use Illuminate\Database\Seeder;
 
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RecursoProgramacionMinisterioSeeder::class);
         $this->call(MiembrosSeeder::class);
         $this->call(AsistenciaSeeder::class);
+        $this->call(MensajeSeeder::class);
 
     }
 }

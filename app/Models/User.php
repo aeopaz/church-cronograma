@@ -57,4 +57,20 @@ class User extends Authenticatable implements JWTSubject
     public function programacionPropia(){
         return $this->hasMany('App\Models\Programacion');
     }
+
+    public function adminlte_image()
+    {
+        return auth()->user()->avatar;
+    }
+
+    public function adminlte_desc()
+    {
+
+        return TipoUsuario::where('id',auth()->user()->tipo_usuario_id)->first(['nombre'])->nombre;
+    }
+    public function adminlte_profile_url()
+    {
+        return '/usuario/perfil';
+    }
+
 }

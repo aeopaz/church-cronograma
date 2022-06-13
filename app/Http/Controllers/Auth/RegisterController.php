@@ -70,7 +70,8 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'celular' => $data['celular'],
             'iglesia_id' => 1,
-            'tipo_usuario_id'=>1,
+            'tipo_usuario_id'=>3,//Inicialmente queda registrado como un usuario
+            'estado'=>'I',
             'password' => Hash::make($data['password']),
         ]);
     }
