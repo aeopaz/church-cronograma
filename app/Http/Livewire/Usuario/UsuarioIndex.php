@@ -18,6 +18,7 @@ class UsuarioIndex extends Component
     public $nombre;
     public $email;
     public $celular;
+    public $tipoUsuario;
     public $ministeriosUsuario = [];
     public $textoBuscar;
     public $tipoVista;
@@ -64,6 +65,7 @@ class UsuarioIndex extends Component
         $this->nombre = $usuario->name;
         $this->email = $usuario->email;
         $this->celular = $usuario->celular;
+        $this->tipoUsuario=$usuario->tipo_usuario_id;
         //Limpiar la variable ministeriosUsuario
         $this->reset(['ministeriosUsuario']);
 
@@ -151,6 +153,18 @@ class UsuarioIndex extends Component
             } else {
                 $usuario->estado = 'A';
             }
+            $usuario->save();
+        } catch (\Throwable $th) {
+            report($th);
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+        }
+    }
+    //Cambiar tipo usuario
+    public function actualizarTipoUsuario($idUsuario)
+    {
+        try {
+            $usuario = User::find($idUsuario);
+            $usuario->tipo_usuario_id = $this->tipoUsuario;
             $usuario->save();
         } catch (\Throwable $th) {
             report($th);

@@ -6,6 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "arcanedev/log-viewer": "~8.0",
+        "barryvdh/laravel-dompdf": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "jeroennoten/laravel-adminlte": "^3.7",
@@ -14,6 +16,9 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "livewire/livewire": "^2.10",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpspreadsheet": "^1.23",
+        "spatie/laravel-backup": "^6.16",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {

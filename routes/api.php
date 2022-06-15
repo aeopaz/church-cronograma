@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/users/register', [UserController::class, 'register']);
+Route::post('/users/register', [UserController::class, 'register'])->name('register');
 Route::post('/users/login', [UserController::class, 'authenticate']);
 
 Route::post('/addimage', [ArchivoController::class,'addimage']);  

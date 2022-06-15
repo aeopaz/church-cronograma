@@ -42,7 +42,8 @@
                     <td>{{ $usuario->name }}</td>
                     <td>{{ $usuario->email }}</td>
                     <td>{{ $usuario->celular }}</td>
-                    <td> @canany(['admin', 'lider'])
+                    <td>
+                     @canany(['admin', 'lider'])
                             <input type="checkbox" name="" id="" wire:click='estadoUsuario({{ $usuario->id }})'
                                 {{ $usuario->estado == 'A' ? 'checked' : '' }}>
                         @endcanany
@@ -50,7 +51,6 @@
 
                     </td>
                     <td colspan="2">
-
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $usuario->id }})' />
                         @can('admin')
                             <x-adminlte-button theme="danger" icon="fas fa-trash"

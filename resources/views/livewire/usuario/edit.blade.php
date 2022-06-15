@@ -69,6 +69,17 @@
                         @enderror
                     </div>
                 </form>
+                @can('admin')
+                    <div class="form-group">
+                        <select name="" id="" class="form-control" wire:model='tipoUsuario'>
+                            <option value="1">Administrador</option>
+                            <option value="2">Líder</option>
+                            <option value="3">Usuario</option>
+                        </select>
+                        <button class="btn btn-primary" wire:click='actualizarTipoUsuario({{ $idUsuario }})'>Actualizar
+                            Tipo Usuario</button>
+                    </div>
+                @endcan
                 @canany(['admin', 'lider'])
                     @if ($tipoVista == 'index')
                         {{-- Asociar ministerios --}}

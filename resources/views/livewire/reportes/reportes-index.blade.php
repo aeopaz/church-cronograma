@@ -40,11 +40,11 @@
                     </div>
                     <div class="form-group row justify-content-center">
                         <button class="btn btn-primary btn-sm">Consultar</button>
-                        <a class="btn btn-primary btn-sm {{ !isset($data) ? 'disabled' : '' }}"
-                            href="{{ url('repor/pdf' . '/' . $idUsuarioLogueado . '/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta) }}"
+                        <a class="btn btn-primary btn-sm {{ count($data) <= 0 ? 'disabled' : '' }}"
+                            href="{{ url('reporte/pdf/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta . '/' . $idTipoMinisterio) }}"
                             target="_blank">Generar PDF</a>
-                        <a class="btn btn-primary btn-sm {{ !isset($data) ? 'disabled' : '' }}"
-                    href=" {{ url('repor/excel' . '/' . $idUsuarioLogueado . '/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta) }}"
+                        <a class="btn btn-primary btn-sm {{ count($data) <= 0 ? 'disabled' : '' }}"
+                            href="{{ url('reporte/excel/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta . '/' . $idTipoMinisterio) }}"
                             target="_blank">Exportar a Excel</a>
 
                     </div>
@@ -86,4 +86,5 @@
             </div>
         </div>
     </div>
+    <button wire:click='exportarPDF'>Exportar</button>
 </div>

@@ -4,20 +4,28 @@
 
 @section('css')
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<style>
+    .titulo{
+        border-radius: 10px 10px;
+        margin-bottom: 10px;
+    }
+</style>
 @stop
 
 @section('content_header')
-    <h1>Inicio</h1>
+<div class="row justify-content-center">
+    <h1>Bienvenid@ {{Auth::user()->name}}</h1>
+</div>
 @stop
 
 @section('content')
     {{-- Textos Bíblicos --}}
-    <div class="row justify-content-center">
+    <div class="row justify-content-center bg-success titulo" >
         <h3>Píldora Bíblica</h3>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card card-primary">
                 <div class="card-header"><b><em> {{ $mensajesBiblicos->titulo }}</em></b></div>
                 <div class="card-body">
                     <em> {{ $mensajesBiblicos->cuerpo }}</em>
@@ -31,8 +39,8 @@
     </div>
     {{-- Notificaciones --}}
     @if (count($notificaciones) > 0)
-        <div class="row justify-content-center">
-            <h3>Notificaciones</h3>
+        <div class="row justify-content-center bg-warning titulo">
+            <h3>Tienes {{count($notificaciones)}} Notificación(es)</h3>
             @if (Session::get('fail'))
                 <div class="alert alert-danger">
                     {{ Session::get('fail') }}
@@ -60,8 +68,8 @@
     @endif
     {{-- Cumpleañeros --}}
     @if (count($cumpleaneros) > 0)
-        <div class="row justify-content-center bg-success">
-            <h3>Felicitamos a los siguientes hermanos que cumplen años en el mes de
+        <div class="row justify-content-center bg-primary titulo" >
+            <h3>Felicitamos a l@s siguientes herman@s que cumplen años en el mes de
                 {{ Carbon\Carbon::now()->format('F') }}:
             </h3>
         </div>

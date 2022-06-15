@@ -18,6 +18,9 @@ use App\Traits\FuncionesTrait;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\App;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportesIndex extends Component
 {
@@ -307,8 +310,10 @@ class ReportesIndex extends Component
             )
                 // ->Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
                 // ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%')
-                ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $this->fechaDesde, 'fechaHasta' => $this->fechaHasta])->paginate($this->registrosXPagina);
-               
+                ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $this->fechaDesde, 'fechaHasta' => $this->fechaHasta])
+                ->orderBy('diaAnoNacimiento','asc')
+                ->paginate($this->registrosXPagina);
+
             return $data;
         } catch (\Throwable $th) {
             report($th);

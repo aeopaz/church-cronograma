@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,30 +18,60 @@ class UserController extends Controller
     //Registrar usuario
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'celular' => 'required|numeric|max:9999999999',
+        //     'password' => 'required|string|min:6|confirmed',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors()->toJson(), 400);
+        // }
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'celular' => 'required|numeric|max:9999999999',
             'password' => 'required|string|min:6|confirmed',
         ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+        try {
+            
+            $user=  User::create();
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->celular=$request->celular;
+            $user->iglesia_id=1;
+            $user->tipo_usuario_id=1;
+            $user->estado='I';
+            $user->password=Hash::make($request->password);
+            $user->save();
+            // $user = User::create([
+            //     'name' => $request->name,
+            //     'email' => $request->email,
+            //     'celular' => $request->celular,
+            //     'iglesia_id' => 1,
+            //     'tipo_usuario_id' => 3,
+            //     'estado' => 'I',
+            //     'password' => Hash::make($request->get('password')),
+            // ]);
+            if (Auth::attempt($user)) {
+                $request->session()->regenerate();
+                return redirect()->intended('home');
+            }
+        } catch (\Throwable $th) {
+            report($th);
+            return back()->with('fail', 'Error en base de datos, favor contactar al administrador del sistema');
         }
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'celular' => $request->celular,
-            'iglesia_id' => 1,
-            'tipo_usuario_id' => 1,
-            'password' => Hash::make($request->get('password')),
-        ]);
-        $token = JWTAuth::fromUser($user);
-        return response()->json(compact('user', 'token'), 201);
+        // $token = JWTAuth::fromUser($user);
+        // return response()->json(compact('user', 'token'), 201);
+    }
+    protected function guard()
+    {
+        return Auth::guard();
     }
     //Actualizar usuario
     public function update(Request $request)
     {
-       
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'celular' => 'required|numeric|max:9999999999',
@@ -87,11 +118,11 @@ class UserController extends Controller
         }
         $user = User::find(Auth::user()->id);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             //$path=$request->file('image')->storeAs('public/images/profile',$user->email.time().'.'.$request->image->extension());
-            $path=$request->file('image')->store('public/images/profile');
-            $path=str_replace('public','storage',$path);
-            $user->avatar=$path;
+            $path = $request->file('image')->store('public/images/profile');
+            $path = str_replace('public', 'storage', $path);
+            $user->avatar = $path;
             $user->save();
         }
         return response()->json(compact('user'), 200);
@@ -107,7 +138,7 @@ class UserController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        $user = User::find(Auth::user()->id, ['name', 'email','avatar']);
+        $user = User::find(Auth::user()->id, ['name', 'email', 'avatar']);
         return response()->json(compact('token', 'user'));
     }
 

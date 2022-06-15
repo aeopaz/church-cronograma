@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\RolController;
+use App\Http\Controllers\UserController;
 use App\Http\Livewire\Ministerio\MinisterioIndex;
 use App\Models\Rol;
 use Illuminate\Support\Facades\Auth;
@@ -24,14 +26,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/users/register', [UserController::class, 'register'])->name('users.register');
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::post('/home/marcar_notificacion_leida\{notificacion}',[HomeController::class,'marcarNotificacionLeida'])->name('home.marcarNotificacionLeida');
 
 //Middleware para validar que el usuario este autenticado
 Route::middleware('auth')->group(function () {
     Route::middleware('error.estado.usuario')->group(function () {
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+        Route::post('/home/marcar_notificacion_leida\{notificacion}', [HomeController::class, 'marcarNotificacionLeida'])->name('home.marcarNotificacionLeida');
         Route::get('/usuario/index', function () {
             return view('usuario.index');
         })->name('usuario.index')->middleware('perfil:admin|lider');
@@ -67,6 +69,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/reportes/index', function () {
             return view('reportes.index');
         })->name('reportes.index')->middleware('perfil:admin|lider');
+
+        //Reportes PDF
+        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}/{ministerio}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
+        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
+        Route::get('reporte/pdf/{tipo}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
+       
+        //Reportes Excel
+        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}/{ministerio}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
+        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
+        Route::get('reporte/excel/{tipo}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
 
         Route::get('/mensaje/index', function () {
             return view('mensaje.index');

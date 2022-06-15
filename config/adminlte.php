@@ -30,7 +30,7 @@ return [
     |
     */
 
-    'use_ico_only' => false,
+    'use_ico_only' => true,
     'use_full_favicon' => false,
 
     /*
@@ -45,12 +45,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>IB</b>JehovaReina',
+    'logo_img' => 'vendor/adminlte/dist/img/logoIglesia.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'IBJehovaReina',
 
     /*
     |--------------------------------------------------------------------------
@@ -226,58 +226,57 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type'         => 'navbar-search',
-            'text'         => 'search',
-            'topnav_right' => true,
-        ],
-        [
-            'type'         => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
+        // [
+        //     'type'         => 'navbar-search',
+        //     'text'         => 'search',
+        //     'topnav_right' => true,
+        // ],
+        // [
+        //     'type'         => 'fullscreen-widget',
+        //     'topnav_right' => true,
+        // ],
 
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
+        // // Sidebar items:
+        // [
+        //     'type' => 'sidebar-menu-search',
+        //     'text' => 'search',
+        // ],
+        // [
+        //     'text' => 'blog',
+        //     'url'  => 'admin/blog',
+        //     'can'  => 'manage-blog',
+        // ],
         [
             'text' => 'Inicio',
             'url'  => 'home',
             'icon' => 'fas fa-fw fa-home',
-            'can' => 'admin'
         ],
         [
             'text' => 'Mis Compromisos',
             'url'  => 'programacion/compromisos',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-tasks',
         ],
         [
             'text' => 'Mis Programas',
             'url'  => 'programacion/index',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-calendar',
             'can' => ['admin', 'lider'],
         ],
         [
             'text' => 'Recursos',
             'url'  => 'recurso/index',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-book',
         ],
         [
             'text' => 'Membrecía',
             'url'  => 'membrecia/index',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-users',
             'can' => ['admin', 'lider'],
         ],
         [
             'text' => 'Reportes',
             'url'  => 'reportes/index',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-flag',
             'can' => ['admin', 'lider'],
         ],
 
@@ -300,20 +299,26 @@ return [
         [
             'text'        => 'Ministerio',
             'url'         => 'ministerio/index',
-            'icon'        => 'fa fa-fw fa-building',
+            'icon'        => 'fa fa-fw fa-server',
             'label_color' => 'success',
             'can' => 'admin'
         ],
         [
             'text' => 'Rol Ministerios',
             'url'  => 'parametrizacion/roles/index',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-heartbeat',
             'can' => 'admin'
         ],
         [
-            'text' => 'Mensajes',
+            'text' => 'Mensajes Bíblicos',
             'url'  => 'mensaje/index',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-comments',
+            'can' => 'admin'
+        ],
+        [
+            'text' => 'Errores del sistema',
+            'url'  => 'log-viewer',
+            'icon' => 'fas fa-fw fa-bug',
             'can' => 'admin'
         ],
         ['header' => 'account_settings'],
