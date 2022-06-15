@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Jenssegers\Date\Date;
 
 class ProgramacionIndex extends Component
 {
@@ -121,7 +122,7 @@ class ProgramacionIndex extends Component
         //Recorrer programas para crear array con los datos agrupados por año y mes
         foreach ($programasGenerales as $programa) {
             //Obtener año y mes de la fecha del programa
-            $anoMes = Carbon::parse($programa->fecha)->format('Y F');
+            $anoMes = Date::parse($programa->fecha)->format('Y F');
             //Validar si el año y mes del programa se encuentra registrado en el array grupoxAnoxMes
             if (!in_array($anoMes, $grupoxAnoxMes)) {
                 //Agregar al array el año y mes del programa
@@ -134,7 +135,7 @@ class ProgramacionIndex extends Component
                 'nombreTipoPrograma' => $programa->nombreTipoPrograma,
                 'estadoPrograma' => $programa->estadoPrograma,
                 'fecha' => $programa->fecha,
-                'diaPrograma' => Carbon::parse($programa->fecha)->format('l j'),
+                'diaPrograma' => Date::parse($programa->fecha)->format('l j'),
                 'horaPrograma' => $programa->horaPrograma,
                 'nombreUsuarioCreador' => $programa->nombreUsuarioCreador,
                 'nombreLugar' => $programa->nombreLugar,

@@ -41,7 +41,7 @@
                 <th>Fecha y Hora</th>
                 <th>Encargado</th>
                 <th>Función</th>
-                {{-- <th>Acción</th> --}}
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>

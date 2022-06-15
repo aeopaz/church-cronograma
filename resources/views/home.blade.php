@@ -16,6 +16,9 @@
 <div class="row justify-content-center">
     <h1>Bienvenid@ {{Auth::user()->name}}</h1>
 </div>
+<div class="row justify-content-center">
+    <h6>{{Carbon\Carbon::now()}}</h6>
+</div>
 @stop
 
 @section('content')
@@ -70,7 +73,7 @@
     @if (count($cumpleaneros) > 0)
         <div class="row justify-content-center bg-primary titulo" >
             <h3>Felicitamos a l@s siguientes herman@s que cumplen años en el mes de
-                {{ Carbon\Carbon::now()->format('F') }}:
+                {{ Jenssegers\Date\Date::now()->format('F') }}:
             </h3>
         </div>
         <div class="row justify-content-center">
@@ -79,7 +82,7 @@
                     <span class="info-box-icon bg-info"><i class="material-symbols-outlined">cake</i></span>
                     <div class="info-box-content">
                         <span class="info-box-number">{{ $cumple->nombre . ' ' . $cumple->apellido }}</span>
-                        <span class="info-box-text">Día: {{ $cumple->fecha_nacimiento->format('F j') }}</span>
+                        <span class="info-box-text">Día: {{Jenssegers\Date\Date::parse($cumple->fecha_nacimiento)->format('F j') }}</span>
                     </div>
                 </div>
             @endforeach
