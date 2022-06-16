@@ -1,4 +1,4 @@
-@include('reportes.encabezado')
+@include('reportes.encabezado',['nombreReporte'=>'Miembros'])
 <div class="div-centrar-tabla">
     <table class="table table-hover table-sm table responsive">
         <thead>

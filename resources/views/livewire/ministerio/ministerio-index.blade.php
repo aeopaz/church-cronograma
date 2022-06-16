@@ -38,7 +38,11 @@
                     <td colspan="2">
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $ministerio->idMinisterio }})' />
                         <x-adminlte-button theme="danger" icon="fas fa-trash"
-                            wire:click='delete({{ $ministerio->idMinisterio }})' />
+                            wire:click='delete({{ $ministerio->idMinisterio }})' wire:loading.remove
+                            wire:target='delete'/>
+                        <div wire:loading wire:target='delete'>
+                            @include('componentes.carga')
+                        </div>
                     </td>
                 </tr>
             @endforeach

@@ -19,7 +19,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='update({{ $idRol }})'>Guardar</button>
+                <button type="button" class="btn btn-primary" wire:click='update({{ $idRol }})' wire:click='update' wire:loading.remove
+                wire:target='update'>Actualizar</button>
+                <div wire:loading wire:target='update'>
+                @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

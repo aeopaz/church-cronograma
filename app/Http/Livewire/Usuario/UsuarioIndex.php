@@ -5,12 +5,16 @@ namespace App\Http\Livewire\Usuario;
 use App\Models\Ministerio;
 use App\Models\User;
 use App\Models\UsuarioMinisterio;
+use App\Traits\FuncionesTrait;
 use Illuminate\Http\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UsuarioIndex extends Component
 {
+    use AuthorizesRequests;
+    use FuncionesTrait;
     use WithPagination;
     public $columna = "id", $orden = "asc", $registrosXPagina = 5;
     protected $paginationTheme = 'bootstrap';
@@ -29,8 +33,10 @@ class UsuarioIndex extends Component
     }
     public function render()
     {
+     
         //Listar usuarios
         $usuarios = User::where('id', '<>', auth()->id())
+        ->where('id', '<>', 1)
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->textoBuscar . '%')
                     ->Orwhere('email', 'like', '%' . $this->textoBuscar . '%')
@@ -99,6 +105,7 @@ class UsuarioIndex extends Component
     }
     public function delete(User $usuario)
     {
+        $this->authorize('admin');
         $this->idUsuario = $usuario->id;
         $this->nombre = $usuario->name;
         $this->emit('modal', 'eliminarUsuarioModal', 'show');
@@ -106,6 +113,7 @@ class UsuarioIndex extends Component
 
     public function destroy()
     {
+        $this->authorize('admin');
         User::destroy($this->idUsuario);
         $this->emit('modal', 'eliminarUsuarioModal', 'hide');
         // $this->limpiarCampos();
@@ -162,10 +170,12 @@ class UsuarioIndex extends Component
     //Cambiar tipo usuario
     public function actualizarTipoUsuario($idUsuario)
     {
+        $this->authorize('admin');
         try {
             $usuario = User::find($idUsuario);
             $usuario->tipo_usuario_id = $this->tipoUsuario;
             $usuario->save();
+            return session()->flash('success', 'Tipo usuario actualizado.');
         } catch (\Throwable $th) {
             report($th);
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');

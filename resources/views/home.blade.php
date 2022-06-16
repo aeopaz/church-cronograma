@@ -53,7 +53,7 @@
         <div class="row justify-content-center">
             @foreach ($notificaciones as $notificacion)
                 <div class="info-box">
-                    <span class="info-box-icon bg-info"><i class="far fa-calendar"></i></span>
+                    <span class="info-box-icon @if($notificacion->type=='App\Notifications\AsignacionCompromiso') bg-info @else bg-danger @endif"><i class="far fa-calendar"></i></span>
                     <div class="info-box-content">
                         @foreach ($notificacion->data as $key => $value)
                             <span class="info-box-number m-0">{{ $key }}: {{ $value }}</span>
@@ -61,7 +61,7 @@
                         <span class="info-box-text">{{ $notificacion->created_at->diffForHumans() }}</span>
                         <form action="{{ route('home.marcarNotificacionLeida', $notificacion) }}" method="post">
                             @csrf
-                            <span class="info-box-text"><button class="btn btn-primary btn-sm">Marcar como
+                            <span class="info-box-text"><button class="btn btn-sm @if($notificacion->type=='App\Notifications\AsignacionCompromiso') btn-primary @else btn-danger @endif">Marcar como
                                     leída</button></span>
                         </form>
                     </div>

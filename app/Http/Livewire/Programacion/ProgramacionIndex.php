@@ -16,6 +16,8 @@ use App\Models\TipoProgramacion;
 use App\Models\User;
 use App\Models\UsuarioMinisterio;
 use App\Notifications\AsignacionCompromiso;
+use App\Notifications\CancelacionCompromiso;
+use App\Notifications\EmailAsignacionCompromiso;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -334,7 +336,7 @@ class ProgramacionIndex extends Component
                 'user_created_id' => Auth::user()->id
             ]);
             $this->reset(['idMinisterio', 'idUsuarioParticipante', 'idRol']);
-            $this->enviarNotificacion($participante,'Asignar Compromiso');
+            $this->enviarNotificacion($participante,'asignar');
             return session()->flash('success', 'El participante agregado correctamente');
         } catch (\Throwable $th) {
             report($th);
@@ -351,7 +353,7 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
-                $this->enviarNotificacion($participacion,'Cancelar Compromiso');
+                $this->enviarNotificacion($participacion,'cancelar');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
             }
@@ -567,7 +569,11 @@ class ProgramacionIndex extends Component
             //Consultar el usuario al que se le enviará la notificación
             $usuarioParticipante = User::find($participacion->user_id);
             //Enviar Notificación
-            $usuarioParticipante->notify(new AsignacionCompromiso($participantePrograma,$tipoNotificación));
+            if ($tipoNotificación=='asignar') {
+                $usuarioParticipante->notify(new AsignacionCompromiso($participantePrograma));
+            }else{
+                $usuarioParticipante->notify(new CancelacionCompromiso($participantePrograma));
+            }
         } catch (\Throwable $th) {
             report($th);
             return session()->flash('fail', 'Error al Enviar la notificación, contacte al administrador del sistema.');

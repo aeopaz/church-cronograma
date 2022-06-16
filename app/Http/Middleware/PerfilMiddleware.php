@@ -18,9 +18,11 @@ class PerfilMiddleware
      */
     public function handle(Request $request, Closure $next, $perfil)
     {
+        //Consultar perfil del usuario
         $perfilUsuario = TipoUsuario::find(Auth::user()->tipo_usuario_id);
         //Recibo una cadena, la convierto en array y valido si el perfil del usuario autenticado se encuentra en el array
         if (!in_array($perfilUsuario->nombre,explode('|',$perfil))) {
+            //Si el perfil que tiene el usuario no coincide con el que requiere la ruta o método, no puede continuar
             abort(403);
         }
         return $next($request);

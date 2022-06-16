@@ -16,23 +16,23 @@ class ExportController extends Controller
     {
         if ($tipoReporte == 1) {
             $data = $this->reporteProgramaPdf($fechaInicial, $fechaFinal);
-            $pdf = PDF::loadView('reportes.programa-pdf', compact('data'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.programa-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 2) {
             $data = $this->reporteCronograma($fechaInicial, $fechaFinal, $ministerio);
-            $pdf = PDF::loadView('reportes.cronograma-pdf', compact('data'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.cronograma-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 3) {
             $data = $this->reporteCumpleanos($fechaInicial, $fechaFinal, $ministerio);
-            $pdf = PDF::loadView('reportes.cumpleaneros-pdf', compact('data'));
+            $pdf = PDF::loadView('reportes.cumpleaneros-pdf', compact('data','fechaInicial','fechaFinal'));
         }
         if ($tipoReporte == 4) {
             $data = $this->reporteMembreciaPdf();
-            $pdf = PDF::loadView('reportes.membrecia-pdf', compact('data'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.membrecia-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 5) {
             $data = $this->reporteRecursosPdf();
-            $pdf = PDF::loadView('reportes.recurso-pdf', compact('data'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.recurso-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
         }
 
 

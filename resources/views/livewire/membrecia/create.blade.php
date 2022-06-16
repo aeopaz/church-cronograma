@@ -23,7 +23,8 @@
                     </span>
                 @enderror
                 <label for="">Número Identificación</label>
-                <input type="text" maxlength="10" class="form-control @error('numeroDocumento') is-invalid @enderror" wire:model='numeroDocumento'>
+                <input type="text" maxlength="10" class="form-control @error('numeroDocumento') is-invalid @enderror"
+                    wire:model='numeroDocumento'>
                 @error('numeroDocumento')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -44,15 +45,15 @@
                     </span>
                 @enderror
                 <label for="">Fecha Nacimiento</label>
-                <input type="date" class="form-control @error('fechaNacimiento') is-invalid @enderror" wire:model='fechaNacimiento'>
+                <input type="date" class="form-control @error('fechaNacimiento') is-invalid @enderror"
+                    wire:model='fechaNacimiento'>
                 @error('fechaNacimiento')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="">Sexo</label>
-                <select type="text" class="form-control @error('sexo') is-invalid @enderror"
-                    wire:model='sexo'>
+                <select type="text" class="form-control @error('sexo') is-invalid @enderror" wire:model='sexo'>
                     <option value="">Seleccione...</option>
                     @for ($i = 0; $i < count($tipoSexo['clave']); $i++)
                         <option value="{{ $tipoSexo['clave'][$i] }}">{{ $tipoSexo['valor'][$i] }}</option>
@@ -68,7 +69,8 @@
                     wire:model='estadoCivil'>
                     <option value="">Seleccione...</option>
                     @for ($i = 0; $i < count($tipoEstadoCivil['clave']); $i++)
-                        <option value="{{ $tipoEstadoCivil['clave'][$i] }}">{{ $tipoEstadoCivil['valor'][$i] }}</option>
+                        <option value="{{ $tipoEstadoCivil['clave'][$i] }}">{{ $tipoEstadoCivil['valor'][$i] }}
+                        </option>
                     @endfor
                 </select>
                 @error('estadoCivil')
@@ -91,8 +93,7 @@
                     </span>
                 @enderror
                 <label for="">Ciudad</label>
-                <select type="text" class="form-control @error('ciudad') is-invalid @enderror"
-                    wire:model='ciudad'>
+                <select type="text" class="form-control @error('ciudad') is-invalid @enderror" wire:model='ciudad'>
                     <option value="">Seleccione...</option>
                     @for ($i = 0; $i < count($nombreCiudad['clave']); $i++)
                         <option value="{{ $nombreCiudad['clave'][$i] }}">{{ $nombreCiudad['valor'][$i] }}</option>
@@ -111,7 +112,8 @@
                     </span>
                 @enderror
                 <label for="">Dirección</label>
-                <input type="email" class="form-control @error('direccion') is-invalid @enderror" wire:model='direccion'>
+                <input type="email" class="form-control @error('direccion') is-invalid @enderror"
+                    wire:model='direccion'>
                 @error('direccion')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -120,7 +122,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='store'>Guardar</button>
+                <button type="button" class="btn btn-primary" wire:click='store' wire:loading.remove
+                    wire:target='store'>Guardar</button>
+                <div wire:loading wire:target='store'>
+                    @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

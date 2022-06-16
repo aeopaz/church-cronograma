@@ -97,4 +97,9 @@ trait FuncionesTrait
     {
         return 3;
     }
+
+    public function rutaError()
+    {
+        return redirect('error\error')->with('fail','Su cuenta esta desactivada, favor contactar a un líder o administrador del sistema para su activación');
+    }
 }

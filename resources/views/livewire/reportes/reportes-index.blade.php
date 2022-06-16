@@ -39,8 +39,7 @@
                         </div>
                     </div>
                     <div class="form-group row justify-content-center">
-                        <button class="btn btn-primary btn-sm">Consultar</button>
-                        <a class="btn btn-primary btn-sm {{ count($data) <= 0 ? 'disabled' : '' }}"
+                        <a class="btn btn-primary btn-sm mr-3 {{ count($data) <= 0 ? 'disabled' : '' }}"
                             href="{{ url('reporte/pdf/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta . '/' . $idTipoMinisterio) }}"
                             target="_blank">Generar PDF</a>
                         <a class="btn btn-primary btn-sm {{ count($data) <= 0 ? 'disabled' : '' }}"

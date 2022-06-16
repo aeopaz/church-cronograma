@@ -76,8 +76,10 @@
                             <option value="2">Líder</option>
                             <option value="3">Usuario</option>
                         </select>
-                        <button class="btn btn-primary" wire:click='actualizarTipoUsuario({{ $idUsuario }})'>Actualizar
-                            Tipo Usuario</button>
+                        <button class="btn btn-primary" wire:click='actualizarTipoUsuario({{ $idUsuario }})' wire:loading.remove wire:target='actualizarTipoUsuario'>Actualizar Tipo Usuario</button>
+                        <div wire:loading wire:target='actualizarTipoUsuario'>
+                            @include('componentes.carga')
+                        </div>
                     </div>
                 @endcan
                 @canany(['admin', 'lider'])

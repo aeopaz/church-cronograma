@@ -1,5 +1,4 @@
-@include('reportes.encabezado')
-<h2 class="titulo">Cronograma de Ministerios</h2>
+@include('reportes.encabezado',['nombreReporte'=>'Cronograma de Ministerios'])
 <div class="div-centrar-tabla">
     <table class="table table-hover table-sm table responsive">
         <thead>

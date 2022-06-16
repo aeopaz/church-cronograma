@@ -40,7 +40,11 @@
 
                         @can('admin')
                             <x-adminlte-button theme="danger" icon="fas fa-trash"
-                                wire:click='delete({{ $recurso->idRecurso }})' />
+                                wire:click='delete({{ $recurso->idRecurso }})' wire:loading.remove
+                                wire:target='delete' />
+                                <div wire:loading wire:target='delete'>
+                                    @include('componentes.carga')
+                                </div>
                         @endcan
 
                     </td>

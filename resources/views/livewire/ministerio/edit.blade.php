@@ -17,12 +17,11 @@
                     </span>
                 @enderror
                 <label for="">Iglesia</label>
-                <select name="" id="" class="form-control @error('iglesia_id') is-invalid @enderror" wire:model='iglesia_id'>
+                <select name="" id="" class="form-control @error('iglesia_id') is-invalid @enderror"
+                    wire:model='iglesia_id'>
                     <option value="">Seleccione...</option>
-                    @foreach ($iglesias as $iglesia )
-                        <option value="{{ $iglesia->id }}"
-                            {{--  {{ $iglesia->id==Auth::user()->id?"selected":"" }}  --}}
-                            >{{ $iglesia->nombre }}</option>
+                    @foreach ($iglesias as $iglesia)
+                        <option value="{{ $iglesia->id }}" {{-- {{ $iglesia->id==Auth::user()->id?"selected":"" }} --}}>{{ $iglesia->nombre }}</option>
                     @endforeach
                 </select>
                 @error('iglesia_id')
@@ -33,7 +32,7 @@
                 <label for="">Líder</label>
                 <select name="" id="" class="form-control @error('user_id') is-invalid @enderror" wire:model='user_id'>
                     <option value="">Seleccione...</option>
-                    @foreach ($lideres as $lider )
+                    @foreach ($lideres as $lider)
                         <option value="{{ $lider->id }}">{{ $lider->name }}</option>
                     @endforeach
                 </select>
@@ -45,7 +44,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='update({{ $idMinisterio }})'>Guardar</button>
+                <button type="button" class="btn btn-primary" wire:click='update({{ $idMinisterio }})' wire:loading.remove
+                    wire:target='update'>Actualizar</button>
+                <div wire:loading wire:target='update'>
+                    @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

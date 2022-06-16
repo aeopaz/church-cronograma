@@ -13,7 +13,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-danger" wire:click='destroy'>Eliminar</button>
+                <button type="button" class="btn btn-danger" wire:click='destroy' wire:loading.remove wire:target='destroy'>Eliminar</button>
+                <div wire:loading wire:target='destroy'>
+                    @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

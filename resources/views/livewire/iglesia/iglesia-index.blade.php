@@ -43,8 +43,11 @@
                     <td>{{ $iglesia->email }}</td>
                     <td colspan="2">
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $iglesia }})' />
-                        <x-adminlte-button theme="danger" icon="fas fa-trash"
-                            wire:click='delete({{ $iglesia }})' />
+                        <x-adminlte-button theme="danger" icon="fas fa-trash" wire:click='delete({{ $iglesia }})'
+                            wire:loading.remove wire:target='delete' />
+                        <div wire:loading wire:target='delete'>
+                            @include('componentes.carga')
+                        </div>
                     </td>
                 </tr>
             @endforeach

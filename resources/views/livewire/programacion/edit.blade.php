@@ -218,8 +218,12 @@
                                                     {{-- Solo puede eliminar participantes si es admin o lider --}}
                                                     @canany(['admin', 'lider'])
                                                         <button class="btn btn-sm btn-danger"
-                                                            wire:click='eliminarParticipante({{ $participante->idParticipacion }})'><i
+                                                            wire:click='eliminarParticipante({{ $participante->idParticipacion }})'
+                                                            wire:loading.remove wire:target='eliminarParticipante'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>
+                                                        <div wire:loading wire:target='eliminarParticipante'>
+                                                            @include('componentes.carga')
+                                                        </div>
                                                     </td>
                                                 @endcanany
                                             </tr>
@@ -320,8 +324,12 @@
                                     @enderror
                                 </div>
                                 <div class="row justify-content-center">
-                                    <button class="btn btn-primary mr-2" wire:click='agregarParticipantes'>Agregar
+                                    <button class="btn btn-primary mr-2" wire:click='agregarParticipantes' wire:loading.remove
+                                    wire:target='agregarParticipantes'>Agregar
                                         Participante</button>
+                                        <div wire:loading wire:target='agregarParticipantes'>
+                                            @include('componentes.carga')
+                                        </div>
                                     {{-- Boton ocultar form participante --}}
                                     <button class="btn btn-secondary"
                                         wire:click="$set('mostrarListaParticipantes',true)">Cancelar</button>
@@ -358,8 +366,12 @@
                                                     {{-- Solo puede Eliminar recursos si es admin o lider --}}
                                                     @canany(['admin', 'lider'])
                                                         <button class="btn btn-sm btn-danger"
-                                                            wire:click='eliminarRecursoPrograma({{ $recurso->idRecursoPrograma }})'><i
+                                                            wire:click='eliminarRecursoPrograma({{ $recurso->idRecursoPrograma }})' wire:loading.remove
+                                                            wire:target='eliminarRecursoPrograma'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>
+                                                                <div wire:loading wire:target='eliminarRecursoPrograma'>
+                                                                    @include('componentes.carga')
+                                                                </div>
                                                     @endcanany
                                                 </td>
                                             </tr>
@@ -438,8 +450,12 @@
                                     @enderror
                                 </div>
                                 <div class="row justify-content-center">
-                                    <button class="btn btn-primary mr-2" wire:click='agregarRecursosPrograma'>Agregar
+                                    <button class="btn btn-primary mr-2" wire:click='agregarRecursosPrograma' wire:loading.remove
+                                    wire:target='agregarRecursosPrograma'>Agregar
                                         Recurso</button>
+                                        <div wire:loading wire:target='agregarRecursosPrograma'>
+                                            @include('componentes.carga')
+                                        </div>
                                     {{-- Boton ocultar form recursos --}}
                                     <button class="btn btn-secondary"
                                         wire:click="$set('mostrarListaRecursos',true)">Cancelar</button>
@@ -495,8 +511,12 @@
                                 @enderror
                             </div>
                             <div class="row justify-content-center">
-                                <button class="btn btn-primary" wire:click='registrarAsistencia'>Agregar
+                                <button class="btn btn-primary" wire:click='registrarAsistencia' wire:loading.remove
+                                wire:target='registrarAsistencia'>Agregar
                                     Asistencia</button>
+                                    <div wire:loading wire:target='registrarAsistencia'>
+                                        @include('componentes.carga')
+                                    </div>
                             </div>
                             {{-- Miembros que asistieron --}}
                             <div class="row div-centrar-tabla">
@@ -519,8 +539,12 @@
                                                 <td>
                                                     @can('admin')
                                                         <button class="btn btn-sm btn-danger"
-                                                            wire:click='eliminarAsistencia({{ $asistente->idAsistencia }})'><i
+                                                            wire:click='eliminarAsistencia({{ $asistente->idAsistencia }})' wire:loading.remove
+                                                            wire:target='eliminarAsistencia'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>
+                                                                <div wire:loading wire:target='eliminarAsistencia'>
+                                                                    @include('componentes.carga')
+                                                                </div>
                                                     @endcan
 
                                                 </td>

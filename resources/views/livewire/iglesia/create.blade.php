@@ -10,33 +10,29 @@
             </div>
             <div class="modal-body">
                 <label for="">Nombre Iglesia</label>
-                <input type="text" class="form-control @error('nombre') is-invalid @enderror"
-                    wire:model='nombre'>
+                <input type="text" class="form-control @error('nombre') is-invalid @enderror" wire:model='nombre'>
                 @error('nombre')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="">Direccion</label>
-                <input type="text" class="form-control @error('direccion') is-invalid @enderror"
-                    wire:model='direccion'>
-                    @error('direccion')
+                <input type="text" class="form-control @error('direccion') is-invalid @enderror" wire:model='direccion'>
+                @error('direccion')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="">Teléfono</label>
-                <input type="text" class="form-control @error('telefono') is-invalid @enderror"
-                    wire:model='telefono'>
-                    @error('telefono')
+                <input type="text" class="form-control @error('telefono') is-invalid @enderror" wire:model='telefono'>
+                @error('telefono')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="">Email</label>
-                <input type="text" class="form-control @error('email') is-invalid @enderror"
-                    wire:model='email'>
-                    @error('email')
+                <input type="text" class="form-control @error('email') is-invalid @enderror" wire:model='email'>
+                @error('email')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -44,7 +40,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='store'>Guardar</button>
+                <button type="button" class="btn btn-primary" wire:click='store' wire:loading.remove
+                    wire:target='store'>Guardar</button>
+                <div wire:loading wire:target='store'>
+                    @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

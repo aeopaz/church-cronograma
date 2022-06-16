@@ -32,7 +32,7 @@
                         <div class="fa fa-sort"></div>
                     @endif
                 </th>
-                <th></th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -47,8 +47,11 @@
 
                         <x-adminlte-button theme="primary" icon="fas fa-eye" wire:click='edit({{ $miembro }})' />
                         @can('admin')
-                            <x-adminlte-button theme="danger" icon="fas fa-trash"
-                                wire:click='delete({{ $miembro }})' />
+                            <x-adminlte-button theme="danger" icon="fas fa-trash" wire:click='delete({{ $miembro }})'
+                                wire:loading.remove wire:target='delete' />
+                            <div wire:loading wire:target='delete'>
+                                @include('componentes.carga')
+                            </div>
                         @endcan
                     </td>
                 </tr>

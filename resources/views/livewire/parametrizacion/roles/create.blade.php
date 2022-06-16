@@ -19,7 +19,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" wire:click='store'>Guardar</button>
+                <button type="button" class="btn btn-primary" wire:click='store' wire:loading.remove
+                wire:target='store'>Guardar</button>
+            <div wire:loading wire:target='store'>
+                @include('componentes.carga')
+            </div>
             </div>
         </div>
     </div>

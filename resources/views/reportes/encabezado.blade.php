@@ -39,3 +39,5 @@
 </div>
 
 <h1 class="titulo">Iglesia Bautista Jehova Reina</h1>
+<h2 class="titulo">{{ $nombreReporte }}</h2>
+<h2 class="titulo">Fecha: {{ $fechaInicial." a ".$fechaFinal }}</h2>
