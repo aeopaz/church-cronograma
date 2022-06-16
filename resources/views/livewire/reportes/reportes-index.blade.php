@@ -52,39 +52,42 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12">
-                            @if ($tipoReporte == 1)
-                                @include('livewire.reportes.programas')
-                                @include('livewire.reportes.ver-programa')
-                            @endif
-                            @if ($tipoReporte == 2)
-                                @include('livewire.reportes.cronograma')
-                                @include('livewire.reportes.ver-programa')
-                            @endif
-                            @if ($tipoReporte == 3)
-                                @include('livewire.reportes.cumpleanos')
-                                @include('livewire.reportes.ver-miembro')
-                            @endif
-                            @if ($tipoReporte == 4)
-                                @include('livewire.reportes.asistencia')
-                                @include('livewire.reportes.ver-miembro')
-                            @endif
-                            @if ($tipoReporte == 5)
-                                @include('livewire.reportes.recurso')
-                                @include('livewire.reportes.ver-recurso')
-                            @endif
+    @if (count($data) == 0)
+        <div class="div-centrar-tabla">No hay registros para mostrar</div>
+    @else
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                @if ($tipoReporte == 1)
+                                    @include('livewire.reportes.programas')
+                                    @include('livewire.reportes.ver-programa')
+                                @endif
+                                @if ($tipoReporte == 2)
+                                    @include('livewire.reportes.cronograma')
+                                    @include('livewire.reportes.ver-programa')
+                                @endif
+                                @if ($tipoReporte == 3)
+                                    @include('livewire.reportes.cumpleanos')
+                                    @include('livewire.reportes.ver-miembro')
+                                @endif
+                                @if ($tipoReporte == 4)
+                                    @include('livewire.reportes.asistencia')
+                                    @include('livewire.reportes.ver-miembro')
+                                @endif
+                                @if ($tipoReporte == 5)
+                                    @include('livewire.reportes.recurso')
+                                    @include('livewire.reportes.ver-recurso')
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <button wire:click='exportarPDF'>Exportar</button>
+    @endif
 </div>
