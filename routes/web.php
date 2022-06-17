@@ -71,14 +71,20 @@ Route::middleware('auth')->group(function () {
         })->name('reportes.index')->middleware('perfil:admin|lider');
 
         //Reportes PDF
-        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}/{ministerio}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
-        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
-        Route::get('reporte/pdf/{tipo}',[ExportController::class,'reportePdf'])->middleware('perfil:admin|lider');
-       
+        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}/{ministerio}', [ExportController::class, 'reportePdf'])->middleware('perfil:admin|lider');
+        Route::get('reporte/pdf/{tipo}/{fecha1}/{fecha2}', [ExportController::class, 'reportePdf'])->middleware('perfil:admin|lider');
+        Route::get('reporte/pdf/{tipo}', [ExportController::class, 'reportePdf'])->middleware('perfil:admin|lider');
+
+        //Reporte Programa Específico
+        Route::get('reporte/programa/pdf/{idPrograma}/{fecha1}/{fecha2}', [ExportController::class, 'reportePdfPrograma'])->middleware('perfil:admin|lider');
+
         //Reportes Excel
-        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}/{ministerio}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
-        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
-        Route::get('reporte/excel/{tipo}',[ExportController::class,'reporteExcel'])->middleware('perfil:admin|lider');
+        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}/{ministerio}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
+        Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
+        Route::get('reporte/excel/{tipo}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
+
+
+
 
         Route::get('/mensaje/index', function () {
             return view('mensaje.index');

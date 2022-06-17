@@ -14,8 +14,8 @@ return [
     |
     */
 
-    'title' => 'IBJehovaReina',
-    'title_prefix' => '',
+    'title' => '',
+    'title_prefix' => 'IBJehovaReina |',
     'title_postfix' => '',
 
     /*

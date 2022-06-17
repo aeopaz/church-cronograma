@@ -28,7 +28,7 @@
 
 {{-- Resumen por Categoria --}}
 <div class="row div-centrar-tabla">
-    <table class="table table-sm table-hover centrar-tabla">
+    <table class="table table-sm table-hover centrar-tabla table-responsive">
         <thead>
             <tr>
                 <th>Bebé</th>

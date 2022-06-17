@@ -119,6 +119,14 @@
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
+                <label for="">Fecha Conversión</label>
+                <input type="date" class="form-control @error('fechaConversion') is-invalid @enderror"
+                    wire:model='fechaConversion'>
+                @error('fechaConversion')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

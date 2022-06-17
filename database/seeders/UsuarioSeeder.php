@@ -27,7 +27,7 @@ class UsuarioSeeder extends Seeder
             'estado'=>'A'
         ]);
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             User::create([
                 'name' => $faker->name(),
                 'email' => $faker->email(),

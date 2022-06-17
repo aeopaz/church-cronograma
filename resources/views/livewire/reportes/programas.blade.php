@@ -40,7 +40,7 @@
 </div>
 @include('componentes.paginador')
 <div class="div-centrar-tabla">
-    <table class="table table-hover table-sm table responsive">
+    <table class="table table-hover table-sm table-responsive">
         <thead>
             <tr>
                 <th>ID</th>
@@ -52,10 +52,10 @@
                 <th>Nuevos</th>
                 <th>Antiguos</th>
                 <th>Puntuales</th>
-                <th>Retrazados</th>
+                <th>Retrasados</th>
                 <th>Llegaron Final</th>
                 <th>Organizador</th>
-                <th>Acción</th>
+                <th colspan="2">Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -70,11 +70,14 @@
                     <td>{{ $dato->numeroNuevos }}</td>
                     <td>{{ $dato->numeroAnTiguos }}</td>
                     <td>{{ $dato->numeroPuntuales }}</td>
-                    <td>{{ $dato->numeroRetrazados }}</td>
+                    <td>{{ $dato->numeroRetrasados }}</td>
                     <td>{{ $dato->numeroLlegaronFinalizando }}</td>
                     <td>{{ $dato->usuarioOrganizador }}</td>
-
-                    <td><button class="btn btn-primary" wire:click='verPrograma({{ $dato->idPrograma }})'>Ver</button>
+                    <td>
+                        <button class="btn btn-primary" wire:click='verPrograma({{ $dato->idPrograma }})'>Ver</button>
+                    </td>
+                    <td>
+                        <a href="{{url('reporte/programa/pdf/'.$dato->idPrograma.'/'. $fechaDesde . '/' . $fechaHasta)}}" class="btn btn-success"  target="_blank">Reporte</a>
                     </td>
                 </tr>
             @endforeach

@@ -16,6 +16,7 @@ class MembreciaIndex extends Component
     public $nombre;
     public $apellido;
     public $fechaNacimiento;
+    public $fechaConversion;
     public $sexo;
     public $estadoCivil;
     public $celular;
@@ -88,10 +89,11 @@ class MembreciaIndex extends Component
     {
         $validateData = $this->validate([
             'tipoDocumento' => 'required',
-            'numeroDocumento' => 'required|digits:10|unique:membrecias,numero_documento,NULL,id,tipo_documento,' . $this->tipoDocumento,
+            'numeroDocumento' => 'required|digits_between:6,10|unique:membrecias,numero_documento,NULL,id,tipo_documento,' . $this->tipoDocumento,
             'nombre' => 'required|max:50',
             'apellido' => 'required|max:50',
             'fechaNacimiento' => 'required|date',
+            'fechaConversion' => 'required|date',
             'sexo' => 'required',
             'estadoCivil' => 'required',
             'celular' => 'required|digits:10',
@@ -108,6 +110,7 @@ class MembreciaIndex extends Component
             $miembro->nombre = $this->nombre;
             $miembro->apellido = $this->apellido;
             $miembro->fecha_nacimiento = $this->fechaNacimiento;
+            $miembro->fecha_conversion = $this->fechaConversion;
             $miembro->sexo = $this->sexo;
             $miembro->estado_civil = $this->estadoCivil;
             $miembro->celular = $this->celular;
@@ -119,6 +122,7 @@ class MembreciaIndex extends Component
             $miembro->save();
             $this->limpiarCampos();
             $this->emit('modal', 'crearMiembroModal', 'hide');
+            $this->edit($miembro);
         } catch (\Throwable $th) {
             report($th);
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
@@ -133,6 +137,7 @@ class MembreciaIndex extends Component
         $this->nombre = $miembro->nombre;
         $this->apellido = $miembro->apellido;
         $this->fechaNacimiento = $miembro->fecha_nacimiento->toDateString();
+        $this->fechaConversion = $miembro->fecha_conversion->toDateString();
         $this->sexo = $miembro->sexo;
         $this->estadoCivil = $miembro->estado_civil;
         $this->celular = $miembro->celular;
@@ -150,6 +155,7 @@ class MembreciaIndex extends Component
             'nombre' => 'required|max:50',
             'apellido' => 'required|max:50',
             'fechaNacimiento' => 'required|date',
+            'fechaConversion' => 'required|date',
             'sexo' => 'required',
             'estadoCivil' => 'required',
             'celular' => 'required|digits:10',
@@ -166,6 +172,7 @@ class MembreciaIndex extends Component
             $miembro->nombre = $this->nombre;
             $miembro->apellido = $this->apellido;
             $miembro->fecha_nacimiento = $this->fechaNacimiento;
+            $miembro->fecha_conversion = $this->fechaConversion;
             $miembro->sexo = $this->sexo;
             $miembro->estado_civil = $this->estadoCivil;
             $miembro->celular = $this->celular;
@@ -205,6 +212,7 @@ class MembreciaIndex extends Component
             'nombre',
             'apellido',
             'fechaNacimiento',
+            'fechaConversion',
             'sexo',
             'estadoCivil',
             'celular',

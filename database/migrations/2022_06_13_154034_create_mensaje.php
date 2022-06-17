@@ -18,6 +18,7 @@ class CreateMensaje extends Migration
             $table->string('titulo',45)->default('');
             $table->text('cuerpo');
             $table->string('cita',45)->default('');
+            $table->string('mostrar',1)->default('N');
             $table->timestamps();
         });
     }

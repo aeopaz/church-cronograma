@@ -42,6 +42,7 @@ class ProgramacionIndex extends Component
     public $mostrarListaParticipantes = true;
     public $mostrarListaRecursos = true;
     public $tipoVista; //Si es programas generales o propios
+    public $pestana = 'programa';
     public $idMiembro;
     public $tipoLlegada;
     public $textoBuscar;
@@ -93,7 +94,7 @@ class ProgramacionIndex extends Component
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
                 ->where('programacions.estado', 'A')
-                // ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
+                ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
                 ->where(function ($query) {
                     $query->where('users.name', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('programacions.fecha', 'like', '%' . $this->textoBuscar . '%')
@@ -247,6 +248,7 @@ class ProgramacionIndex extends Component
             $programa->save();
             $this->limpiarCampos();
             $this->emit('modal', 'crearProgramaModal', 'hide');
+            $this->edit($programa);
             return session()->flash('success', 'Se ha creado el programa satisfactoriamente.');
         } catch (\Throwable $th) {
             report($th);
@@ -336,7 +338,7 @@ class ProgramacionIndex extends Component
                 'user_created_id' => Auth::user()->id
             ]);
             $this->reset(['idMinisterio', 'idUsuarioParticipante', 'idRol']);
-            $this->enviarNotificacion($participante,'asignar');
+            $this->enviarNotificacion($participante, 'asignar');
             return session()->flash('success', 'El participante agregado correctamente');
         } catch (\Throwable $th) {
             report($th);
@@ -346,6 +348,7 @@ class ProgramacionIndex extends Component
     //Eliminar Participante
     public function eliminarParticipante($idParticipacion)
     {
+        $this->pestana='participante';
         try {
             //Buscar el participante en el programa
             $participacion = ParticipantesProgramacionMinisterio::find($idParticipacion);
@@ -353,7 +356,7 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
-                $this->enviarNotificacion($participacion,'cancelar');
+                $this->enviarNotificacion($participacion, 'cancelar');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
             }
@@ -387,7 +390,6 @@ class ProgramacionIndex extends Component
 
         return $participantes;
     }
-
     //Agregar Recursos a programa
     public function agregarRecursosPrograma()
     {
@@ -422,6 +424,7 @@ class ProgramacionIndex extends Component
     //Eliminar Recursos programa
     public function eliminarRecursoPrograma($idRecursoPrograma)
     {
+        $this->pestana='recurso';
         try {
             //Buscar el participante en el programa
             $recursoPrograma = RecursoProgramacionMinisterio::find($idRecursoPrograma);
@@ -493,6 +496,8 @@ class ProgramacionIndex extends Component
     //Registrar asistencia de miembros al programa
     public function registrarAsistencia()
     {
+        //Mantener pestaña asistencia
+        $this->pestana='asistencia';
         //Validar Campos
         $this->validate([
             'idMiembro' => 'required',
@@ -528,6 +533,7 @@ class ProgramacionIndex extends Component
     //Eliminar asistencia de miembros al programa
     public function eliminarAsistencia($idMiembro)
     {
+        $this->pestana='participante';
         try {
 
             $asistenciaMiembro = AsistenciaPrograma::find($idMiembro);
@@ -539,7 +545,7 @@ class ProgramacionIndex extends Component
         }
     }
 
-    public function enviarNotificacion($participacion,$tipoNotificación)
+    public function enviarNotificacion($participacion, $tipoNotificación)
     {
         try {
             $participantePrograma = ParticipantesProgramacionMinisterio::join('programacions', 'programacions.id', 'programacion_id')
@@ -569,15 +575,34 @@ class ProgramacionIndex extends Component
             //Consultar el usuario al que se le enviará la notificación
             $usuarioParticipante = User::find($participacion->user_id);
             //Enviar Notificación
-            if ($tipoNotificación=='asignar') {
+            if ($tipoNotificación == 'asignar') {
                 $usuarioParticipante->notify(new AsignacionCompromiso($participantePrograma));
-            }else{
+            } else {
                 $usuarioParticipante->notify(new CancelacionCompromiso($participantePrograma));
             }
         } catch (\Throwable $th) {
             report($th);
             return session()->flash('fail', 'Error al Enviar la notificación, contacte al administrador del sistema.');
         }
+    }
+
+    public function camposAgregarParticipantes()
+    {
+
+        if ($this->mostrarListaParticipantes) {
+            $this->mostrarListaParticipantes = false;
+        }
+
+        $this->pestana = 'participante';
+    }
+    public function camposAgregarRecurso()
+    {
+
+        if ($this->mostrarListaRecursos) {
+            $this->mostrarListaRecursos = false;
+        }
+
+        $this->pestana = 'recurso';
     }
 }
 

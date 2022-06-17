@@ -30,7 +30,7 @@ class ProgramacionSeeder extends Seeder
                 'nivel'=>$nivel[rand(0,2)],
                 'estado'=>$estado[rand(0,1)],
                 'user_id'=>$user->id,
-                'fecha' => $faker->date(),
+                'fecha' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = '2022-12-31', $timezone = null),
                 'hora' => $faker->time('H:i')
             ]);
         }

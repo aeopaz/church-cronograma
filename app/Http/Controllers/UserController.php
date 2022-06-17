@@ -31,7 +31,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'celular' => 'required|numeric|max:9999999999',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:5|confirmed',
         ]);
         try {
             
@@ -40,7 +40,7 @@ class UserController extends Controller
             $user->email=$request->email;
             $user->celular=$request->celular;
             $user->iglesia_id=1;
-            $user->tipo_usuario_id=1;
+            $user->tipo_usuario_id=3;
             $user->estado='I';
             $user->password=Hash::make($request->password);
             $user->save();
@@ -53,10 +53,13 @@ class UserController extends Controller
             //     'estado' => 'I',
             //     'password' => Hash::make($request->get('password')),
             // ]);
-            if (Auth::attempt($user)) {
+            $credenciales=['email'=>$request->email,'password'=>$request->password];
+            if (Auth::attempt($credenciales)) {
                 $request->session()->regenerate();
                 return redirect()->intended('home');
             }
+            
+            // return redirect()->route('login')->with('success','Ya puede ingresar al sistema');
         } catch (\Throwable $th) {
             report($th);
             return back()->with('fail', 'Error en base de datos, favor contactar al administrador del sistema');

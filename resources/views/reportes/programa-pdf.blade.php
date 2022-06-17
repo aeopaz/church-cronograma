@@ -12,7 +12,7 @@
                 <th>Nuevos</th>
                 <th>Antiguos</th>
                 <th>Puntuales</th>
-                <th>Retrazados</th>
+                <th>Retrasados</th>
                 <th>Llegaron Final</th>
                 <th>Organizador</th>
             </tr>
@@ -29,7 +29,7 @@
                     <td>{{ $dato->numeroNuevos }}</td>
                     <td>{{ $dato->numeroAnTiguos }}</td>
                     <td>{{ $dato->numeroPuntuales }}</td>
-                    <td>{{ $dato->numeroRetrazados }}</td>
+                    <td>{{ $dato->numeroRetrasados }}</td>
                     <td>{{ $dato->numeroLlegaronFinalizando }}</td>
                     <td>{{ $dato->usuarioOrganizador }}</td>
                 </tr>

@@ -73,6 +73,7 @@ class RecursoIndex extends Component
             $recurso->save();
             $this->limpiarCampos();
             $this->emit('modal', 'crearRecursoModal', 'hide');
+            $this->edit($recurso);
             return session()->flash('success', 'El recurso ha sido creado correctamente');
         } catch (\Throwable $th) {
             report($th);

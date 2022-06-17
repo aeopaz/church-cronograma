@@ -21,30 +21,34 @@
                 @endif
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
-                            aria-controls="pills-home" aria-selected="true">Programa</a>
+                        <a class="nav-link {{ $pestana == 'programa' ? 'active' : '' }}" id="pills-home-tab"
+                            data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home"
+                            aria-selected="true">Programa</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
-                            role="tab" aria-controls="pills-profile" aria-selected="false">Participantes</a>
+                        <a class="nav-link {{ $pestana == 'participante' ? 'active' : '' }}" id="pills-profile-tab"
+                            data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile"
+                            aria-selected="false">Participantes</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact"
-                            role="tab" aria-controls="pills-contact" aria-selected="false">Recursos</a>
+                        <a class="nav-link {{ $pestana == 'recurso' ? 'active' : '' }}" id="pills-contact-tab"
+                            data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact"
+                            aria-selected="false">Recursos</a>
                     </li>
                     {{-- Permiso para ver pestaña asistencia --}}
                     @canany(['admin', 'lider'])
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="pills-asistencia-tab" data-toggle="pill" href="#pills-asistencia"
-                                role="tab" aria-controls="pills-asistencia" aria-selected="false">Asistencia</a>
+                            <a class="nav-link {{ $pestana == 'asistencia' ? 'active' : '' }}" id="pills-asistencia-tab"
+                                data-toggle="pill" href="#pills-asistencia" role="tab" aria-controls="pills-asistencia"
+                                aria-selected="false">Asistencia</a>
                         </li>
                     @endcanany
 
                 </ul>
                 <div class="tab-content" id="pills-tabContent">
                     {{-- Programa --}}
-                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                        aria-labelledby="pills-home-tab">
+                    <div class="tab-pane fade {{ $pestana == 'programa' ? 'show active' : '' }}" id="pills-home"
+                        role="tabpanel" aria-labelledby="pills-home-tab">
                         {{-- Tipo Programa --}}
                         <div class="input-group mb-3">
                             <select name="" id="" class="form-control @error('idTipoPrograma') is-invalid @enderror"
@@ -192,7 +196,8 @@
 
                     </div>
                     {{-- Lista de participantes --}}
-                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="tab-pane fade {{ $pestana == 'participante' ? 'show active' : '' }}" id="pills-profile"
+                        role="tabpanel" aria-labelledby="pills-profile-tab">
                         <div id="listaParticipantes" @if (!$mostrarListaParticipantes) hidden @endif>
                             <div class="row div-centrar-tabla">
                                 <table class="table table-hover table-sm centrar-tabla">
@@ -250,7 +255,7 @@
                                 {{-- Boton mostrar form participante --}}
                                 <div class="row justify-content-center">
                                     <button class="btn btn-secondary float-md-right"
-                                        wire:click="$set('mostrarListaParticipantes',false)">Adicionar
+                                        wire:click="camposAgregarParticipantes">Adicionar
                                         Participante</button>
                                 </div>
                             @endcanany
@@ -324,12 +329,12 @@
                                     @enderror
                                 </div>
                                 <div class="row justify-content-center">
-                                    <button class="btn btn-primary mr-2" wire:click='agregarParticipantes' wire:loading.remove
-                                    wire:target='agregarParticipantes'>Agregar
+                                    <button class="btn btn-primary mr-2" wire:click='agregarParticipantes'
+                                        wire:loading.remove wire:target='agregarParticipantes'>Agregar
                                         Participante</button>
-                                        <div wire:loading wire:target='agregarParticipantes'>
-                                            @include('componentes.carga')
-                                        </div>
+                                    <div wire:loading wire:target='agregarParticipantes'>
+                                        @include('componentes.carga')
+                                    </div>
                                     {{-- Boton ocultar form participante --}}
                                     <button class="btn btn-secondary"
                                         wire:click="$set('mostrarListaParticipantes',true)">Cancelar</button>
@@ -339,7 +344,8 @@
                     </div>
                     {{-- Lista de Recursos --}}
                     {{-- @if (!isset($recurso->url))  wire:click='verRecurso({{$recurso->url}})' @endif --}}
-                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    <div class="tab-pane fade {{ $pestana == 'recurso' ? 'show active' : '' }} " id="pills-contact"
+                        role="tabpanel" aria-labelledby="pills-contact-tab">
                         <div @if (!$mostrarListaRecursos) hidden @endif>
                             <div class="row div-centrar-tabla">
                                 <table class="table table-hover table-sm centrar-tabla">
@@ -354,10 +360,10 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($recursosPrograma as $index => $recurso)
-                                            <tr class="puntero"
-                                                wire:click='verRecurso({{ $recurso->recurso_id }})'>
+                                            <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td><img src="{{ asset($recurso->url) }}" alt=""
+                                                <td class="puntero"
+                                                wire:click='verRecurso({{ $recurso->recurso_id }})'><img src="{{ asset($recurso->url) }}" alt=""
                                                         class="rounded-circle" style="width: 30%; height: 10%;">
                                                 </td>
                                                 <td>{{ $recurso->nombreRecurso }}</td>
@@ -366,12 +372,12 @@
                                                     {{-- Solo puede Eliminar recursos si es admin o lider --}}
                                                     @canany(['admin', 'lider'])
                                                         <button class="btn btn-sm btn-danger"
-                                                            wire:click='eliminarRecursoPrograma({{ $recurso->idRecursoPrograma }})' wire:loading.remove
-                                                            wire:target='eliminarRecursoPrograma'><i
+                                                            wire:click='eliminarRecursoPrograma({{ $recurso->idRecursoPrograma }})'
+                                                            wire:loading.remove wire:target='eliminarRecursoPrograma'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>
-                                                                <div wire:loading wire:target='eliminarRecursoPrograma'>
-                                                                    @include('componentes.carga')
-                                                                </div>
+                                                        <div wire:loading wire:target='eliminarRecursoPrograma'>
+                                                            @include('componentes.carga')
+                                                        </div>
                                                     @endcanany
                                                 </td>
                                             </tr>
@@ -398,7 +404,7 @@
                             @canany(['admin', 'lider'])
                                 <div class="row justify-content-center">
                                     <button class="btn btn-secondary float-md-right"
-                                        wire:click="$set('mostrarListaRecursos',false)">Agregar Recurso</button>
+                                        wire:click="camposAgregarRecurso">Agregar Recurso</button>
                                 </div>
                             @endcanany
                         </div>
@@ -450,12 +456,12 @@
                                     @enderror
                                 </div>
                                 <div class="row justify-content-center">
-                                    <button class="btn btn-primary mr-2" wire:click='agregarRecursosPrograma' wire:loading.remove
-                                    wire:target='agregarRecursosPrograma'>Agregar
+                                    <button class="btn btn-primary mr-2" wire:click='agregarRecursosPrograma'
+                                        wire:loading.remove wire:target='agregarRecursosPrograma'>Agregar
                                         Recurso</button>
-                                        <div wire:loading wire:target='agregarRecursosPrograma'>
-                                            @include('componentes.carga')
-                                        </div>
+                                    <div wire:loading wire:target='agregarRecursosPrograma'>
+                                        @include('componentes.carga')
+                                    </div>
                                     {{-- Boton ocultar form recursos --}}
                                     <button class="btn btn-secondary"
                                         wire:click="$set('mostrarListaRecursos',true)">Cancelar</button>
@@ -466,8 +472,8 @@
                     {{-- Lista de Asistencia --}}
                     {{-- Solo puede Agregar asistencia si es admin o lider --}}
                     @canany(['admin', 'lider'])
-                        <div class="tab-pane fade" id="pills-asistencia" role="tabpanel"
-                            aria-labelledby="pills-asistencia-tab">
+                        <div class="tab-pane fade {{ $pestana == 'asistencia' ? 'show active' : '' }}" id="pills-asistencia"
+                            role="tabpanel" aria-labelledby="pills-asistencia-tab">
                             {{-- Registrar Miembros --}}
                             <div class="input-group mb-3">
                                 <div class="input-group-append">
@@ -501,7 +507,7 @@
                                     wire:model.defer='tipoLlegada'>
                                     <option value="">Seleccione...</option>
                                     <option value="Puntual">Puntual</option>
-                                    <option value="Retrazada">Retrazada</option>
+                                    <option value="Retrasada">Retrasada</option>
                                     <option value="Final">Al Final</option>
                                 </select>
                                 @error('tipoLlegada')
@@ -512,11 +518,11 @@
                             </div>
                             <div class="row justify-content-center">
                                 <button class="btn btn-primary" wire:click='registrarAsistencia' wire:loading.remove
-                                wire:target='registrarAsistencia'>Agregar
+                                    wire:target='registrarAsistencia'>Agregar
                                     Asistencia</button>
-                                    <div wire:loading wire:target='registrarAsistencia'>
-                                        @include('componentes.carga')
-                                    </div>
+                                <div wire:loading wire:target='registrarAsistencia'>
+                                    @include('componentes.carga')
+                                </div>
                             </div>
                             {{-- Miembros que asistieron --}}
                             <div class="row div-centrar-tabla">
@@ -539,12 +545,12 @@
                                                 <td>
                                                     @can('admin')
                                                         <button class="btn btn-sm btn-danger"
-                                                            wire:click='eliminarAsistencia({{ $asistente->idAsistencia }})' wire:loading.remove
-                                                            wire:target='eliminarAsistencia'><i
+                                                            wire:click='eliminarAsistencia({{ $asistente->idAsistencia }})'
+                                                            wire:loading.remove wire:target='eliminarAsistencia'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>
-                                                                <div wire:loading wire:target='eliminarAsistencia'>
-                                                                    @include('componentes.carga')
-                                                                </div>
+                                                        <div wire:loading wire:target='eliminarAsistencia'>
+                                                            @include('componentes.carga')
+                                                        </div>
                                                     @endcan
 
                                                 </td>

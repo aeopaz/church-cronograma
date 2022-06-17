@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProgramaExport;
+use App\Models\AsistenciaPrograma;
 use App\Models\Membrecia;
 use App\Models\ParticipantesProgramacionMinisterio;
+use App\Traits\FuncionesTrait;
 use Barryvdh\DomPDF\Facade as PDF;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -12,29 +14,29 @@ use Illuminate\Support\Facades\DB;
 
 class ExportController extends Controller
 {
+    use FuncionesTrait;
     public function reportePdf($tipoReporte, $fechaInicial = null, $fechaFinal = null, $ministerio)
     {
         if ($tipoReporte == 1) {
             $data = $this->reporteProgramaPdf($fechaInicial, $fechaFinal);
-            $pdf = PDF::loadView('reportes.programa-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.programa-pdf', compact('data', 'fechaInicial', 'fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 2) {
             $data = $this->reporteCronograma($fechaInicial, $fechaFinal, $ministerio);
-            $pdf = PDF::loadView('reportes.cronograma-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.cronograma-pdf', compact('data', 'fechaInicial', 'fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 3) {
             $data = $this->reporteCumpleanos($fechaInicial, $fechaFinal, $ministerio);
-            $pdf = PDF::loadView('reportes.cumpleaneros-pdf', compact('data','fechaInicial','fechaFinal'));
+            $pdf = PDF::loadView('reportes.cumpleaneros-pdf', compact('data', 'fechaInicial', 'fechaFinal'));
         }
         if ($tipoReporte == 4) {
             $data = $this->reporteMembreciaPdf();
-            $pdf = PDF::loadView('reportes.membrecia-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.membrecia-pdf', compact('data', 'fechaInicial', 'fechaFinal'))->setPaper('a4', 'landscape');
         }
         if ($tipoReporte == 5) {
             $data = $this->reporteRecursosPdf();
-            $pdf = PDF::loadView('reportes.recurso-pdf', compact('data','fechaInicial','fechaFinal'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportes.recurso-pdf', compact('data', 'fechaInicial', 'fechaFinal'))->setPaper('a4', 'landscape');
         }
-
 
         return $pdf->stream();
     }
@@ -105,7 +107,7 @@ class ExportController extends Controller
             DB::raw("ifnull((select nombre from iglesias where id=iglesia_id),'')lugar"),
             DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma),0)numeroAsistentes"),
             DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Puntual'),0)numeroPuntuales"),
-            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Retrazada'),0)numeroRetrazados"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Retrasada'),0)numeroRetrasados"),
             DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Final'),0)numeroLlegaronFinalizando"),
             DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_miembro='Nuevo'),0)numeroNuevos"),
             DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_miembro='Antiguo'),0)numeroAnTiguos"),
@@ -154,8 +156,8 @@ class ExportController extends Controller
             ->where('ministerio_id', 'like', $ministerio)
             ->whereDate('programacions.fecha', '>=', $fechaInicial)
             ->whereDate('programacions.fecha', '<=', $fechaFinal)
-            ->orderBy('fecha','asc')
-            ->orderBy('hora','asc')
+            ->orderBy('fecha', 'asc')
+            ->orderBy('hora', 'asc')
             ->get([
                 'programacions.id as idPrograma',
                 'programacions.nombre as nombrePrograma',
@@ -179,15 +181,66 @@ class ExportController extends Controller
             DB::raw('DAYOFYEAR(fecha_nacimiento) AS diaAnoNacimiento, DAYOFYEAR(curdate()) AS diaAnoActual')
         )
             ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $fechaInicial, 'fechaHasta' => $fechaFinal])
-            ->orderBy('diaAnoNacimiento','asc')
+            ->orderBy('diaAnoNacimiento', 'asc')
             ->get();
         return $data;
     }
 
     public function reporteExcel($tipoReporte, $fechaInicial = null, $fechaFinal = null, $ministerio)
     {
- 
-        $nombreReporte='Reporte.xlsx';
-        return Excel::download(new ProgramaExport($tipoReporte, $fechaInicial, $fechaFinal, $ministerio),$nombreReporte);
+
+        $nombreReporte = 'Reporte.xlsx';
+        return Excel::download(new ProgramaExport($tipoReporte, $fechaInicial, $fechaFinal, $ministerio), $nombreReporte);
+    }
+
+    public function reportePdfPrograma($idPrograma, $fechaInicial, $fechaFinal)
+    {
+        //Datos Programa
+        $subquery = DB::query()
+            ->select('*')->from('programacions')
+            ->where('id', 'like',  $idPrograma);
+
+        $datosPrograma = DB::query()->select(
+            "id as idPrograma",
+            DB::raw("ifnull((select nombre from tipo_programacions where id=tipo_programacion_id),'')tipoPrograma"),
+            "nombre as nombrePrograma",
+            "fecha",
+            "hora",
+            "user_id",
+            DB::raw("ifnull((select nombre from users where id=user_id),'')nombreOrganizador"),
+            DB::raw("ifnull((select nombre from iglesias where id=iglesia_id),'')nombreLugar"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma),0)numeroAsistentes"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Puntual'),0)numeroPuntuales"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Retrasada'),0)numeroRetrasados"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_llegada='Final'),0)numeroLlegaronFinalizando"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_miembro='Nuevo'),0)numeroNuevos"),
+            DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_miembro='Antiguo'),0)numeroAnTiguos"),
+
+        )->fromSub($subquery, "programas")->first();
+
+        $datosAsistentes = AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
+            ->where('id_programa', $idPrograma)
+            ->select(
+                DB::raw('IF (TIMESTAMPDIFF(MONTH,fecha_conversion,CURDATE())<' . $this->mesesMiembroAntiguo() . ',"Nuevo","Antiguo") as tipoMiembro'),
+                'membrecias.id as idMiembro',
+                'membrecias.nombre as nombreMiembro',
+                'membrecias.apellido as apellidoMiembro',
+                'membrecias.fecha_conversion as fechaConversion',
+                'tipo_llegada as tipoLlegada'
+            )
+            ->get();
+
+        $datosParticipantes = ParticipantesProgramacionMinisterio::join('ministerios', 'ministerios.id', 'participantes_programacion_ministerios.ministerio_id')
+            ->join('rols', 'rols.id', 'participantes_programacion_ministerios.rol_id')
+            ->join('users', 'users.id', 'participantes_programacion_ministerios.user_id')
+            ->where('programacion_id', $idPrograma)
+            ->get([
+                'users.name as nombreParticipante',
+                'rols.nombre as nombreRol',
+                'ministerios.nombre as nombreMinisterio'
+            ]);
+
+        $pdf = PDF::loadView('reportes.detalle-programa-pdf', compact('datosPrograma','datosAsistentes','datosParticipantes','fechaInicial', 'fechaFinal'));
+        return $pdf->stream();
     }
 }

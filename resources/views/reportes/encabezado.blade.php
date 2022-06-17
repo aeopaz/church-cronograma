@@ -33,6 +33,9 @@
         text-align: center;
 
     }
+    .seccion{
+        margin-bottom: 20px;
+    }
 </style>
 <div class="logo">
     <img class="centrar-img" src="{{ 'vendor\adminlte\dist\img\logoIglesia.png' }}" alt="">

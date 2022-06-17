@@ -6,4 +6,4 @@
 
     }
 </style>
-<h4 class="pie-pagina">{{Carbon\Carbon::now()}}</h4>
+<h4 class="pie-pagina">Fecha generación reporte: {{Carbon\Carbon::now()}}</h4>

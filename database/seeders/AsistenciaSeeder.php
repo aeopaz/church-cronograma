@@ -15,7 +15,7 @@ class AsistenciaSeeder extends Seeder
      */
     public function run()
     {
-        $tipoLlegada = ['Puntual', 'Retrazada', 'Final'];
+        $tipoLlegada = ['Puntual', 'Retrasada', 'Final'];
         for ($i = 1; $i < 50; $i++) {
             $miembro=Membrecia::find($i);
             AsistenciaPrograma::create([

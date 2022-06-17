@@ -1,13 +1,15 @@
 <div>
     <div class="container">
         <div class="row">
-            <div class="col-12 my-3 pt-3 shadow text-center">
+            <div class="col-3"></div>
+            <div class="col-6 my-3 pt-3 shadow text-center">
                 {{-- Avatar usuario --}}
                 @if ($foto)
                     <img src="{{ $foto->temporaryUrl() }}" class="rounded-circle" style="width: 400px; height:400px">
                 @else
                     @if (!$usuario->avatar == '')
-                        <img src={{ asset($usuario->avatar) }} class="rounded-circle img-fluid" style="width: 400px; height:400px">
+                        <img src={{ asset($usuario->avatar) }} class="rounded-circle img-fluid"
+                            style="width: 400px; height:400px">
                     @else
                         <i class="fa fa-user" aria-hidden="true" style="font-size:300px"></i>
                     @endif
@@ -44,15 +46,17 @@
                 <br>
                 <h3 class="fas fa-phone" aria-hidden="true">{{ $usuario->celular }}</h3>
             </div>
+            <div class="col-3"></div>
         </div>
-        <ul class="ul">
-            <li>
+        <div class="form-group row justify-content-center">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                 <button class="btn btn-primary" wire:click='edit()'>Actualizar Datos</button>
-            </li>
-            <li>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                 <button class="btn btn-primary" wire:click='editPassword()'>Cambiar Contraseña</button>
-            </li>
-        </ul>
+            </div>
+
+        </div>
     </div>
     @include('livewire.usuario.edit')
     @include('livewire.usuario.edit-password')

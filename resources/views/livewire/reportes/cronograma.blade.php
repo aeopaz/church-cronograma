@@ -32,7 +32,7 @@
 </div>
 @include('componentes.paginador')
 <div class="div-centrar-tabla">
-    <table class="table table-hover table-sm table responsive">
+    <table class="table table-hover table-sm table-responsive">
         <thead>
             <tr>
                 <th>ID Progama</th>
