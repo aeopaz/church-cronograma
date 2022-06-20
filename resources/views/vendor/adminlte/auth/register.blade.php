@@ -14,7 +14,7 @@
 @section('auth_header', __('adminlte::adminlte.register_message'))
 
 @section('auth_body')
-    <form action="{{ route('users.register') }}" method="post">
+    <form action="{{ route('users.registro') }}" method="post">
         @csrf
         @if (session()->has('fail'))
             <div class="alert alert-danger">
