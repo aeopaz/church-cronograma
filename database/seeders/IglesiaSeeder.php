@@ -15,7 +15,7 @@ class IglesiaSeeder extends Seeder
      */
     public function run()
     {
-        $faker=Factory::create('es_VEN');
+        // $faker=Factory::create('es_VEN');
         Iglesia::create([
             'nombre'=>'Iglesia Bautista Jehova Reina',
             'direccion'=>'Carrera 26 G9 No. 73-52',

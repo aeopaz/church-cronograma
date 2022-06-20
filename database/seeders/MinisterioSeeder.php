@@ -30,47 +30,47 @@ class MinisterioSeeder extends Seeder
         Ministerio::create([
             'nombre'=>'Servidores',
             'iglesia_id'=>1,
-            'user_id'=>2
+            'user_id'=>1
         ]);
         //4
         Ministerio::create([
             'nombre'=>'Intersección',
             'iglesia_id'=>1,
-            'user_id'=>3
+            'user_id'=>1
         ]);
         //5
         Ministerio::create([
             'nombre'=>'Finanzas',
             'iglesia_id'=>1,
-            'user_id'=>4
+            'user_id'=>1
         ]);
         //6
         Ministerio::create([
-            'nombre'=>'Pastoral',
+            'nombre'=>'Predicación',
             'iglesia_id'=>1,
-            'user_id'=>5
+            'user_id'=>1
         ]);
         //7
         Ministerio::create([
             'nombre'=>'Infantil',
             'iglesia_id'=>1,
-            'user_id'=>6
+            'user_id'=>1
         ]);
         //8
         Ministerio::create([
             'nombre'=>'Evangelismo',
             'iglesia_id'=>1,
-            'user_id'=>7
+            'user_id'=>1
         ]);
         //9
         Ministerio::create([
             'nombre'=>'Enseñanza y Discipulado',
             'iglesia_id'=>1,
-            'user_id'=>8
+            'user_id'=>1
         ]);
         //9
         Ministerio::create([
-            'nombre'=>'Medios de Comunicación y Audiovizual',
+            'nombre'=>'Medios Audiovisuales',
             'iglesia_id'=>1,
             'user_id'=>1
         ]);
@@ -78,13 +78,13 @@ class MinisterioSeeder extends Seeder
         Ministerio::create([
             'nombre'=>'Damas',
             'iglesia_id'=>1,
-            'user_id'=>4
+            'user_id'=>1
         ]);
         //11
         Ministerio::create([
             'nombre'=>'Caballeros',
             'iglesia_id'=>1,
-            'user_id'=>5
+            'user_id'=>1
         ]);
     }
 }

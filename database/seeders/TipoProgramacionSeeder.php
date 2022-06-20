@@ -44,5 +44,8 @@ class TipoProgramacionSeeder extends Seeder
         TipoProgramacion::create([
             'nombre'=>'Vigilia toda la Noche'
         ]);
+        TipoProgramacion::create([
+            'nombre'=>'Discipulado'
+        ]);
     }
 }

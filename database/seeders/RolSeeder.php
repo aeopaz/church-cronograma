@@ -74,6 +74,14 @@ class RolSeeder extends Seeder
             'nombre'=>'Evangelista',
 
         ]);
+        Rol::create([
+            'nombre'=>'Director Culto',
+
+        ]);
+        Rol::create([
+            'nombre'=>'Audiovisual',
+
+        ]);
        
     }
 

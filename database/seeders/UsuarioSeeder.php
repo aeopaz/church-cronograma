@@ -16,7 +16,7 @@ class UsuarioSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Factory::create('es_VE');
+        // $faker = Factory::create('es_VE');
         User::create([
             'name' => 'Alvaro Ocampo',
             'email' => 'aeopaz@gmail.com',
@@ -27,16 +27,16 @@ class UsuarioSeeder extends Seeder
             'estado'=>'A'
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            User::create([
-                'name' => $faker->name(),
-                'email' => $faker->email(),
-                'avatar'=>$faker->imageUrl(),
-                'celular'=>rand(1111111111,9999999999),
-                'password' => Hash::make(123123),
-                'iglesia_id' => 1,
-                'tipo_usuario_id' => 2,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     User::create([
+        //         'name' => $faker->name(),
+        //         'email' => $faker->email(),
+        //         'avatar'=>$faker->imageUrl(),
+        //         'celular'=>rand(1111111111,9999999999),
+        //         'password' => Hash::make(123123),
+        //         'iglesia_id' => 1,
+        //         'tipo_usuario_id' => 2,
+        //     ]);
+        // }
     }
 }
