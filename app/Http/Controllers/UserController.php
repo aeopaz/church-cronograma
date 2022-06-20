@@ -16,7 +16,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class UserController extends Controller
 {
     //Registrar usuario
-    public function register(Request $request)
+    public function registro(Request $request)
     {
         // $validator = Validator::make($request->all(), [
         //     'name' => 'required|string|max:255',

@@ -26,7 +26,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::post('/users/register', [UserController::class, 'register'])->name('users.register');
+Route::post('/users/registro', [UserController::class, 'registro'])->name('users.registro');
 Auth::routes();
 
 //Middleware para validar que el usuario este autenticado
