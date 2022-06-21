@@ -32,7 +32,7 @@ class MiembrosSeeder extends Seeder
             $miembro->ciudad = $faker->randomElement(['Cali', 'Jamundi', 'Palmira', 'Candelaria', 'Bogota']);
             $miembro->barrio = $faker->randomElement(['Naranjos', 'Bonanza', 'Marroquin II', 'Alirio Mora', 'Decepaz']);
             $miembro->direccion = $faker->address();
-            $miembro->id_usuario = auth()->id();
+            $miembro->id_usuario = 1;
             $miembro->save();
         }
     }

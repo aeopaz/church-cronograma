@@ -15,9 +15,9 @@ class CreateAsistenciaProgramasTable extends Migration
     {
         Schema::create('asistencia_programas', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_programa');
-            $table->unsignedBigInteger('id_miembro');
-            $table->unsignedBigInteger('id_usuario');
+            $table->unsignedBigInteger('id_programa')->default(1);
+            $table->unsignedBigInteger('id_miembro')->default(1);
+            $table->unsignedBigInteger('id_usuario')->default(1);
             $table->string('tipo_llegada')->default('');
             $table->string('tipo_miembro')->default('');//Nuevo o Antiguo
             $table->timestamps();

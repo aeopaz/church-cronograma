@@ -235,7 +235,8 @@ class ProgramacionIndex extends Component
             if ($programa) {
                 return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');
             }
-
+// dd($this->fechaPrograma);
+            // dd(Carbon::parse($this->fechaPrograma));
             $programa = Programacion::create();
             $programa->tipo_programacion_id = $this->idTipoPrograma;
             $programa->nombre = $this->nombrePrograma;

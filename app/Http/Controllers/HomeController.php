@@ -36,9 +36,13 @@ class HomeController extends Controller
             'nombre',
             'apellido',
             'fecha_nacimiento',
-            DB::raw('DAYOFYEAR(fecha_nacimiento) AS diaAnoNacimiento, DAYOFYEAR(curdate()) AS diaAnoActual')
+            //DB::raw('DAYOFYEAR(fecha_nacimiento) AS diaAnoNacimiento, DAYOFYEAR(curdate()) AS diaAnoActual')//en mysql
+            DB::raw('EXTRACT(doy FROM fecha_nacimiento) AS diaAnoNacimiento, EXTRACT(doy FROM CURRENT_DATE) AS diaAnoActual')
         )
-            ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $fechaDesde->format('Y-m-d'), 'fechaHasta' => $fechaDesde->addMonth(1)->format('Y-m-d')])->get();
+            //->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $fechaDesde->format('Y-m-d'), 'fechaHasta' => $fechaDesde->addMonth(1)->format('Y-m-d')])->get();//Mysl
+            ->groupBy('id')
+            ->havingRaw("EXTRACT(doy FROM fecha_nacimiento)>=EXTRACT(doy FROM to_date('".$fechaDesde->format('Ymd')."','YYYYMMDD')) and EXTRACT(doy FROM fecha_nacimiento)<=EXTRACT(doy FROM to_date('".$fechaDesde->addMonth(1)->format('Ymd')."','YYYYMMDD')) ")->get();//Postgres
+            // dd($cumpleaneros);
         $mensajesBiblicos = Mensaje::all()->random(1)->first(); //Toma un mensaje aleatorio
         $notificaciones = Auth::user()->unreadNotifications;
         return view('home', compact('mensajesBiblicos', 'cumpleaneros', 'notificaciones'));

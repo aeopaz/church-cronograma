@@ -141,7 +141,7 @@ class UsuarioIndex extends Component
                 $usuarioMinisterio = UsuarioMinisterio::create();
                 $usuarioMinisterio->id_user = $idUsuario;
                 $usuarioMinisterio->id_ministerio = $idMinisterio;
-                $usuarioMinisterio->estado = 'Activo';
+                $usuarioMinisterio->estado = 'A';
             }
             //Almacenar en la base de datos
             $usuarioMinisterio->save();

@@ -21,8 +21,8 @@ class CreateProgramacionsTable extends Migration
             $table->string('estado',10)->default('Activo');
             $table->string('nivel',10)->default('');
             $table->unsignedBigInteger('user_id')->default(0);
-            $table->date('fecha');
-            $table->string('hora');
+            $table->date('fecha')->default('2022-06-20');
+            $table->string('hora')->default('00:00');
             $table->timestamps();
         });
     }

@@ -15,10 +15,10 @@ class CreateIglesiasTable extends Migration
     {
         Schema::create('iglesias', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('direccion');
-            $table->string('telefono',10);
-            $table->string('email');
+            $table->string('nombre')->default('');
+            $table->string('direccion')->default('');
+            $table->string('telefono',10)->default('');
+            $table->string('email')->default('');
             $table->timestamps();
         });
     }

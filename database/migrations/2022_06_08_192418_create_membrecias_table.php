@@ -19,17 +19,17 @@ class CreateMembreciasTable extends Migration
             $table->string('numero_documento',10)->default('');
             $table->string('nombre',60)->default('');
             $table->string('apellido',60)->default('');
-            $table->date('fecha_nacimiento');
+            $table->date('fecha_nacimiento',10)->default('2022-06-20');
             $table->string('sexo',1)->default('');
             $table->string('estado_civil',20)->default('');
             $table->string('celular',20)->default('');
-            $table->string('email',20)->default('');
+            $table->string('email',100)->default('');
             $table->string('ciudad',100)->default('');
             $table->string('barrio',100)->default('');
             $table->string('direccion',100)->default('');
-            $table->date('fecha_conversion');
+            $table->date('fecha_conversion',10)->default('2022-06-20');
             $table->string('estado',1)->default('A');
-            $table->unsignedBigInteger('id_usuario');
+            $table->unsignedBigInteger('id_usuario')->default(1);
             $table->timestamps();
         });
     }

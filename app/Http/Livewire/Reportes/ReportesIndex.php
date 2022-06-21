@@ -113,6 +113,7 @@ class ReportesIndex extends Component
                 $tipoMiembro[] = 0;
                 $tipoMiembro[] = 2000;
             }
+            /* Mysql
             $subquery = DB::query()
                 ->select('*')->from('membrecias')
                 ->where(DB::raw('TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE())'), '>=', $edadArray[0])
@@ -166,6 +167,61 @@ class ReportesIndex extends Component
                         where id=(select id_programa from asistencia_programas 
                         where id_miembro=idMiembro having(max(created_at))))),'')nombreUltimoLugar")
             )->fromSub($subquery, 'miembros')->paginate($this->registrosXPagina);
+            */
+            /*Postgres*/
+            $subquery = DB::query()
+            ->select('*')->from('membrecias')
+            ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '>=', $edadArray[0])
+            ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '<', $edadArray[1])
+            ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '>=', $tipoMiembro[0])
+            ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '<', $tipoMiembro[1])
+            ->where('sexo', 'like', '%' . $this->tipoSexo . '%')
+            ->where(function ($query) {
+                $query->where('nombre', 'like', '%' . $this->textoBuscar . '%')
+                    ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%');
+            });
+        $data = DB::query()->select(
+            "id as idMiembro",
+            DB::raw("concat(nombre,' ',apellido) as nombreMIembro"),
+            "fecha_nacimiento",
+            "fecha_conversion",
+            DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) as edad'),
+            DB::raw("case when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 0 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 5 then 'Bebe'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 5 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 12 then 'Niño(a)'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 12 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 18 then 'Adolescente'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 18 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 25 then 'Joven'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 25 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 40 then 'Joven Adulto'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 40 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 55 then 'Adulto'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 55 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 65 then 'Adulto Mayor'
+                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 65 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 75 then 'Anciano'
+                   else 'Longevo' end as categoriaEdad"),
+            DB::raw("if(sexo='F','FEMENINO','MASCUNILO') as sexo"),
+            DB::raw(" case
+                   when estado_civil='c' then 'Casado(a)'
+                   when estado_civil='d' then 'Divorciado(a)'
+                   when estado_civil='u' then 'UnioLibre'
+                   when estado_civil='v' then 'Viudo(a)'
+                   else 'Soltero(a)'
+                   end as estadoCivil"),
+            "celular",
+            "email",
+            "ciudad",
+            "barrio",
+            "direccion",
+            "fecha_conversion",
+            "estado",
+            DB::raw(" ifnull((select count(*) from asistencia_programas where id_miembro=idMiembro),0)numeroAsistencias"),
+            DB::raw(" ifnull((select nombre from programacions 
+                   where id=(select id_programa from asistencia_programas 
+                   where id_miembro=idMiembro having(max(created_at)))),'')nombreUltimoPrograma"),
+            DB::raw(" ifnull((select fecha from programacions 
+                   where id=(select id_programa from asistencia_programas 
+                   where id_miembro=idMiembro having(max(created_at)))),'0000-00-00')FechaUltimoPrograma"),
+            DB::raw(" ifnull((select nombre from iglesias 
+                   where id=(select iglesia_id from programacions
+                    where id=(select id_programa from asistencia_programas 
+                    where id_miembro=idMiembro having(max(created_at))))),'')nombreUltimoLugar")
+        )->fromSub($subquery, 'miembros')->paginate($this->registrosXPagina);
 
             $this->totales = $this->totalizarXCategoriaEdad($data);
             return $data;
@@ -291,6 +347,7 @@ class ReportesIndex extends Component
                     'ministerios.nombre as nombreMinisterio',
                     'rols.nombre as nombreRol'
                 ]);
+                
             return $data;
         } catch (\Throwable $th) {
             report($th);

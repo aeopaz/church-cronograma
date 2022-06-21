@@ -15,8 +15,8 @@ class CreateTableUsuarioMinisterio extends Migration
     {
         Schema::create('usuario_ministerio', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_ministerio');
+            $table->unsignedBigInteger('id_user')->default(1);
+            $table->unsignedBigInteger('id_ministerio')->default(1);
             $table->string('estado',1)->default('');
             $table->timestamps();
         });

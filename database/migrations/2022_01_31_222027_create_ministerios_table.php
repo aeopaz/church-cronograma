@@ -15,9 +15,9 @@ class CreateMinisteriosTable extends Migration
     {
         Schema::create('ministerios', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->integer('iglesia_id');
-            $table->integer('user_id');//Id del Líder
+            $table->string('nombre')->default('');
+            $table->integer('iglesia_id')->default(1);
+            $table->integer('user_id')->default(1);//Id del Líder
             $table->timestamps();
         });
     }
