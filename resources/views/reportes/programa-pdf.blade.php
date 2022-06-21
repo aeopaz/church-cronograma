@@ -21,17 +21,17 @@
             @foreach ($data as $dato)
                 <tr>
                     <td>{{ $dato->idPrograma }}</td>
-                    <td>{{ $dato->tipoPrograma }}</td>
+                    <td>{{ $dato->tipoprograma }}</td>
                     <td>{{ $dato->nombrePrograma }}</td>
                     <td>{{ $dato->fechaPrograma . ' ' . $dato->horaPrograma }}</td>
                     <td>{{ $dato->lugar }}</td>
-                    <td>{{ $dato->numeroAsistentes }}</td>
-                    <td>{{ $dato->numeroNuevos }}</td>
-                    <td>{{ $dato->numeroAnTiguos }}</td>
-                    <td>{{ $dato->numeroPuntuales }}</td>
-                    <td>{{ $dato->numeroRetrasados }}</td>
-                    <td>{{ $dato->numeroLlegaronFinalizando }}</td>
-                    <td>{{ $dato->usuarioOrganizador }}</td>
+                    <td>{{ $dato->numeroasistentes }}</td>
+                    <td>{{ $dato->numeronuevos }}</td>
+                    <td>{{ $dato->numeroantiguos }}</td>
+                    <td>{{ $dato->numeropuntuales }}</td>
+                    <td>{{ $dato->numeroretrasados }}</td>
+                    <td>{{ $dato->numerollegaronfinalizando }}</td>
+                    <td>{{ $dato->usuarioorganizador }}</td>
                 </tr>
             @endforeach
         </tbody>

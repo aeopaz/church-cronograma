@@ -47,13 +47,14 @@
         <tbody>
             @foreach ($data as $dato)
                 <tr>
-                    <td>{{$dato->idPrograma}}</td>
+                    <td>{{ $dato->idPrograma }}</td>
                     <td>{{ $dato->nombreMinisterio }}</td>
                     <td>{{ $dato->nombrePrograma }}</td>
-                    <td>{{ $dato->fechaPrograma." ".$dato->horaPrograma }}</td>
+                    <td>{{ $dato->fechaPrograma . ' ' . $dato->horaPrograma }}</td>
                     <td>{{ $dato->nombreParticipante }}</td>
                     <td>{{ $dato->nombreRol }}</td>
-                    <td><button class="btn btn-primary" wire:click='verPrograma({{ $dato->idPrograma }})'>Ver</button>
+                    <td><button class="btn btn-primary"
+                            wire:click='verPrograma({{ $dato->idPrograma }})'>Ver</button>
                     </td>
                 </tr>
             @endforeach

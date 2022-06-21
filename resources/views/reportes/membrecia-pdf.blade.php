@@ -18,14 +18,14 @@
             @foreach ($data as $dato)
                 <tr>
                     <td>{{ $dato->idMiembro }}</td>
-                    <td>{{ $dato->nombreMIembro }}</td>
-                    <td>{{ $dato->categoriaEdad }}</td>
+                    <td>{{ $dato->nombremiembro }}</td>
+                    <td>{{ $dato->categoriaedad }}</td>
                     <td>{{Carbon\Carbon::parse($dato->fecha_conversion)->diffInMonths()<3?'Nuevo':'Antiguo';}}</td>
-                    <td>{{ $dato->numeroAsistencias }}</td>
-                    <td>{{ $dato->FechaUltimoPrograma }}</td>
+                    <td>{{ $dato->numeroasistencias }}</td>
+                    <td>{{ $dato->fechaultimoprograma }}</td>
                     <td>{{Carbon\Carbon::parse($dato->FechaUltimoPrograma)->diffForHumans()}}</td>
-                    <td>{{ $dato->nombreUltimoPrograma }}</td>
-                    <td>{{ $dato->nombreUltimoLugar }}</td>
+                    <td>{{ $dato->nombreultimoprograma }}</td>
+                    <td>{{ $dato->nombreultimolugar }}</td>
                 </tr>
             @endforeach
         </tbody>

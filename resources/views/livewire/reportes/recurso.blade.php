@@ -42,13 +42,13 @@
                 <tr>
                     <td>{{ $dato->idRecurso }}</td>
                     <td>{{ $dato->nombre }}</td>
-                    <td>{{ $dato->tipoRecurso }}</td>
+                    <td>{{ $dato->tiporecurso }}</td>
                     <td>{{ $dato->ministerio }}</td>
-                    <td>{{ $dato->vecesUtilizado }}</td>
-                    <td>{{ $dato->FechaUltimoPrograma }}</td>
-                    <td>{{Carbon\Carbon::parse($dato->FechaUltimoPrograma)->diffForHumans()}}</td>
-                    <td>{{ $dato->nombreUltimoPrograma }}</td>
-                    <td>{{ $dato->nombreUltimoLugar }}</td>
+                    <td>{{ $dato->vecesutilizado }}</td>
+                    <td>{{ $dato->fechaultimoprograma }}</td>
+                    <td>{{Carbon\Carbon::parse($dato->fechaultimoprograma)->diffForHumans()}}</td>
+                    <td>{{ $dato->nombreultimoprograma }}</td>
+                    <td>{{ $dato->nombreultimolugar }}</td>
                     <td><button class="btn btn-primary" wire:click='verRecurso({{ $dato->idRecurso }})'>Ver</button>
                     </td>
                 </tr>

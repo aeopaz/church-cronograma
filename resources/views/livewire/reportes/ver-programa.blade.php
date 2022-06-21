@@ -63,7 +63,7 @@
                                         <tr>
                                             <td>{{ $asistente->nombreMiembro . ' ' . $asistente->apellidoMiembro }}
                                             </td>
-                                            <td>{{ $asistente->tipoMiembro }}</td>
+                                            <td>{{ Carbon\Carbon::parse($asistente->fechaConversion)->diffInMonths()>3?'Antiguo':'Nuevo' }}</td>
                                             <td>{{ $asistente->tipoLlegada }}</td>
                                         </tr>
                                     @endforeach

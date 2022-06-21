@@ -43,7 +43,7 @@ class IglesiaIndex extends Component
         $validateData=$this->validate([
             'nombre'=>'required|max:190',
             'direccion'=>'required|max:190',
-            'telefono'=>'required|numeric|max:9999999999|min:1111111111',
+            'telefono' => 'required|digits:10',
             'email'=>'required|email|max:190'
         ]);
 

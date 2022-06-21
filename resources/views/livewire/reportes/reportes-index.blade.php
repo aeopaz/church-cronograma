@@ -39,10 +39,10 @@
                         </div>
                     </div>
                     <div class="form-group row justify-content-center">
-                        <a class="btn btn-primary btn-sm mr-3 {{ count($data) <= 0 ? 'disabled' : '' }}"
+                        <a class="btn btn-primary btn-sm mr-3 {{ $data==null ? 'disabled' : '' }}"
                             href="{{ url('reporte/pdf/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta . '/' . $idTipoMinisterio) }}"
                             target="_blank">Generar PDF</a>
-                        <a class="btn btn-primary btn-sm {{ count($data) <= 0 ? 'disabled' : '' }}"
+                        <a class="btn btn-primary btn-sm {{ $data==null ? 'disabled' : '' }}"
                             href="{{ url('reporte/excel/' . $tipoReporte . '/' . $fechaDesde . '/' . $fechaHasta . '/' . $idTipoMinisterio) }}"
                             target="_blank">Exportar a Excel</a>
 
@@ -51,7 +51,8 @@
             </div>
         </div>
     </div>
-    @if (count($data) == 0)
+    
+    @if ($data == null)
         <div class="div-centrar-tabla">No hay registros para mostrar</div>
     @else
         <div class="row">

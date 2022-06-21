@@ -9,6 +9,11 @@
                 </button>
             </div>
             <div class="modal-body">
+                @if (session()->has('fail'))
+                    <div class="alert alert-danger">
+                        {{ session('fail') }}
+                    </div>
+                @endif
                 <label for="">Tipo Documento Identificación</label>
                 <select type="text" class="form-control @error('tipoDocumento') is-invalid @enderror"
                     wire:model='tipoDocumento'>
@@ -38,7 +43,8 @@
                     </span>
                 @enderror
                 <label for="">Apellido</label>
-                <input type="text" class="form-control @error('apellido') is-invalid @enderror" wire:model='apellido'>
+                <input type="text" class="form-control @error('apellido') is-invalid @enderror"
+                    wire:model='apellido'>
                 @error('apellido')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

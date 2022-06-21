@@ -66,6 +66,7 @@ class ReportesIndex extends Component
         $listaTipoRecursos = TipoRecurso::all(['id', 'nombre']);
         $listaMinisterios = Ministerio::all(['id', 'nombre']);
         $listaRoles = Rol::all(['id', 'nombre']);
+
         if ($this->tipoReporte == 1) {
             $data = $this->informePrograma();
         }
@@ -77,6 +78,7 @@ class ReportesIndex extends Component
         }
         if ($this->tipoReporte == 4) {
             $data = $this->informeMembrecia();
+            // dd($data);
         }
         if ($this->tipoReporte == 5) {
             $data = $this->informeRecurso();
@@ -169,61 +171,43 @@ class ReportesIndex extends Component
             )->fromSub($subquery, 'miembros')->paginate($this->registrosXPagina);
             */
             /*Postgres*/
-            $subquery = DB::query()
-            ->select('*')->from('membrecias')
-            ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '>=', $edadArray[0])
-            ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '<', $edadArray[1])
-            ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '>=', $tipoMiembro[0])
-            ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '<', $tipoMiembro[1])
-            ->where('sexo', 'like', '%' . $this->tipoSexo . '%')
-            ->where(function ($query) {
-                $query->where('nombre', 'like', '%' . $this->textoBuscar . '%')
-                    ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%');
-            });
-        $data = DB::query()->select(
-            "id as idMiembro",
-            DB::raw("concat(nombre,' ',apellido) as nombreMIembro"),
-            "fecha_nacimiento",
-            "fecha_conversion",
-            DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) as edad'),
-            DB::raw("case when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 0 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 5 then 'Bebe'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 5 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 12 then 'Niño(a)'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 12 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 18 then 'Adolescente'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 18 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 25 then 'Joven'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 25 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 40 then 'Joven Adulto'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 40 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 55 then 'Adulto'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 55 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 65 then 'Adulto Mayor'
-                   when TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) >= 65 and TIMESTAMPDIFF(YEAR,fecha_nacimiento,CURDATE()) < 75 then 'Anciano'
-                   else 'Longevo' end as categoriaEdad"),
-            DB::raw("if(sexo='F','FEMENINO','MASCUNILO') as sexo"),
-            DB::raw(" case
-                   when estado_civil='c' then 'Casado(a)'
-                   when estado_civil='d' then 'Divorciado(a)'
-                   when estado_civil='u' then 'UnioLibre'
-                   when estado_civil='v' then 'Viudo(a)'
-                   else 'Soltero(a)'
-                   end as estadoCivil"),
-            "celular",
-            "email",
-            "ciudad",
-            "barrio",
-            "direccion",
-            "fecha_conversion",
-            "estado",
-            DB::raw(" ifnull((select count(*) from asistencia_programas where id_miembro=idMiembro),0)numeroAsistencias"),
-            DB::raw(" ifnull((select nombre from programacions 
-                   where id=(select id_programa from asistencia_programas 
-                   where id_miembro=idMiembro having(max(created_at)))),'')nombreUltimoPrograma"),
-            DB::raw(" ifnull((select fecha from programacions 
-                   where id=(select id_programa from asistencia_programas 
-                   where id_miembro=idMiembro having(max(created_at)))),'0000-00-00')FechaUltimoPrograma"),
-            DB::raw(" ifnull((select nombre from iglesias 
-                   where id=(select iglesia_id from programacions
-                    where id=(select id_programa from asistencia_programas 
-                    where id_miembro=idMiembro having(max(created_at))))),'')nombreUltimoLugar")
-        )->fromSub($subquery, 'miembros')->paginate($this->registrosXPagina);
+            $data = Membrecia::select(
+                "id as idMiembro",
+                'nombre',
+                'apellido',
+                'sexo as idSexo',
+                DB::raw("concat(nombre,' ',apellido) as nombreMiembro"),
+                "fecha_nacimiento",
+                "fecha_conversion",
+                DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) as edad'),
+                DB::raw("case when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 0 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 5 then 'Bebe' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 5 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 12 then 'Niño(a)' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 12 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 18 then 'Adolescente' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 18 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 25 then 'Joven' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 25 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 40 then 'Joven Adulto' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 40 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 55 then 'Adulto' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 55 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 65 then 'Adulto Mayor' when EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) >= 65 and EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento) < 75 then 'Anciano' else 'Longevo' end as categoriaEdad"),
+                DB::raw("case when sexo='F' then 'FEMENINO' else 'MASCUNILO' end as sexo"),
+                DB::raw("case when estado_civil='c' then 'Casado(a)' when estado_civil='d' then 'Divorciado(a)' when estado_civil='u' then 'UnioLibre' when estado_civil='v' then 'Viudo(a)' else 'Soltero(a)' end as estadoCivil"),
+                "celular",
+                "email",
+                "ciudad",
+                "barrio",
+                "direccion",
+                "fecha_conversion",
+                "estado",
+                DB::raw("(select count(*) from asistencia_programas where id_miembro=membrecias.id) as numeroAsistencias"),
+                DB::raw("(select nombre as nombreultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
+                DB::raw("(select fecha as fechaultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
+                DB::raw("(select nombre as nombreultimolugar from iglesias where id=(select iglesia_id from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1)))"),
+            )
+                ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '>=', $edadArray[0])
+                ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '<', $edadArray[1])
+                ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '>=', $tipoMiembro[0])
+                ->where(DB::raw('12*(EXTRACT(year from current_date) - EXTRACT(year from fecha_nacimiento))'), '<', $tipoMiembro[1])
+                ->where('sexo', 'like', '%' . $this->tipoSexo . '%')
+                ->where(function ($query) {
+                    $query->where('nombre', 'like', '%' . $this->textoBuscar . '%')
+                        ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%');
+                })->paginate($this->registrosXPagina);
+
 
             $this->totales = $this->totalizarXCategoriaEdad($data);
+
             return $data;
         } catch (\Throwable $th) {
             report($th);
@@ -245,7 +229,8 @@ class ReportesIndex extends Component
     public function informePrograma()
     {
         try {
-
+            /* MySQL*/
+            /*
             $subquery = DB::query()
                 ->select('*')->from('programacions')
                 // ->where('idPrograma', 'like',  $this->tipoPrograma )
@@ -272,7 +257,32 @@ class ReportesIndex extends Component
                 DB::raw("ifnull((select count(*) from asistencia_programas where id_programa=idPrograma and tipo_miembro='Antiguo'),0)numeroAnTiguos"),
                 DB::raw("ifnull((select name from users where id=user_id),0)usuarioOrganizador"),
 
-            )->fromSub($subquery, "programas")->paginate($this->registrosXPagina);
+            )->fromSub($subquery, "programas")->paginate($this->registrosXPagina);*/
+
+            //Postgres
+            $data = Programacion::select(
+                "id as idPrograma",
+                DB::raw("(select nombre from tipo_programacions where id=tipo_programacion_id) as tipoPrograma"),
+                "nombre as nombrePrograma",
+                "fecha as fechaPrograma",
+                "hora as horaPrograma",
+                DB::raw("(select nombre from iglesias where id=iglesia_id) as lugar"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id) as numeroAsistentes"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id and tipo_llegada='Puntual') as numeroPuntuales"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id and tipo_llegada='Retrasada') as numeroRetrasados"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id and tipo_llegada='Final') as numeroLlegaronFinalizando"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id and tipo_miembro='Nuevo') as numeroNuevos"),
+                DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id and tipo_miembro='Antiguo') as numeroAnTiguos"),
+                DB::raw("(select name from users where id=user_id) as usuarioOrganizador")
+            )
+                // ->where('idPrograma', 'like',  $this->tipoPrograma )
+                ->where('tipo_programacion_id', 'like',  $this->tipoPrograma)
+                ->where('iglesia_id', 'like', $this->tipoLugarPrograma)
+                ->where('estado', 'like',  $this->estadoPrograma)
+                ->where('user_id', 'like', $this->idOrganizadorPrograma)
+                ->where('nombre', 'like', '%' . $this->textoBuscar . '%')
+                ->whereDate('fecha', '>=', $this->fechaDesde)
+                ->whereDate('fecha', '<=', $this->fechaHasta)->paginate($this->registrosXPagina);
 
             return $data;
         } catch (\Throwable $th) {
@@ -285,33 +295,59 @@ class ReportesIndex extends Component
     public function informeRecurso()
     {
         try {
+            //Mysql
 
-            $subquery = DB::query()
-                ->select('*')->from('recursos')
-                ->where('ministerio_id', 'like',  $this->idTipoMinisterio)
-                ->where('tipo_recurso_id', 'like',  $this->idTipoRecurso)
-                ->where('nombre', 'like', '%' . $this->textoBuscar . '%');
-            $data = DB::query()->select(
-                "id as idRecurso",
-                "nombre",
-                "url",
-                "tipo_recurso_id",
-                DB::raw("ifnull((SELECT nombre from tipo_recursos where id=tipo_recurso_id),'')tipoRecurso"),
-                "ministerio_id",
-                DB::raw("ifnull((SELECT nombre from ministerios where id=ministerio_id),'')ministerio"),
-                DB::raw(" ifnull((select count(*) from recurso_programacion_ministerios where recurso_id=idRecurso),0)vecesUtilizado"),
+            // $subquery = DB::query()
+            //     ->select('*')->from('recursos')
+            //     ->where('ministerio_id', 'like',  $this->idTipoMinisterio)
+            //     ->where('tipo_recurso_id', 'like',  $this->idTipoRecurso)
+            //     ->where('nombre', 'like', '%' . $this->textoBuscar . '%');
+            // $data = DB::query()->select(
+            //     "id as idRecurso",
+            //     "nombre",
+            //     "url",
+            //     "tipo_recurso_id",
+            //     DB::raw("ifnull((SELECT nombre from tipo_recursos where id=tipo_recurso_id),'')tipoRecurso"),
+            //     "ministerio_id",
+            //     DB::raw("ifnull((SELECT nombre from ministerios where id=ministerio_id),'')ministerio"),
+            //     DB::raw(" ifnull((select count(*) from recurso_programacion_ministerios where recurso_id=idRecurso),0)vecesUtilizado"),
 
-                DB::raw(" ifnull((select nombre from programacions 
-                            where id=(select programacion_id from recurso_programacion_ministerios 
-                            where recurso_id=idRecurso having(max(created_at)))),'')nombreUltimoPrograma"),
-                DB::raw(" ifnull((select fecha from programacions 
-                            where id=(select programacion_id from recurso_programacion_ministerios 
-                            where recurso_id=idRecurso having(max(created_at)))),'0000-00-00')FechaUltimoPrograma"),
-                DB::raw(" ifnull((select nombre from iglesias 
-                            where id=(select iglesia_id from programacions
-                            where id=(select programacion_id from recurso_programacion_ministerios 
-                            where recurso_id=idRecurso having(max(created_at))))),'')nombreUltimoLugar")
-            )->fromSub($subquery, 'recursos')->paginate($this->registrosXPagina);
+            //     DB::raw(" ifnull((select nombre from programacions 
+            //                 where id=(select programacion_id from recurso_programacion_ministerios 
+            //                 where recurso_id=idRecurso having(max(created_at)))),'')nombreUltimoPrograma"),
+            //     DB::raw(" ifnull((select fecha from programacions 
+            //                 where id=(select programacion_id from recurso_programacion_ministerios 
+            //                 where recurso_id=idRecurso having(max(created_at)))),'0000-00-00')FechaUltimoPrograma"),
+            //     DB::raw(" ifnull((select nombre from iglesias 
+            //                 where id=(select iglesia_id from programacions
+            //                 where id=(select programacion_id from recurso_programacion_ministerios 
+            //                 where recurso_id=idRecurso having(max(created_at))))),'')nombreUltimoLugar")
+            // )->fromSub($subquery, 'recursos')->paginate($this->registrosXPagina);
+
+            //Postgres
+        $data = Recurso::select(
+            "id as idRecurso",
+            "nombre",
+            "url",
+            "tipo_recurso_id",
+            DB::raw("(SELECT nombre from tipo_recursos where id=tipo_recurso_id) as tipoRecurso"),
+            "ministerio_id",
+            DB::raw("(SELECT nombre from ministerios where id=ministerio_id) as ministerio"),
+            DB::raw("(select count(*) from recurso_programacion_ministerios where recurso_id=recursos.id) as vecesUtilizado"),
+            DB::raw("(select nombre from programacions 
+                        where id=(select programacion_id from recurso_programacion_ministerios 
+                        where recurso_id=recursos.id order by created_at desc limit 1)) as nombreUltimoPrograma"),
+            DB::raw("(select fecha from programacions 
+                        where id=(select programacion_id from recurso_programacion_ministerios 
+                        where recurso_id=recursos.id order by created_at desc limit 1)) as FechaUltimoPrograma"),
+            DB::raw("(select nombre from iglesias 
+                        where id=(select iglesia_id from programacions
+                        where id=(select programacion_id from recurso_programacion_ministerios 
+                        where recurso_id=recursos.id order by created_at desc limit 1))) as nombreUltimoLugar")
+        )->where('ministerio_id', 'like',  $this->idTipoMinisterio)
+        ->where('tipo_recurso_id', 'like',  $this->idTipoRecurso)
+        ->where('nombre', 'like', '%' . $this->textoBuscar . '%')->paginate($this->registrosXPagina);
+        
 
             return $data;
         } catch (\Throwable $th) {
@@ -347,7 +383,7 @@ class ReportesIndex extends Component
                     'ministerios.nombre as nombreMinisterio',
                     'rols.nombre as nombreRol'
                 ]);
-                
+
             return $data;
         } catch (\Throwable $th) {
             report($th);
@@ -363,12 +399,13 @@ class ReportesIndex extends Component
                 'nombre',
                 'apellido',
                 'fecha_nacimiento',
-                DB::raw('DAYOFYEAR(fecha_nacimiento) AS diaAnoNacimiento, DAYOFYEAR(curdate()) AS diaAnoActual')
+                DB::raw('EXTRACT(doy FROM fecha_nacimiento) AS diaAnoNacimiento, EXTRACT(doy FROM CURRENT_DATE) AS diaAnoActual')
             )
                 // ->Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
                 // ->Orwhere('apellido', 'like', '%' . $this->textoBuscar . '%')
-                ->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $this->fechaDesde, 'fechaHasta' => $this->fechaHasta])
-                ->orderBy('diaAnoNacimiento','asc')
+                ->havingRaw("EXTRACT(doy FROM fecha_nacimiento)>=EXTRACT(doy FROM to_date('".Carbon::parse($this->fechaDesde)->format('Ymd')."','YYYYMMDD')) and EXTRACT(doy FROM fecha_nacimiento)<=EXTRACT(doy FROM to_date('".Carbon::parse($this->fechaHasta)->format('Ymd')."','YYYYMMDD'))")
+                ->orderBy('diaanonacimiento', 'asc')
+                ->groupBy('id')
                 ->paginate($this->registrosXPagina);
 
             return $data;
@@ -412,12 +449,13 @@ class ReportesIndex extends Component
                 'hora'
 
             ]);
+           
 
         // dd($this->datosPrograma);
         $this->datosAsistentes = AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
             ->where('id_programa', $idPrograma)
             ->select(
-                DB::raw('IF (TIMESTAMPDIFF(MONTH,fecha_conversion,CURDATE())<' . $this->mesesMiembroAntiguo() . ',"Nuevo","Antiguo") as tipoMiembro'),
+                //DB::raw('IF (TIMESTAMPDIFF(MONTH,fecha_conversion,CURDATE())<' . $this->mesesMiembroAntiguo() . ',"Nuevo","Antiguo") as tipoMiembro'),
                 'membrecias.id as idMiembro',
                 'membrecias.nombre as nombreMiembro',
                 'membrecias.apellido as apellidoMiembro',

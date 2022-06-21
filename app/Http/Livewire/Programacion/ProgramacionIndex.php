@@ -534,7 +534,7 @@ class ProgramacionIndex extends Component
     //Eliminar asistencia de miembros al programa
     public function eliminarAsistencia($idMiembro)
     {
-        $this->pestana='participante';
+        $this->pestana='asistencia';
         try {
 
             $asistenciaMiembro = AsistenciaPrograma::find($idMiembro);

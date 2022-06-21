@@ -20,11 +20,11 @@
 
                 <tr>
                     <td>{{ $datosPrograma->idPrograma }}</td>
-                    <td>{{ $datosPrograma->tipoPrograma }}</td>
+                    <td>{{ $datosPrograma->tipoprograma }}</td>
                     <td>{{ $datosPrograma->nombrePrograma }}</td>
                     <td>{{ $datosPrograma->fecha . ' ' . $datosPrograma->hora }}</td>
-                    <td>{{ $datosPrograma->nombreLugar }}</td>
-                    <td>{{ $datosPrograma->nombreOrganizador }}</td>
+                    <td>{{ $datosPrograma->lugar }}</td>
+                    <td>{{ $datosPrograma->usuarioorganizador }}</td>
                 </tr>
 
             </tbody>
@@ -48,12 +48,12 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ $datosPrograma->numeroAsistentes }}</td>
-                    <td>{{ $datosPrograma->numeroNuevos }}</td>
-                    <td>{{ $datosPrograma->numeroAnTiguos }}</td>
-                    <td>{{ $datosPrograma->numeroPuntuales }}</td>
-                    <td>{{ $datosPrograma->numeroRetrasados }}</td>
-                    <td>{{ $datosPrograma->numeroLlegaronFinalizando }}</td>
+                    <td>{{ $datosPrograma->numeroasistentes }}</td>
+                    <td>{{ $datosPrograma->numeronuevos }}</td>
+                    <td>{{ $datosPrograma->numeroantiguos }}</td>
+                    <td>{{ $datosPrograma->numeropuntuales }}</td>
+                    <td>{{ $datosPrograma->numeroretrasados }}</td>
+                    <td>{{ $datosPrograma->numerollegaronfinalizando }}</td>
                 </tr>
 
             </tbody>
@@ -77,7 +77,7 @@
                     <tr>
                         <td>{{ $asistente->nombreMiembro . ' ' . $asistente->apellidoMiembro }}
                         </td>
-                        <td>{{ $asistente->tipoMiembro }}</td>
+                        <td>{{Carbon\Carbon::parse($asistente->fechaConversion)->diffInMonths()<3?'Nuevo':'Antiguo';}}</td>
                         <td>{{ $asistente->tipoLlegada }}</td>
                     </tr>
                 @endforeach

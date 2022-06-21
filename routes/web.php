@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware('guest');
 
 Route::post('/users/register', [UserController::class, 'registro'])->name('users.registro');
 Auth::routes();
