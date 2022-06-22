@@ -30,9 +30,11 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'celular' => 'required|numeric|max:9999999999',
+            'celular' => 'required|digits:10',
             'password' => 'required|string|min:5|confirmed',
         ]);
+
+        
         try {
             
             $user=  User::create();
@@ -44,6 +46,7 @@ class UserController extends Controller
             $user->estado='I';
             $user->password=Hash::make($request->password);
             $user->save();
+            dd($user);
             // $user = User::create([
             //     'name' => $request->name,
             //     'email' => $request->email,
