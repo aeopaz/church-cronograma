@@ -1,7 +1,7 @@
 <div>
     {{-- Opciones de búsqueda --}}
     @include('componentes.buscador')
-    @canany(['admin','lider'])
+    @canany(['admin', 'lider'])
         <x-adminlte-button label="Crear Recurso" theme="primary" wire:click='create' /> <br>
     @endcanany
 
@@ -28,28 +28,33 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($recursos as $recurso)
-                <tr>
-                    <td>{{ $recurso->idRecurso }}</td>
-                    <td>{{ $recurso->nombreRecurso }}</td>
-                    <td>{{ $recurso->nombreTipoRecurso }}</td>
-                    <td colspan="2">
+            @if (count($recursos) == 0)
+            No se encontraron registros
+            @else
+                @foreach ($recursos as $recurso)
+                    <tr>
+                        <td>{{ $recurso->idRecurso }}</td>
+                        <td>{{ $recurso->nombreRecurso }}</td>
+                        <td>{{ $recurso->nombreTipoRecurso }}</td>
+                        <td colspan="2">
 
-                        <x-adminlte-button theme="primary" icon="fas fa-eye"
-                            wire:click='edit({{ $recurso->idRecurso }})' />
+                            <x-adminlte-button theme="primary" icon="fas fa-eye"
+                                wire:click='edit({{ $recurso->idRecurso }})' />
 
-                        @can('admin')
-                            <x-adminlte-button theme="danger" icon="fas fa-trash"
-                                wire:click='delete({{ $recurso->idRecurso }})' wire:loading.remove
-                                wire:target='delete' />
+                            @can('admin')
+                                <x-adminlte-button theme="danger" icon="fas fa-trash"
+                                    wire:click='delete({{ $recurso->idRecurso }})' wire:loading.remove
+                                    wire:target='delete' />
                                 <div wire:loading wire:target='delete'>
                                     @include('componentes.carga')
                                 </div>
-                        @endcan
+                            @endcan
 
-                    </td>
-                </tr>
-            @endforeach
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+
         </tbody>
     </table>
     {{ $recursos->links() }}

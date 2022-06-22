@@ -218,7 +218,7 @@ class ProgramacionIndex extends Component
     }
     public function store()
     {
-        $fechaActual = Carbon::now();
+        $fechaActual = Carbon::now()->subDay(1)->format('Y-m-d');
         $validateData = $this->validate([
             'idTipoPrograma' => 'required',
             'nombrePrograma' => 'required|string|max:50',
@@ -235,8 +235,7 @@ class ProgramacionIndex extends Component
             if ($programa) {
                 return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');
             }
-// dd($this->fechaPrograma);
-            // dd(Carbon::parse($this->fechaPrograma));
+
             $programa = Programacion::create();
             $programa->tipo_programacion_id = $this->idTipoPrograma;
             $programa->nombre = $this->nombrePrograma;
@@ -273,7 +272,7 @@ class ProgramacionIndex extends Component
     //Actualizar programa
     public function update($idPrograma)
     {
-        $fechaActual = Carbon::now();
+        $fechaActual = Carbon::now()->subDay(1)->format('Y-m-d');
         $validateData = $this->validate([
             'idTipoPrograma' => 'required',
             'estadoPrograma' => 'required',
