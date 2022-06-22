@@ -162,11 +162,11 @@ class ProgramacionIndex extends Component
             }
         }
         //Lugares
-        $listaLugares = Iglesia::all(['id', 'nombre']);
+        $listaLugares = Iglesia::orderBy('nombre','asc',['id', 'nombre'])->get();
         //Tipos de Programa
-        $listaTipoPrograma = TipoProgramacion::all(['id', 'nombre']);
+        $listaTipoPrograma = TipoProgramacion::orderBy('nombre','asc',['id', 'nombre'])->get();
         //Ministerios
-        $listaMinisterios = Ministerio::all(['id', 'nombre']);
+        $listaMinisterios = Ministerio::orderBy('nombre','asc',['id', 'nombre'])->get();
         //Participantes Programa
         $participantes = $this->participantesPrograma($this->idPrograma);
         //Recursos Programa
@@ -185,9 +185,9 @@ class ProgramacionIndex extends Component
             ->orderBy('nombreUsuario', 'asc')
             ->get(['users.name as nombreUsuario', 'users.id as idUsuario']);
         //Roles
-        $roles = Rol::all(['id', 'nombre']);
+        $roles = Rol::orderBy('nombre','asc',['id', 'nombre'])->get();
         //Obtiene el listado de miembros
-        $miembros = Membrecia::all(['id', 'nombre', 'apellido']);
+        $miembros = Membrecia::orderBy('nombre','asc',['id', 'nombre', 'apellido'])->get();
         //Obtiene los miembros que asistieron al programa
         $asistenciaMiembros = $this->asistenciaPrograma($this->idPrograma);
         //Retornar datos a la vista
