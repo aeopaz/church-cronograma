@@ -22,14 +22,14 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoRecursoSeeder::class);
         $this->call(MinisterioSeeder::class);
         $this->call(RolSeeder::class);
-        $this->call(RecursoSeeder::class);
+        // $this->call(RecursoSeeder::class);
         $this->call(UsuarioSeeder::class);
-        $this->call(ProgramacionSeeder::class);
-        $this->call(ProgramacionMinisterioSeeder::class);
-        $this->call(ParticipantesProgramacionMinisterioSeeder::class);
-        $this->call(RecursoProgramacionMinisterioSeeder::class);
-        $this->call(MiembrosSeeder::class);
-        $this->call(AsistenciaSeeder::class);
+        // $this->call(ProgramacionSeeder::class);
+        // $this->call(ProgramacionMinisterioSeeder::class);
+        // $this->call(ParticipantesProgramacionMinisterioSeeder::class);
+        // $this->call(RecursoProgramacionMinisterioSeeder::class);
+        // $this->call(MiembrosSeeder::class);
+        // $this->call(AsistenciaSeeder::class);
         $this->call(MensajeSeeder::class);
 
     }
