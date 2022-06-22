@@ -46,7 +46,7 @@ class UserController extends Controller
             $user->estado='I';
             $user->password=Hash::make($request->password);
             $user->save();
-            dd($user);
+            
             // $user = User::create([
             //     'name' => $request->name,
             //     'email' => $request->email,

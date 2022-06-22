@@ -321,6 +321,12 @@ return [
             'icon' => 'fas fa-fw fa-bug',
             'can' => 'admin'
         ],
+        [
+            'text' => 'Backup a Excel',
+            'url'  => 'backup/excel/index',
+            'icon' => 'fas fa-fw fa-download ',
+            'can' => 'admin'
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',

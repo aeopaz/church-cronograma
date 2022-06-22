@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackupToExcelController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IglesiaController;
@@ -82,6 +83,10 @@ Route::middleware('auth')->group(function () {
         Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}/{ministerio}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
         Route::get('reporte/excel/{tipo}/{fecha1}/{fecha2}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
         Route::get('reporte/excel/{tipo}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
+
+        //Backup Excel
+        Route::get('backup/excel/index',[BackupToExcelController::class,'index'])->name('backup.index')->middleware('can:admin');
+        Route::get('backup/excel/exportar',[BackupToExcelController::class,'exportar'])->name('backup.exportar')->middleware('can:admin');
 
 
 
