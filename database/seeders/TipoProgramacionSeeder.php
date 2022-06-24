@@ -47,5 +47,23 @@ class TipoProgramacionSeeder extends Seeder
         TipoProgramacion::create([
             'nombre'=>'Discipulado'
         ]);
+        TipoProgramacion::create([
+            'nombre'=>'Reunión Especial'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Visitación'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Casa de Familia'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Reunión de Parejas'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Evangelización'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Aseo y Limpieza'
+        ]);
     }
 }

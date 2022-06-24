@@ -47,6 +47,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/ministerio/index', [MinisterioController::class, 'index'])->name('ministerio.index')->middleware('can:admin');
         Route::get('/parametrizacion/roles/index', [RolController::class, 'index'])->name('rol.index')->middleware('can:admin');
 
+        Route::get('/parametrizacion/tipos-programas/index', function(){
+            return view('parametrizacion.tipos-programas.index');
+        })->name('tipo-programa.index')->middleware('can:admin');
+
         Route::get('/programacion/index', function () {
             return view('programacion.index');
         })->name('programacion.index');
@@ -87,8 +91,6 @@ Route::middleware('auth')->group(function () {
         //Backup Excel
         Route::get('backup/excel/index',[BackupToExcelController::class,'index'])->name('backup.index')->middleware('can:admin');
         Route::get('backup/excel/exportar',[BackupToExcelController::class,'exportar'])->name('backup.exportar')->middleware('can:admin');
-
-
 
 
         Route::get('/mensaje/index', function () {
