@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recurso;
+use App\Models\TipoRecurso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class RecursoController extends Controller
@@ -71,5 +73,30 @@ class RecursoController extends Controller
         ]);
 
         return response()->json(compact('recurso'), 201);
+    }
+    public function subirFoto(Request $request,$idRecurso)
+    {
+        $request->validate([
+            'file' => 'required|image|max:2048', // 2MB Max
+        ]);
+        try {
+            $recurso = Recurso::find($idRecurso);
+            $tipoRecurso=TipoRecurso::find($recurso->tipo_recurso_id)->nombre;
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $nombreArchivo=trim($recurso->nombre).time().".".$request->file->extension();
+            $ruta_enlace = Storage::disk('dropbox')->putFileAs("/recursos/$tipoRecurso", $request->file,$nombreArchivo);
+            $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
+            $urlArchivo = str_replace('dl=0', 'raw=1', $response['url']);
+            
+            $recurso->url = $urlArchivo;
+            $recurso->user_created_id = auth()->id();
+            $recurso->save();
+            return response()->json('Imagen cargada correctamente', 200);
+        } catch (\Throwable $th) {
+            report($th);
+            return response()->json('Error al cargar la imagen', 400);
+        }
+
+        return back();
     }
 }

@@ -95,6 +95,7 @@ class UsuarioPerfil extends Component
     }
 
     //Subir avatar del usuario
+        //Se esta subiendo el archivo desde el controlador de usuario
     public function subirFoto()
     {
         //Validar avatar

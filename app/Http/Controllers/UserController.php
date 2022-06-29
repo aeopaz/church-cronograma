@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -34,19 +35,19 @@ class UserController extends Controller
             'password' => 'required|string|min:5|confirmed',
         ]);
 
-        
+
         try {
-            
-            $user=  User::create();
-            $user->name=$request->name;
-            $user->email=$request->email;
-            $user->celular=$request->celular;
-            $user->iglesia_id=1;
-            $user->tipo_usuario_id=3;
-            $user->estado='I';
-            $user->password=Hash::make($request->password);
+
+            $user =  User::create();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->celular = $request->celular;
+            $user->iglesia_id = 1;
+            $user->tipo_usuario_id = 3;
+            $user->estado = 'I';
+            $user->password = Hash::make($request->password);
             $user->save();
-            
+
             // $user = User::create([
             //     'name' => $request->name,
             //     'email' => $request->email,
@@ -56,12 +57,12 @@ class UserController extends Controller
             //     'estado' => 'I',
             //     'password' => Hash::make($request->get('password')),
             // ]);
-            $credenciales=['email'=>$request->email,'password'=>$request->password];
+            $credenciales = ['email' => $request->email, 'password' => $request->password];
             if (Auth::attempt($credenciales)) {
                 $request->session()->regenerate();
                 return redirect()->intended('home');
             }
-            
+
             // return redirect()->route('login')->with('success','Ya puede ingresar al sistema');
         } catch (\Throwable $th) {
             report($th);
@@ -184,5 +185,28 @@ class UserController extends Controller
             return response()->json(['token_absent'], $e->getStatusCode());
         }
         return response()->json(compact('user'));
+    }
+
+    public function subirFoto(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|max:2048', // 2MB Max
+        ]);
+        try {
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $nombreArchivo = auth()->user()->email . time() . "." . $request->file->extension();
+            $ruta_enlace = Storage::disk('dropbox')->putFileAs('/avatar', $request->file, $nombreArchivo);
+            $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
+            $urlArchivo = str_replace('dl=0', 'raw=1', $response['url']);
+            $usuario = User::find(auth()->id());
+            $usuario->avatar = $urlArchivo;
+            $usuario->save();
+            return response()->json('Imagen cargada correctamente', 200);
+        } catch (\Throwable $th) {
+            report($th);
+            return response()->json('Error al cargar la imagen', 400);
+        }
+
+        return back();
     }
 }

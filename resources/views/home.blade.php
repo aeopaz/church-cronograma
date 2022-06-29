@@ -23,11 +23,11 @@
 @stop
 
 @section('content')
-    <form action="{{ route('file.store') }}" method="POST" enctype="multipart/form-data">
+    {{-- <form action="{{ route('file.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="file" name="file" required>
         <button type="submit">Agregar nuevo archivo</button>
-    </form>
+    </form> --}}
     {{-- Textos Bíblicos --}}
     <div class="row justify-content-center bg-success titulo">
         <h3>Píldora Bíblica</h3>

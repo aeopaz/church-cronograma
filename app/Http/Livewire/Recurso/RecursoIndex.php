@@ -82,6 +82,7 @@ class RecursoIndex extends Component
         }
     }
 
+    //Se esta subiendo el archivo desde el controlador de Recurso
     public function subirArchivo()
     {
         //Validar archivo

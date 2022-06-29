@@ -9,8 +9,16 @@
             list-style: none;
             text-align: center
         }
-
     </style>
+
+@stop
+@section('js')
+    <script src="{{ asset('js/archivo.js') }}"></script>
+    <script type="text/javascript">
+        window.livewire.on('modal', (nombreModal, propiedad) => {
+            $('#' + nombreModal).modal(propiedad);
+        });
+    </script>
 
 @stop
 
@@ -19,13 +27,5 @@
 @stop
 
 @section('content')
-@livewire('usuario.usuario-perfil',['tipoVista'=>'perfil'])
-@stop
-
-@section('js')
-    <script type="text/javascript">
-        window.livewire.on('modal', (nombreModal, propiedad) => {
-            $('#' + nombreModal).modal(propiedad);
-        });
-    </script>
+    @livewire('usuario.usuario-perfil', ['tipoVista' => 'perfil'])
 @stop

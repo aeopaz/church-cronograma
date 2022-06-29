@@ -24,8 +24,32 @@
                     @endif
                 </div>
                 @canany(['admin', 'lider'])
-                    {{-- Subir Archivo --}}
-                    <form wire:submit.prevent="subirArchivo">
+                <form action="{{url('/recurso/subir_foto/'.$idRecurso)}}" method="POST" enctype="multipart/form-data" id="form_foto">
+                    @csrf
+                    @if (session()->has('fail'))
+                        <div class="alert alert-danger">
+                            {{ session('fail') }}
+                        </div>
+                    @endif
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" name="file">
+                        @error('foto')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btn_foto" onclick="subirArchivo('form_foto')">Cambiar
+                                Avatar</button>
+                               @include('componentes.modal-carga')
+                        </div>
+                    </div>
+                </form>
+                    {{-- Subir Archivo livewire --}}
+                    {{-- <form wire:submit.prevent="subirArchivo">
                         @if (session()->has('fail'))
                             <div class="alert alert-danger">
                                 {{ session('fail') }}
@@ -56,7 +80,7 @@
                             @endif
                         </div>
 
-                    </form>
+                    </form> --}}
                     <div @if (!$mostrarFormEditar) hidden @endif>
                         <label for="">Nombre Recurso</label>
                         <input type="text" class="form-control @error('nombreRecurso') is-invalid @enderror"

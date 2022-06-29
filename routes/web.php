@@ -5,6 +5,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\MinisterioController;
+use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Ministerio\MinisterioIndex;
@@ -33,9 +34,11 @@ Auth::routes();
 //Middleware para validar que el usuario este autenticado
 Route::middleware('auth')->group(function () {
     Route::middleware('error.estado.usuario')->group(function () {
+        //Home
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
         Route::post('/file', [App\Http\Controllers\HomeController::class, 'store'])->name('file.store');
         Route::post('/home/marcar_notificacion_leida\{notificacion}', [HomeController::class, 'marcarNotificacionLeida'])->name('home.marcarNotificacionLeida');
+        //Usuario
         Route::get('/usuario/index', function () {
             return view('usuario.index');
         })->name('usuario.index')->middleware('perfil:admin|lider');
@@ -43,15 +46,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/usuario/perfil', function () {
             return view('usuario.perfil');
         })->name('usuario.perfil');
-
+        Route::post('/users/subir_foto', [UserController::class, 'subirFoto'])->name('users.subirFoto');
+        //Iglesia
         Route::get('/iglesia/index', [IglesiaController::class, 'index'])->name('iglesia.index')->middleware('can:admin');
+        //Ministerio
         Route::get('/ministerio/index', [MinisterioController::class, 'index'])->name('ministerio.index')->middleware('can:admin');
+        //Parametrizaciones
         Route::get('/parametrizacion/roles/index', [RolController::class, 'index'])->name('rol.index')->middleware('can:admin');
 
-        Route::get('/parametrizacion/tipos-programas/index', function(){
+        Route::get('/parametrizacion/tipos-programas/index', function () {
             return view('parametrizacion.tipos-programas.index');
         })->name('tipo-programa.index')->middleware('can:admin');
-
+        //Programación
         Route::get('/programacion/index', function () {
             return view('programacion.index');
         })->name('programacion.index');
@@ -59,15 +65,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/programacion/compromisos', function () {
             return view('programacion.compromisos');
         })->name('programacion.compromisos');
-
+        //Panel
         Route::get('/panel/index', function () {
             return view('panel.index');
         })->name('panel.index');
-
+        //Recursos
         Route::get('/recurso/index', function () {
             return view('recurso.index');
         })->name('recurso.index');
-
+        Route::post('/recurso/subir_foto/{idRecurso}', [RecursoController::class,'subirFoto'])->name('recurso.subirFoto');
+        //membrecía
         Route::get('/membrecia/index', function () {
             return view('membrecia.index');
         })->name('membrecia.index')->middleware('perfil:admin|lider');
@@ -90,8 +97,8 @@ Route::middleware('auth')->group(function () {
         Route::get('reporte/excel/{tipo}', [ExportController::class, 'reporteExcel'])->middleware('perfil:admin|lider');
 
         //Backup Excel
-        Route::get('backup/excel/index',[BackupToExcelController::class,'index'])->name('backup.index')->middleware('can:admin');
-        Route::get('backup/excel/exportar',[BackupToExcelController::class,'exportar'])->name('backup.exportar')->middleware('can:admin');
+        Route::get('backup/excel/index', [BackupToExcelController::class, 'index'])->name('backup.index')->middleware('can:admin');
+        Route::get('backup/excel/exportar', [BackupToExcelController::class, 'exportar'])->name('backup.exportar')->middleware('can:admin');
 
 
         Route::get('/mensaje/index', function () {

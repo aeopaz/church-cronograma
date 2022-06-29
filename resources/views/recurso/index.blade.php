@@ -16,9 +16,11 @@
 
 
 @section('js')
+    <script src="{{ asset('js/archivo.js') }}"></script>
     <script type="text/javascript">
         window.livewire.on('modal', (nombreModal, propiedad) => {
             $('#' + nombreModal).modal(propiedad);
         });
     </script>
+
 @stop

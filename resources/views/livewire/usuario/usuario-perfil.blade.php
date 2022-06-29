@@ -14,8 +14,32 @@
                         <i class="fa fa-user" aria-hidden="true" style="font-size:300px"></i>
                     @endif
                 @endif
-                {{-- Subir Avatar usuario --}}
-                <form wire:submit.prevent="subirFoto">
+                <form action="{{route('users.subirFoto')}}" method="POST" enctype="multipart/form-data" id="form_foto">
+                    @csrf
+                    @if (session()->has('fail'))
+                        <div class="alert alert-danger">
+                            {{ session('fail') }}
+                        </div>
+                    @endif
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" name="file">
+                        @error('foto')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="btn_foto" onclick="subirArchivo('form_foto')">Cambiar
+                                Avatar</button>
+                               @include('componentes.modal-carga')
+                        </div>
+                    </div>
+                </form>
+                {{-- Subir Avatar usuario con Livewire--}}
+                {{-- <form wire:submit.prevent="subirFoto">
                     @if (session()->has('fail'))
                         <div class="alert alert-danger">
                             {{ session('fail') }}
@@ -37,8 +61,7 @@
                         </div>
                         <div wire:loading wire:target="subirFoto">Uploading...</div>
                     </div>
-
-                </form>
+                </form> --}}
                 {{-- Mostrar información usuario --}}
                 <br>
                 <h1 class="fa fa-user" aria-hidden="true">{{ $usuario->name }}</h1>
