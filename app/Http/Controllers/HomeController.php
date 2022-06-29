@@ -62,4 +62,15 @@ class HomeController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient(); 
+        $nombreArchivo=auth()->user()->email.time().".".$request->file('file')->extension();
+        $ruta_enlace=Storage::disk('dropbox')->putFileAs('/avatar',$request->file('file'),$nombreArchivo);  
+        $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
+        $urlArchivo=str_replace('dl=0','raw=1',$response['url']);
+
+        return back();
+    }
+
 }

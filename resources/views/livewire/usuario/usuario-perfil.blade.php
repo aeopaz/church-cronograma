@@ -35,6 +35,7 @@
                             <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Cambiar
                                 Avatar</button>
                         </div>
+                        <div wire:loading wire:target="subirFoto">Uploading...</div>
                     </div>
 
                 </form>

@@ -34,7 +34,7 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
     Route::middleware('error.estado.usuario')->group(function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-        // Route::post('/file', [App\Http\Controllers\HomeController::class, 'store'])->name('file.store');
+        Route::post('/file', [App\Http\Controllers\HomeController::class, 'store'])->name('file.store');
         Route::post('/home/marcar_notificacion_leida\{notificacion}', [HomeController::class, 'marcarNotificacionLeida'])->name('home.marcarNotificacionLeida');
         Route::get('/usuario/index', function () {
             return view('usuario.index');
