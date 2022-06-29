@@ -10,13 +10,13 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use App\File;
+use Spatie\Dropbox\Client;
+use Illuminate\Support\Facades\Storage;
+
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+  
     public function __construct()
     {
         $this->middleware('auth');
@@ -41,8 +41,8 @@ class HomeController extends Controller
         )
             //->havingRaw('diaAnoNacimiento>=DAYOFYEAR(:fechaDesde) and diaAnoNacimiento<=DAYOFYEAR(:fechaHasta)', ['fechaDesde' => $fechaDesde->format('Y-m-d'), 'fechaHasta' => $fechaDesde->addMonth(1)->format('Y-m-d')])->get();//Mysl
             ->groupBy('id')
-            ->havingRaw("EXTRACT(doy FROM fecha_nacimiento)>=EXTRACT(doy FROM to_date('".$fechaDesde->format('Ymd')."','YYYYMMDD')) and EXTRACT(doy FROM fecha_nacimiento)<=EXTRACT(doy FROM to_date('".$fechaDesde->addMonth(1)->format('Ymd')."','YYYYMMDD')) ")->get();//Postgres
-            // dd($cumpleaneros);
+            ->havingRaw("EXTRACT(doy FROM fecha_nacimiento)>=EXTRACT(doy FROM to_date('" . $fechaDesde->format('Ymd') . "','YYYYMMDD')) and EXTRACT(doy FROM fecha_nacimiento)<=EXTRACT(doy FROM to_date('" . $fechaDesde->addMonth(1)->format('Ymd') . "','YYYYMMDD')) ")->get(); //Postgres
+        // dd($cumpleaneros);
         $mensajesBiblicos = Mensaje::all()->random(1)->first(); //Toma un mensaje aleatorio
         $notificaciones = Auth::user()->unreadNotifications;
         return view('home', compact('mensajesBiblicos', 'cumpleaneros', 'notificaciones'));
@@ -58,7 +58,8 @@ class HomeController extends Controller
             return back();
         } catch (\Throwable $th) {
             report($th);
-            return back()->with('fail','Error al marcar como leida la notificación, contacte al administrador del sistema');
+            return back()->with('fail', 'Error al marcar como leida la notificación, contacte al administrador del sistema');
         }
     }
+
 }

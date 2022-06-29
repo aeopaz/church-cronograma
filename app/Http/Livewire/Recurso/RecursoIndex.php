@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Recurso;
 use App\Models\Ministerio;
 use App\Models\Recurso;
 use App\Models\TipoRecurso;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -86,12 +87,21 @@ class RecursoIndex extends Component
         //Validar archivo
         $this->validate(['archivoTemporal' => 'image|max:2048']);
         try {
-            //Subir archivo
-            $path = $this->archivoTemporal->store('public/images/recursos');
-            $path = str_replace('public', 'storage', $path);
+            //Consultar nombre tipo recurso
+            $tipoRecurso=TipoRecurso::find($this->idTipoRecurso)->nombre;
+            //Almacenar avatar en dropbox
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+            $nombreArchivo=trim($this->nombreRecurso).time().".".$this->archivoTemporal->extension();
+            $ruta_enlace = Storage::disk('dropbox')->putFileAs("/recursos/$tipoRecurso", $this->archivoTemporal,$nombreArchivo);
+            $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
+            $urlArchivo = str_replace('dl=0', 'raw=1', $response['url']);
+            //Almacenar archivo en la carpeta public
+            // $path = $this->archivoTemporal->store('public/images/recursos');
+            //$path = str_replace('public', 'storage', $path);
             //Guardar en la base de datos
+            //Consultar el recurso
             $recurso = Recurso::find($this->idRecurso);
-            $recurso->url = $path;
+            $recurso->url = $urlArchivo;
             $recurso->user_created_id = auth()->id();
             $recurso->save();
             return session()->flash('success', 'Imagen cargada correctamente.');

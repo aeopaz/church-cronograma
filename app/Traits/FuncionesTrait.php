@@ -102,4 +102,9 @@ trait FuncionesTrait
     {
         return redirect('error\error')->with('fail','Su cuenta esta desactivada, favor contactar a un líder o administrador del sistema para su activación');
     }
+
+    public function subirArchivoDropbox($archivo)
+    {
+        
+    }
 }

@@ -8,6 +8,9 @@ use App\Models\UsuarioMinisterio;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Dropbox\Client;
+use App\File;
 
 class UsuarioPerfil extends Component
 {
@@ -22,6 +25,10 @@ class UsuarioPerfil extends Component
     public $newPassword_confirmation;
     public $ministeriosUsuario = [];
     public $tipoVista;
+  
+
+
+ 
     public function mount($tipoVista)
     {
         $this->tipoVista = $tipoVista;
@@ -80,6 +87,13 @@ class UsuarioPerfil extends Component
         }
     }
 
+    
+    public function subir()
+    {
+
+        
+    }
+
     //Subir avatar del usuario
     public function subirFoto()
     {
@@ -89,14 +103,18 @@ class UsuarioPerfil extends Component
         ]);
 
         try {
-            //Almacenar avatar
-            // $rutaAvatar = $this->foto->store('foto_perfil');
-            //$rutaAvatar= $this->foto->storePublicly('foto_perfil');
-            $path = $this->foto->store('public/images/profile');
-            $path = str_replace('public', 'storage', $path);
+            //Almacenar avatar en dropbox
+            $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient(); 
+            $nombreArchivo=auth()->user()->email.time().".".$this->foto->extension();
+            $ruta_enlace=Storage::disk('dropbox')->putFileAs('/avatar',$this->foto,$nombreArchivo);  
+            $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
+            $urlArchivo=str_replace('dl=0','raw=1',$response['url']);
+            //Almacenar avatar de forma local en la carpeta pública
+            //$path = $this->foto->store('public/images/profile');
+            //$path = str_replace('public', 'storage', $path);
             //Guardar en la base de datos
             $usuario = User::find(auth()->id());
-            $usuario->avatar = $path;
+            $usuario->avatar = $urlArchivo;
             $usuario->save();
             return session()->flash('success', 'Imagen cargada correctamente.');
         } catch (\Throwable $th) {
