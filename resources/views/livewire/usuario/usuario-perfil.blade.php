@@ -8,11 +8,12 @@
                     <img src="{{ $foto->temporaryUrl() }}" class="rounded-circle" style="width: 400px; height:400px">
                 @else
                     @if (!$usuario->avatar == '')
+
                         <img src={{ asset($usuario->avatar) }} class="rounded-circle img-fluid"
                             style="width: 400px; height:400px">
                     @else
                         {{-- <i class="fa fa-user" aria-hidden="true" style="font-size:300px"></i> --}}
-                        <div class="row justify-content-center">
+                          <div class="row justify-content-center">
                             <div class="avatar_grande">{{ auth()->user()->iniciales_nombre }}</div>
                         </div>
                     @endif

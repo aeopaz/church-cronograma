@@ -35,5 +35,15 @@ class BladeServiceProvider extends ServiceProvider
             
              return "<?php echo  '$nombreMes[$numeroMes]';?>";*/
         });
+        Blade::directive('iniciales', function ($nombre) {
+
+            $explode=explode(' ',$nombre);
+            $iniciales='';
+            foreach ($explode as $x) {
+                $iniciales.=$x[0];
+            }
+    
+             return "<?php echo  '$iniciales';?>";
+        });
     }
 }

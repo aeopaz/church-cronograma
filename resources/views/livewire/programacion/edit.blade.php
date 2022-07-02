@@ -221,10 +221,10 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
-                                                    @if ($participante->avatar == '')
+                                                    @if ($participante->avatar != '')
                                                         <div class="row justify-content-center">
                                                             <div class="avatar_pequeno">
-                                                                {{ auth()->user()->iniciales_nombre }}</div>
+                                                               {{App\Models\User::find($participante->idUserParticipante)->iniciales_nombre}}</div>
                                                         </div>
                                                     @else
                                                         <img src="{{ asset($participante->avatar) }}"
