@@ -221,11 +221,14 @@
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>
-                                                    @if ($participante->avatar != '')
+                                                    @if ($participante->avatar == '')
                                                         <div class="row justify-content-center">
+                                                            {{-- <img src="{{App\Models\User::find($participante->idUserParticipante)->url_avatar}}"
+                                                            alt="" class="rounded-circle"
+                                                            style="width: 30%; height: 10%;"> --}}
                                                             <div class="avatar_pequeno">
                                                                {{App\Models\User::find($participante->idUserParticipante)->iniciales_nombre}}</div>
-                                                        </div>
+                                                        </div> 
                                                     @else
                                                         <img src="{{ asset($participante->avatar) }}"
                                                             alt="" class="rounded-circle"

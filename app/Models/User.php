@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Faker\Factory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -51,22 +52,29 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function programacion(){
+    public function programacion()
+    {
         return $this->hasMany('App\Models\ParticipantesProgramacionMinisterio');
     }
-    public function programacionPropia(){
+    public function programacionPropia()
+    {
         return $this->hasMany('App\Models\Programacion');
     }
 
     public function adminlte_image()
     {
-        return auth()->user()->avatar;
+        $faker = Factory::create('es_VE');
+        if (auth()->user()->avatar == '') {
+            return $faker->imageUrl(100, 100, null, false, auth()->user()->iniciales_nombre);
+        } else {
+            return auth()->user()->avatar;
+        }
     }
 
     public function adminlte_desc()
     {
 
-        return TipoUsuario::where('id',auth()->user()->tipo_usuario_id)->first(['nombre'])->nombre;
+        return TipoUsuario::where('id', auth()->user()->tipo_usuario_id)->first(['nombre'])->nombre;
     }
     public function adminlte_profile_url()
     {
@@ -75,13 +83,18 @@ class User extends Authenticatable implements JWTSubject
 
     public function getInicialesNombreAttribute()
     {
-        $explode=explode(' ',$this->name);
-        $iniciales='';
+        $explode = explode(' ', $this->name);
+        $iniciales = '';
         foreach ($explode as $x) {
-            $iniciales.=$x[0];
+            $iniciales .= $x[0];
         }
 
         return $iniciales;
     }
 
+    public function getUrlAvatar()
+    {
+        $faker = Factory::create('es_VE');
+        return $faker->imageUrl(100, 100, null, false, $this->name);
+    }
 }
