@@ -25,3 +25,26 @@ th {
     text-align: center;
 
 }
+/*Avatar*/
+.avatar_grande {
+    height: 300px;
+    width: 300px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 100px;
+  }
+  .avatar_pequeno {
+    height: 50px;
+    width: 50px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    /* font-size: 100px; */
+  }

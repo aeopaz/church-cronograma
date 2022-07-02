@@ -11,10 +11,14 @@
                         <img src={{ asset($usuario->avatar) }} class="rounded-circle img-fluid"
                             style="width: 400px; height:400px">
                     @else
-                        <i class="fa fa-user" aria-hidden="true" style="font-size:300px"></i>
+                        {{-- <i class="fa fa-user" aria-hidden="true" style="font-size:300px"></i> --}}
+                        <div class="row justify-content-center">
+                            <div class="avatar_grande">{{ auth()->user()->iniciales_nombre }}</div>
+                        </div>
                     @endif
                 @endif
-                <form action="{{route('users.subirFoto')}}" method="POST" enctype="multipart/form-data" id="form_foto">
+                <form action="{{ route('users.subirFoto') }}" method="POST" enctype="multipart/form-data"
+                    id="form_foto">
                     @csrf
                     @if (session()->has('fail'))
                         <div class="alert alert-danger">
@@ -32,13 +36,14 @@
                             <span class="error">{{ $message }}</span>
                         @enderror
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" id="btn_foto" onclick="subirArchivo('form_foto')">Cambiar
+                            <button class="btn btn-outline-secondary" type="button" id="btn_foto"
+                                onclick="subirArchivo('form_foto')">Cambiar
                                 Avatar</button>
-                               @include('componentes.modal-carga')
+                            @include('componentes.modal-carga')
                         </div>
                     </div>
                 </form>
-                {{-- Subir Avatar usuario con Livewire--}}
+                {{-- Subir Avatar usuario con Livewire --}}
                 {{-- <form wire:submit.prevent="subirFoto">
                     @if (session()->has('fail'))
                         <div class="alert alert-danger">

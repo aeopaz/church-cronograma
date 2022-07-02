@@ -73,4 +73,15 @@ class User extends Authenticatable implements JWTSubject
         return '/usuario/perfil';
     }
 
+    public function getInicialesNombreAttribute()
+    {
+        $explode=explode(' ',$this->name);
+        $iniciales='';
+        foreach ($explode as $x) {
+            $iniciales.=$x[0];
+        }
+
+        return $iniciales;
+    }
+
 }

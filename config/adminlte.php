@@ -516,6 +516,16 @@ return [
                 ],
             ],
         ],
+        'FuncionesJS' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/funciones.js',
+                ],
+            ],
+        ],
     ],
 
     /*

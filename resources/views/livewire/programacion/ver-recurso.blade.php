@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Crear Recurso</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{{$nombreRecurso}}</h5>
                 <button type="button" class="close" wire:click='ocultarVerRecurso' aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

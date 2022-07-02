@@ -39,6 +39,7 @@ class ProgramacionIndex extends Component
     public $idUsuarioParticipante;
     public $idRecurso;
     public $imagenRecurso;
+    public $nombreRecurso;
     public $mostrarListaParticipantes = true;
     public $mostrarListaRecursos = true;
     public $tipoVista; //Si es programas generales o propios
@@ -55,6 +56,7 @@ class ProgramacionIndex extends Component
 
     public function render()
     {
+     
         $fecha = Carbon::now();
 
         if ($this->tipoVista == 'propia') {
@@ -485,6 +487,8 @@ class ProgramacionIndex extends Component
     {
         $recurso = Recurso::find($idRecurso);
         $this->imagenRecurso = $recurso->url;
+        $this->nombreRecurso=$recurso->nombre;  
+        $this->pestana = 'recurso';
         $this->emit('modal', 'verRecursoModal', 'show');
     }
     //Ocultar modal con la imagen del recurso

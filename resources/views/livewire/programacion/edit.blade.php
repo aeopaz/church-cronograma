@@ -1,5 +1,5 @@
-<div class="modal fade" id="editarProgramaModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self>
+<div class="modal fade" id="editarProgramaModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,7 +51,8 @@
                         role="tabpanel" aria-labelledby="pills-home-tab">
                         {{-- Tipo Programa --}}
                         <div class="input-group mb-3">
-                            <select name="" id="" class="form-control @error('idTipoPrograma') is-invalid @enderror"
+                            <select name="" id=""
+                                class="form-control @error('idTipoPrograma') is-invalid @enderror"
                                 wire:model='idTipoPrograma'>
                                 <option value="">Seleccione</option>
                                 @foreach ($listaTipoPrograma as $tipo)
@@ -93,7 +94,8 @@
                         </div>
                         {{-- Lugar Programa --}}
                         <div class="input-group mb-3">
-                            <select name="" id="" class="form-control @error('idLugarPrograma') is-invalid @enderror"
+                            <select name="" id=""
+                                class="form-control @error('idLugarPrograma') is-invalid @enderror"
                                 wire:model='idLugarPrograma'>
                                 <option value="">Seleccione</option>
                                 @foreach ($listaLugares as $lugar)
@@ -140,7 +142,8 @@
 
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-clock {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                    <span
+                                        class="fas fa-clock {{ config('adminlte.classes_auth_icon', '') }}"></span>
                                 </div>
                             </div>
 
@@ -152,7 +155,8 @@
                         </div>
                         {{-- Estado Programa --}}
                         <div class="input-group mb-3">
-                            <select name="" id="" class="form-control @error('estadoPrograma') is-invalid @enderror"
+                            <select name="" id=""
+                                class="form-control @error('estadoPrograma') is-invalid @enderror"
                                 wire:model='estadoPrograma'>
                                 <option value="">Seleccione</option>
                                 <option value="A">Activo</option>
@@ -175,8 +179,9 @@
                         {{-- Solo podrá actualizar el programa si es un admin o si el programa es propio --}}
                         @if (Auth::user()->can('lider') && $tipoVista == 'propia')
                             <div class="row justify-content-center">
-                                <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
-                                    wire:loading.remove wire:target='update'>Guardar</button>
+                                <button type="button" class="btn btn-primary"
+                                    wire:click='update({{ $idPrograma }})' wire:loading.remove
+                                    wire:target='update'>Guardar</button>
                                 <div wire:loading wire:target='update'>
                                     @include('componentes.carga')
                                 </div>
@@ -184,8 +189,9 @@
                         @endif
                         @if (Auth::user()->can('admin'))
                             <div class="row justify-content-center">
-                                <button type="button" class="btn btn-primary" wire:click='update({{ $idPrograma }})'
-                                    wire:loading.remove wire:target='update'>Guardar</button>
+                                <button type="button" class="btn btn-primary"
+                                    wire:click='update({{ $idPrograma }})' wire:loading.remove
+                                    wire:target='update'>Guardar</button>
                                 <div wire:loading wire:target='update'>
                                     @include('componentes.carga')
                                 </div>
@@ -196,8 +202,8 @@
 
                     </div>
                     {{-- Lista de participantes --}}
-                    <div class="tab-pane fade {{ $pestana == 'participante' ? 'show active' : '' }}" id="pills-profile"
-                        role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="tab-pane fade {{ $pestana == 'participante' ? 'show active' : '' }}"
+                        id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                         <div id="listaParticipantes" @if (!$mostrarListaParticipantes) hidden @endif>
                             <div class="row div-centrar-tabla">
                                 <table class="table table-hover table-sm centrar-tabla">
@@ -214,8 +220,17 @@
                                         @foreach ($participantes as $index => $participante)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td><img src="{{ asset($participante->avatar) }}" alt=""
-                                                        class="rounded-circle" style="width: 30%; height: 10%;">
+                                                <td>
+                                                    @if ($participante->avatar == '')
+                                                        <div class="row justify-content-center">
+                                                            <div class="avatar_pequeno">
+                                                                {{ auth()->user()->iniciales_nombre }}</div>
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ asset($participante->avatar) }}"
+                                                            alt="" class="rounded-circle"
+                                                            style="width: 30%; height: 10%;">
+                                                    @endif
                                                 </td>
                                                 <td>{{ $participante->nombreParticipante }}</td>
                                                 <td>{{ $participante->nombreRol }}</td>
@@ -271,7 +286,8 @@
                                             Ministerio
                                         </div>
                                     </div>
-                                    <select name="" id="" class="form-control @error('idMinisterio') is-invalid @enderror"
+                                    <select name="" id=""
+                                        class="form-control @error('idMinisterio') is-invalid @enderror"
                                         wire:model='idMinisterio'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaMinisterios as $ministerio)
@@ -315,7 +331,8 @@
                                             Rol
                                         </div>
                                     </div>
-                                    <select name="" id="" class="form-control @error('idRol') is-invalid @enderror"
+                                    <select name="" id=""
+                                        class="form-control @error('idRol') is-invalid @enderror"
                                         wire:model.defer='idRol'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($roles as $rol)
@@ -366,7 +383,9 @@
                                                 wire:click='verRecurso({{ $recurso->recurso_id }})'><img src="{{ asset($recurso->url) }}" alt=""
                                                         class="rounded-circle" style="width: 30%; height: 10%;"> --}}
                                                 </td>
-                                                <td class="puntero"  wire:click='verRecurso({{ $recurso->recurso_id }})'>{{ $recurso->nombreRecurso }}</td>
+                                                <td class="puntero"
+                                                    wire:click='verRecurso({{ $recurso->recurso_id }})'>
+                                                    {{ $recurso->nombreRecurso }}</td>
                                                 <td>{{ $recurso->tipoRecurso }}</td>
                                                 <td>
                                                     {{-- Solo puede Eliminar recursos si es admin o lider --}}
@@ -419,7 +438,8 @@
                                             Ministerio
                                         </div>
                                     </div>
-                                    <select name="" id="" class="form-control @error('idMinisterio') is-invalid @enderror"
+                                    <select name="" id=""
+                                        class="form-control @error('idMinisterio') is-invalid @enderror"
                                         wire:model='idMinisterio'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaMinisterios as $ministerio)
@@ -440,7 +460,8 @@
                                             Recurso
                                         </div>
                                     </div>
-                                    <select name="" id="" class="form-control @error('idRecurso') is-invalid @enderror"
+                                    <select name="" id=""
+                                        class="form-control @error('idRecurso') is-invalid @enderror"
                                         wire:model.defer='idRecurso'>
                                         <option value="">Seleccione...</option>
                                         @foreach ($listaRecursos as $recurso)
@@ -472,8 +493,8 @@
                     {{-- Lista de Asistencia --}}
                     {{-- Solo puede Agregar asistencia si es admin o lider --}}
                     @canany(['admin', 'lider'])
-                        <div class="tab-pane fade {{ $pestana == 'asistencia' ? 'show active' : '' }}" id="pills-asistencia"
-                            role="tabpanel" aria-labelledby="pills-asistencia-tab">
+                        <div class="tab-pane fade {{ $pestana == 'asistencia' ? 'show active' : '' }}"
+                            id="pills-asistencia" role="tabpanel" aria-labelledby="pills-asistencia-tab">
                             {{-- Registrar Miembros --}}
                             <div class="input-group mb-3">
                                 <div class="input-group-append">
@@ -481,7 +502,8 @@
                                         Miembro
                                     </div>
                                 </div>
-                                <select name="" id="" class="form-control @error('idMiembro') is-invalid @enderror"
+                                <select name="" id=""
+                                    class="form-control @error('idMiembro') is-invalid @enderror"
                                     wire:model.defer='idMiembro'>
                                     <option value="">Seleccione...</option>
                                     @foreach ($miembros as $miembro)
@@ -503,7 +525,8 @@
                                         LLegada
                                     </div>
                                 </div>
-                                <select name="" id="" class="form-control @error('tipoLlegada') is-invalid @enderror"
+                                <select name="" id=""
+                                    class="form-control @error('tipoLlegada') is-invalid @enderror"
                                     wire:model.defer='tipoLlegada'>
                                     <option value="">Seleccione...</option>
                                     <option value="Puntual">Puntual</option>
