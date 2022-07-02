@@ -352,7 +352,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Foto</th>
+                                            {{-- <th>Foto</th> --}}
                                             <th>Nombre</th>
                                             <th>Tipo</th>
                                             <th>Acción</th>
@@ -362,11 +362,11 @@
                                         @foreach ($recursosPrograma as $index => $recurso)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td class="puntero"
+                                                {{-- <td class="puntero"
                                                 wire:click='verRecurso({{ $recurso->recurso_id }})'><img src="{{ asset($recurso->url) }}" alt=""
-                                                        class="rounded-circle" style="width: 30%; height: 10%;">
+                                                        class="rounded-circle" style="width: 30%; height: 10%;"> --}}
                                                 </td>
-                                                <td>{{ $recurso->nombreRecurso }}</td>
+                                                <td class="puntero"  wire:click='verRecurso({{ $recurso->recurso_id }})'>{{ $recurso->nombreRecurso }}</td>
                                                 <td>{{ $recurso->tipoRecurso }}</td>
                                                 <td>
                                                     {{-- Solo puede Eliminar recursos si es admin o lider --}}
