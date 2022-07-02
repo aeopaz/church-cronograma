@@ -63,9 +63,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function adminlte_image()
     {
-        $faker = Factory::create('es_VE');
+     
         if (auth()->user()->avatar == '') {
-            return $faker->imageUrl(100, 100, null, false, auth()->user()->iniciales_nombre);
+            $iniciales= auth()->user()->iniciales_nombre;
+            return "https://via.placeholder.com/100x100.png/00cc00?text=$iniciales";
         } else {
             return auth()->user()->avatar;
         }
@@ -92,9 +93,9 @@ class User extends Authenticatable implements JWTSubject
         return $iniciales;
     }
 
-    public function getUrlAvatar()
-    {
-        $faker = Factory::create('es_VE');
-        return $faker->imageUrl(100, 100, null, false, $this->name);
-    }
+    // public function getUrlAvatar()
+    // {
+    //     $faker = Factory::create('es_VE');
+    //     return $faker->imageUrl(100, 100, null, false, $this->name);
+    // }
 }

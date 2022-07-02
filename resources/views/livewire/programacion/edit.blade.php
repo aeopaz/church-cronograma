@@ -227,8 +227,9 @@
                                                             alt="" class="rounded-circle"
                                                             style="width: 30%; height: 10%;"> --}}
                                                             <div class="avatar_pequeno">
-                                                               {{App\Models\User::find($participante->idUserParticipante)->iniciales_nombre}}</div>
-                                                        </div> 
+                                                                {{ App\Models\User::find($participante->idUserParticipante)->iniciales_nombre }}
+                                                            </div>
+                                                        </div>
                                                     @else
                                                         <img src="{{ asset($participante->avatar) }}"
                                                             alt="" class="rounded-circle"
