@@ -87,7 +87,7 @@ class RecursoIndex extends Component
     public function subirArchivo()
     {
         //Validar archivo
-        $this->validate(['archivoTemporal' => 'image|max:2048']);
+        $this->validate(['archivoTemporal' => 'required|max:4096|mimes:jpg,pdf,png,gif']);
         try {
             //Consultar nombre tipo recurso
             $tipoRecurso=TipoRecurso::find($this->idTipoRecurso)->nombre;

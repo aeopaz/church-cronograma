@@ -48,8 +48,7 @@
                             @enderror
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="btn_foto"
-                                    onclick="subirArchivo('form_foto')">Cambiar
-                                    Avatar</button>
+                                    onclick="subirArchivo('form_foto')">Subir archivo</button>
                                 @include('componentes.modal-carga')
                             </div>
                         </div>
@@ -96,7 +95,8 @@
                         </div>
 
                     </form> --}}
-                    <div @if (!$mostrarFormEditar) hidden @endif>
+                    {{-- @if (!$mostrarFormEditar) hidden @endif --}}
+                    <div >
                         <label for="">Nombre Recurso</label>
                         <input type="text" class="form-control @error('nombreRecurso') is-invalid @enderror"
                             wire:model='nombreRecurso'>
