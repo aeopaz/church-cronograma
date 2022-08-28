@@ -13,10 +13,10 @@
                 <div class="row justify-content-center">
                     @if (!$imagenRecurso == '')
                         @if ($extensionRecurso == 'pdf')
-                            <img src={{ asset($imagenRecurso) }} class="img-fluid" style="width: 100%; height:100%">
-                        @else
-                            <iframe width="400" height="400" src="{{ asset($rutaArchivo) }}"
+                            <iframe width="400" height="400" src="{{ asset($imagenRecurso) }}"
                                 frameborder="0"></iframe>{{-- Para visualizar el pdf --}}
+                        @else
+                            <img src={{ asset($imagenRecurso) }} class="img-fluid" style="width: 100%; height:100%">
                         @endif
                     @else
                         <i class="fa fa-file" aria-hidden="true" style="font-size:200px"></i>
