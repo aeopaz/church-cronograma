@@ -39,6 +39,7 @@ class ProgramacionIndex extends Component
     public $idUsuarioParticipante;
     public $idRecurso;
     public $imagenRecurso;
+    public $extensionRecurso;
     public $nombreRecurso;
     public $mostrarListaParticipantes = true;
     public $mostrarListaRecursos = true;
@@ -460,6 +461,7 @@ class ProgramacionIndex extends Component
                 'tipo_recursos.nombre as tipoRecurso',
                 'recursos.nombre as nombreRecurso',
                 'url',
+                'extension',
                 'recurso_programacion_ministerios.id as recursoProgramaId',
             ]);
 
@@ -488,6 +490,7 @@ class ProgramacionIndex extends Component
         $recurso = Recurso::find($idRecurso);
         $this->imagenRecurso = $recurso->url;
         $this->nombreRecurso=$recurso->nombre;  
+        $this->extensionRecurso=$recurso->extension;
         $this->pestana = 'recurso';
         $this->emit('modal', 'verRecursoModal', 'show');
     }

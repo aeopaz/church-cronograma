@@ -12,42 +12,57 @@
                 {{-- Archivo --}}
                 <div class="row justify-content-center">
                     @if ($archivoTemporal)
-                        <img src="{{ $archivoTemporal->temporaryUrl() }}" class="img-fluid"
-                            style="width: 100%; height:100%">
+                        @if ($archivoTemporal->extension() == 'pdf')
+                            <iframe width="400" height="400" src="{{ $archivoTemporal->temporaryUrl() }}""
+                                frameborder="0"></iframe>
+                        @else
+                            <img src="{{ $archivoTemporal->temporaryUrl() }}" class="img-fluid"
+                                style="width: 100%; height:100%">
+                        @endif
                     @else
                         @if (!$archivoRecurso == '')
-                            <img src={{ asset($archivoRecurso) }} class="img-fluid"
-                                style="width: 100%; height:100%">
+                            <img src={{ asset($archivoRecurso) }} class="img-fluid" style="width: 100%; height:100%">
                         @else
                             <i class="fa fa-file" aria-hidden="true" style="font-size:200px"></i>
                         @endif
                     @endif
                 </div>
                 @canany(['admin', 'lider'])
-                <form action="{{url('/recurso/subir_foto/'.$idRecurso)}}" method="POST" enctype="multipart/form-data" id="form_foto">
-                    @csrf
-                    @if (session()->has('fail'))
-                        <div class="alert alert-danger">
-                            {{ session('fail') }}
+                    <form action="{{ url('/recurso/subir_foto/' . $idRecurso) }}" method="POST" enctype="multipart/form-data"
+                        id="form_foto">
+                        @csrf
+                        @if (session()->has('fail'))
+                            <div class="alert alert-danger">
+                                {{ session('fail') }}
+                            </div>
+                        @endif
+                        @if (session()->has('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="file">
+                            @error('foto')
+                                <span class="error">{{ $message }}</span>
+                            @enderror
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="btn_foto"
+                                    onclick="subirArchivo('form_foto')">Cambiar
+                                    Avatar</button>
+                                @include('componentes.modal-carga')
+                            </div>
                         </div>
-                    @endif
-                    @if (session()->has('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
+                        <div class="row">
+                            @if (!$mostrarFormEditar)
+                                <button class="btn btn-secondary" wire:click="$set('mostrarFormEditar',true)">
+                                    Editar Recurso</button>
+                            @else
+                                <button class="btn btn-secondary" wire:click="$set('mostrarFormEditar',false)">
+                                    Cancelar</button>
+                            @endif
                         </div>
-                    @endif
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" name="file">
-                        @error('foto')
-                            <span class="error">{{ $message }}</span>
-                        @enderror
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" id="btn_foto" onclick="subirArchivo('form_foto')">Cambiar
-                                Avatar</button>
-                               @include('componentes.modal-carga')
-                        </div>
-                    </div>
-                </form>
+                    </form>
                     {{-- Subir Archivo livewire --}}
                     {{-- <form wire:submit.prevent="subirArchivo">
                         @if (session()->has('fail'))
@@ -91,8 +106,8 @@
                             </span>
                         @enderror
                         <label for="">Tipo Recurso</label>
-                        <select name="" id="" class="form-control @error('idTipoRecurso') is-invalid @enderror"
-                            wire:model='idTipoRecurso'>
+                        <select name="" id=""
+                            class="form-control @error('idTipoRecurso') is-invalid @enderror" wire:model='idTipoRecurso'>
                             <option value="">Seleccione...</option>
                             @foreach ($listaTipoRecursos as $tipoRecurso)
                                 <option value="{{ $tipoRecurso->id }}">{{ $tipoRecurso->nombre }}</option>
@@ -104,8 +119,8 @@
                             </span>
                         @enderror
                         <label for="">Ministerio</label>
-                        <select name="" id="" class="form-control @error('idMinisterio') is-invalid @enderror"
-                            wire:model='idMinisterio'>
+                        <select name="" id=""
+                            class="form-control @error('idMinisterio') is-invalid @enderror" wire:model='idMinisterio'>
                             <option value="">Seleccione...</option>
                             @foreach ($listaMinisterios as $ministerio)
                                 <option value="{{ $ministerio->id }}">{{ $ministerio->nombre }}</option>

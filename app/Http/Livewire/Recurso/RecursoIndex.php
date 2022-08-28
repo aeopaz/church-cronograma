@@ -22,6 +22,7 @@ class RecursoIndex extends Component
     public $idMinisterio;
     public $archivoTemporal;
     public $archivoRecurso;
+    public $extension;
     public $mostrarFormEditar = false;
     public $textoBuscar;
     protected $paginationTheme = 'bootstrap';
@@ -103,6 +104,7 @@ class RecursoIndex extends Component
             //Consultar el recurso
             $recurso = Recurso::find($this->idRecurso);
             $recurso->url = $urlArchivo;
+            $recurso->extension=$this->archivoTemporal->extension();
             $recurso->user_created_id = auth()->id();
             $recurso->save();
             return session()->flash('success', 'Imagen cargada correctamente.');
@@ -118,6 +120,7 @@ class RecursoIndex extends Component
         $this->idRecurso = $recurso->id;
         $this->nombreRecurso = $recurso->nombre;
         $this->archivoRecurso = $recurso->url;
+        $this->extension=$recurso->extension;
         $this->idMinisterio = $recurso->ministerio_id;
         $this->idTipoRecurso = $recurso->tipo_recurso_id;
         $this->emit('modal', 'editarRecursoModal', 'show');
