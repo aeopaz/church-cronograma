@@ -276,7 +276,7 @@
                                                 <td>
                                                     {{-- Solo puede eliminar participantes si es admin o lider --}}
                                                     @canany(['admin', 'lider'])
-                                                        <button class="btn btn-sm btn-danger"
+                                                        <button class="btn btn-sm btn-danger" {{$participante->rol_id==19?'disabled':''}}
                                                             wire:click='eliminarParticipante({{ $participante->idParticipacion }})'
                                                             wire:loading.remove wire:target='eliminarParticipante'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>

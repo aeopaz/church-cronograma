@@ -289,6 +289,10 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
+                //Validar si el participante tiene el rol de Organizador para evitar su eliminación
+                if ($participacion->rol_id==19) {
+                    return session()->flash('fail', 'El Participante organizador no se puede eliminar');
+                }
                 $this->enviarNotificacion($participacion, 'cancelar');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
