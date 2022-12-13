@@ -269,7 +269,7 @@ class ProgramacionController extends Controller
             )
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
-                ->where('programacions.user_id', auth()->user()->id)->groupBy('programacions.id')
+                ->where('participantes_programacion_ministerios.user_id', auth()->user()->id)->groupBy('programacions.id')
                 ->where('fecha_desde', '>=', $fecha)
                 ->get();
         }
@@ -292,7 +292,7 @@ class ProgramacionController extends Controller
             )
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
-                ->where('programacions.user_id', auth()->user()->id)->groupBy('programacions.id')
+                ->where('participantes_programacion_ministerios.user_id', auth()->user()->id)->groupBy('programacions.id')
                 ->where('fecha_desde', '>=', $fecha)
                 ->where('nivel',2)//1=Eventos privados
                 ->get();

@@ -255,7 +255,6 @@ return [
             'text' => 'Calendario',
             'url'  => 'programacion/index/generales',
             'icon' => 'fas fa-fw fa-calendar',
-            'can' => ['admin', 'lider'],
         ],
         [
             'text' => 'Recursos',

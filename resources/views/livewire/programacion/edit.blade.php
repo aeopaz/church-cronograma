@@ -213,7 +213,7 @@
                             @enderror
                         </div>
                         {{-- Solo podrá actualizar el programa si es un admin o si el programa es propio --}}
-                        @if (Auth::user()->can('lider') && $tipoVista == 'propia')
+                        @if (Auth::user()->can('lider') && Auth::user()->can('programa-update',$idPrograma))
                             <div class="row justify-content-center">
                                 <button type="button" class="btn btn-primary"
                                     wire:click='update({{ $idPrograma }})' wire:loading.remove

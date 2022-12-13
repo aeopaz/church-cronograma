@@ -38,15 +38,18 @@
                 // Array con los eventos que se mostrarán
                 events: urlEventos,
                 // Capturar evento cuando se hace click en una fecha
-                dateClick: function(info) {
-                    // Abrir el modal crear programa
-                    Livewire.emit('create', info.dateStr);
-                    // alert('Clicked on: ' + info.dateStr);
-                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    // alert('Current view: ' + info.view.type);
-                    // // change the day's background color just for fun
-                    // info.dayEl.style.backgroundColor = 'red';
-                },
+                //Solo los admin y lideres pueden crear eventos
+                @canany(['admin','lider'])
+                    dateClick: function(info) {
+                        // Abrir el modal crear programa
+                        Livewire.emit('create', info.dateStr);
+                        // alert('Clicked on: ' + info.dateStr);
+                        // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                        // alert('Current view: ' + info.view.type);
+                        // // change the day's background color just for fun
+                        // info.dayEl.style.backgroundColor = 'red';
+                    },
+                @endcan
                 // Capturar evento cuando se hace click en un evento o programa
                 eventClick: function(info) {
                     // Abrir modal editar evento o programa
