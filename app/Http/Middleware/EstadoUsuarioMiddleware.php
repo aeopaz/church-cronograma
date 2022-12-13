@@ -18,7 +18,7 @@ class EstadoUsuarioMiddleware
     {
         if(auth()->user()->estado=='I')
         {
-            return redirect('error\error')->with('fail','Su cuenta esta desactivada, favor contactar a un líder o administrador del sistema para su activación');
+            return redirect('error\error')->with('fail','La cuenta fue creada, pero se encuentra desactivada, favor contactar a un líder o administrador del sistema para su activación');
         }
         return $next($request);
     }

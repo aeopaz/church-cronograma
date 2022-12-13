@@ -113,7 +113,7 @@ class ExportController extends Controller
             "estado",
             DB::raw("(select count(*) from asistencia_programas where id_miembro=membrecias.id) as numeroAsistencias"),
             DB::raw("(select nombre as nombreultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
-            DB::raw("(select fecha as fechaultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
+            DB::raw("(select fecha_desde as fechaultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
             DB::raw("(select nombre as nombreultimolugar from iglesias where id=(select iglesia_id from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1)))"),
         )->get();
 
@@ -150,7 +150,7 @@ class ExportController extends Controller
             "id as idPrograma",
             DB::raw("(select nombre from tipo_programacions where id=tipo_programacion_id) as tipoPrograma"),
             "nombre as nombrePrograma",
-            "fecha as fechaPrograma",
+            "fecha_desde as fechaPrograma",
             "hora as horaPrograma",
             DB::raw("(select nombre from iglesias where id=iglesia_id) as lugar"),
             DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id) as numeroAsistentes"),
@@ -167,8 +167,8 @@ class ExportController extends Controller
             // ->where('estado', 'like',  $this->estadoPrograma)
             // ->where('user_id', 'like', $this->idOrganizadorPrograma)
             // ->where('nombre', 'like', '%' . $this->textoBuscar . '%')
-            ->whereDate('fecha', '>=', $fechaInicial)
-            ->whereDate('fecha', '<=', $fechaFinal)->get();
+            ->whereDate('fecha_desde', '>=', $fechaInicial)
+            ->whereDate('fecha_desde', '<=', $fechaFinal)->get();
 
 
         return $data;
@@ -214,7 +214,7 @@ class ExportController extends Controller
             DB::raw("(select nombre from programacions 
                         where id=(select programacion_id from recurso_programacion_ministerios 
                         where recurso_id=recursos.id order by created_at desc limit 1)) as nombreUltimoPrograma"),
-            DB::raw("(select fecha from programacions 
+            DB::raw("(select fecha_desde from programacions 
                         where id=(select programacion_id from recurso_programacion_ministerios 
                         where recurso_id=recursos.id order by created_at desc limit 1)) as FechaUltimoPrograma"),
             DB::raw("(select nombre from iglesias 
@@ -233,14 +233,14 @@ class ExportController extends Controller
             ->join('ministerios', 'ministerios.id', 'ministerio_id')
             ->join('rols', 'rols.id', 'rol_id')
             ->where('ministerio_id', 'like', $ministerio)
-            ->whereDate('programacions.fecha', '>=', $fechaInicial)
-            ->whereDate('programacions.fecha', '<=', $fechaFinal)
-            ->orderBy('fecha', 'asc')
+            ->whereDate('programacions.fecha_desde', '>=', $fechaInicial)
+            ->whereDate('programacions.fecha_desde', '<=', $fechaFinal)
+            ->orderBy('fecha_desde', 'asc')
             ->orderBy('hora', 'asc')
             ->get([
                 'programacions.id as idPrograma',
                 'programacions.nombre as nombrePrograma',
-                'programacions.fecha as fechaPrograma',
+                'programacions.fecha_desde as fechaPrograma',
                 'programacions.hora as horaPrograma',
                 'users.name as nombreParticipante',
                 'ministerios.nombre as nombreMinisterio',
@@ -298,7 +298,7 @@ class ExportController extends Controller
             DB::raw("(select nombre from tipo_programacions where id=tipo_programacion_id) as tipoPrograma"),
             //DB::raw("ifnull((select nombre from tipo_programacions where id=tipo_programacion_id),'')tipoPrograma"),
             "nombre as nombrePrograma",
-            "fecha",
+            "fecha_desde",
             "hora",
             "user_id",
             DB::raw("(select nombre from iglesias where id=iglesia_id) as lugar"),

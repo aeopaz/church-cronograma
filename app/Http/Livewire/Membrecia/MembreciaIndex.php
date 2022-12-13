@@ -12,7 +12,7 @@ class MembreciaIndex extends Component
     public $columna = "id", $orden = "asc", $registrosXPagina = 5;
     public $idMiembro;
     public $tipoDocumento;
-    public $numeroDocumento;
+    public $numeroDocumento=null;
     public $nombre;
     public $apellido;
     public $fechaNacimiento;
@@ -88,8 +88,9 @@ class MembreciaIndex extends Component
     public function store()
     {
         $validateData = $this->validate([
-            'tipoDocumento' => 'required',
-            'numeroDocumento' => 'required|digits_between:6,10|unique:membrecias,numero_documento,NULL,id,tipo_documento,' . $this->tipoDocumento,
+            'tipoDocumento' => 'required_with:numeroDocumento',
+            //'numeroDocumento' => 'required|digits_between:6,10|unique:membrecias,numero_documento,NULL,id,tipo_documento,' . $this->tipoDocumento,
+            'numeroDocumento' => 'required_with:tipoDocumento|nullable|digits_between:6,10',
             'nombre' => 'required|max:50',
             'apellido' => 'required|max:50',
             'fechaNacimiento' => 'required|date',
@@ -104,9 +105,16 @@ class MembreciaIndex extends Component
         ]);
 
         try {
+            //Si se ingresa un número de identificación, validar que no exista en la base de datos
+            if ($this->numeroDocumento == !null) {
+                $miembro = Membrecia::where('tipo_documento', $this->tipoDocumento)->where('numero_documento', $this->numeroDocumento)->get();
+                if (count($miembro) > 0) {
+                    return session()->flash('fail', 'Ya existe un miembro bajo la misma identificación.');
+                }
+            }
             $miembro = Membrecia::create();
-            $miembro->tipo_documento = $this->tipoDocumento;
-            $miembro->numero_documento = $this->numeroDocumento;
+            $miembro->tipo_documento =$this->tipoDocumento == null ? '' : $this->tipoDocumento;
+            $miembro->numero_documento = $this->numeroDocumento == null ? 0 : $this->numeroDocumento;
             $miembro->nombre = $this->nombre;
             $miembro->apellido = $this->apellido;
             $miembro->fecha_nacimiento = $this->fechaNacimiento;

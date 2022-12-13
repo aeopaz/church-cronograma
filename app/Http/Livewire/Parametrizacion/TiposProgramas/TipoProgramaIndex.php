@@ -12,18 +12,38 @@ class TipoProgramaIndex extends Component
     public $columna = "id", $orden = "asc", $registrosXPagina = 5;
     public $idTipoPrograma;
     public $nombre;
+    public $color;
+    public $colorArray;
     public $textoBuscar;
     protected $paginationTheme = 'bootstrap';
     public function render()
     {
+        $this->colorArray = [
+            'blue' => 'Azul',
+            'fuchsia' => 'Fucsia',
+            'red' => 'Rojo',
+            'yellow' => 'Amarillo',
+            'lime' => 'Verde Limon',
+            'aqua' => 'Agua Marina',
+            'black' => 'Negro',
+            'purple' => 'Púrpura',
+            'maroon' => 'Marron',
+            'olive' => 'Verde oliva',
+            'green' => 'Verde',
+            'teal'=>'Verde azulado',
+            'gray' => 'Gris',
+            'silver' => 'Plateado'
+        ];
         $tiposPrograma = TipoProgramacion::Orwhere('nombre', 'like', '%' . $this->textoBuscar . '%')
             ->orderBy($this->columna, $this->orden)
             ->paginate($this->registrosXPagina, [
                 'id',
-                'nombre'
+                'nombre',
+                'color'
+
             ]);
 
-            return view('livewire.parametrizacion.tipos-programas.tipo-programa-index', compact('tiposPrograma'));
+        return view('livewire.parametrizacion.tipos-programas.tipo-programa-index', compact('tiposPrograma'));
     }
     public function ordenar($columna)
     {
@@ -40,6 +60,7 @@ class TipoProgramaIndex extends Component
     {
         $validateData = $this->validate([
             'nombre' => 'required|max:190',
+            'color' => 'required|in:blue,fuchsia,red,yellow,lime,aqua,black,purple,maroon,olive,green,teal,gray,silver'
         ]);
 
 
@@ -52,16 +73,19 @@ class TipoProgramaIndex extends Component
     {
         $this->idTipoPrograma = $tipoPrograma->id;
         $this->nombre = $tipoPrograma->nombre;
+        $this->color = $tipoPrograma->color;
         $this->emit('modal', 'editarTipoProgramaModal', 'show');
     }
     public function update($idTipoPrograma)
     {
         $validateData = $this->validate([
             'nombre' => 'required|max:190',
+            'color' => 'required|in:blue,fuchsia,red,yellow,lime,aqua,black,purple,maroon,olive,green,teal,gray,silver'
         ]);
 
         $tipoPrograma = TipoProgramacion::find($idTipoPrograma);
         $tipoPrograma->nombre = $this->nombre;
+        $tipoPrograma->color = $this->color;
         $tipoPrograma->save();
         $this->limpiarCampos();
         $this->emit('modal', 'editarTipoProgramaModal', 'hide');
@@ -84,6 +108,6 @@ class TipoProgramaIndex extends Component
 
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombre']);
+        $this->reset(['idTipoPrograma', 'nombre', 'color']);
     }
 }

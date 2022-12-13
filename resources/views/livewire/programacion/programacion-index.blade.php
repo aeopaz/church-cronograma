@@ -1,10 +1,37 @@
 <div>
+    {{-- Filtrar por evento --}}
+
+    <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <label for="">Filtrar por programa:</label>
+            <select name="" id="tipoPrograma" class="form-control" wire:model='tipoPrograma'>
+                <option value="0">Seleccione</option>
+                @foreach ($listaTipoPrograma as $tipo)
+                    <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+        {{-- Filtro por lugar Programa --}}
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <label for="">Filtrar por Lugar:</label>
+            <select name="" id="lugar" class="form-control " wire:model='lugar'>
+                <option value="0">Seleccione</option>
+                @foreach ($listaLugares as $lugar)
+                    <option value="{{ $lugar->id }}">{{ $lugar->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+
+
+
     <div id="calendar" wire:ignore></div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Obtener el elemento html que tendrá el calendario
             var calendarEl = document.getElementById('calendar');
-            var urlEventos = '/eventos/' + @js($tipoAgenda);
+            var urlEventos = @js($urlConsultaEventos);
 
             // Crear calendario
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -38,15 +65,18 @@
                 // Array con los eventos que se mostrarán
                 events: urlEventos,
                 // Capturar evento cuando se hace click en una fecha
-                dateClick: function(info) {
-                    // Abrir el modal crear programa
-                    Livewire.emit('create', info.dateStr);
-                    // alert('Clicked on: ' + info.dateStr);
-                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    // alert('Current view: ' + info.view.type);
-                    // // change the day's background color just for fun
-                    // info.dayEl.style.backgroundColor = 'red';
-                },
+                //Solo los admin y lideres pueden crear eventos
+                @canany(['admin', 'lider'])
+                    dateClick: function(info) {
+                        // Abrir el modal crear programa
+                        Livewire.emit('create', info.dateStr);
+                        // alert('Clicked on: ' + info.dateStr);
+                        // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                        // alert('Current view: ' + info.view.type);
+                        // // change the day's background color just for fun
+                        // info.dayEl.style.backgroundColor = 'red';
+                    },
+                @endcan
                 // Capturar evento cuando se hace click en un evento o programa
                 eventClick: function(info) {
                     // Abrir modal editar evento o programa
@@ -64,6 +94,51 @@
             //Refrescar el calendario cuando se realice algún cambio
             Livewire.on(`refreshCalendar`, () => {
                 calendar.refetchEvents();
+            });
+            //Filtrar por programa
+            tipoPrograma.addEventListener('change', function() {
+                if (tipoPrograma.value > 0 && lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value + '/' +
+                        lugar.value;
+                    return;
+                }
+                if (tipoPrograma.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value;
+                    return;
+
+                }
+                if (lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/null/' + lugar.value;
+                    return;
+
+                }
+                location.href = '/programacion/index/' + tipoAgenda;
+
+            });
+            //Filtrar por Lugar
+            lugar.addEventListener('change', function() {
+                if (tipoPrograma.value > 0 && lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value + '/' +
+                        lugar.value;
+                    return;
+                }
+                if (tipoPrograma.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value;
+                    return;
+
+                }
+                if (lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/0/' + lugar.value;
+                    return;
+
+                }
+                location.href = '/programacion/index/' + tipoAgenda;
             });
         });
     </script>

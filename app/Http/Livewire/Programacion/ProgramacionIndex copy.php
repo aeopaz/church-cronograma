@@ -463,6 +463,7 @@ class ProgramacionIndex extends Component
             ->join('recursos', 'recursos.id', 'recurso_id')
             ->join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
             ->where('programacion_id', $idPrograma)
+            ->orderBy('recursos.nombre','asc')
             ->get([
                 'recurso_programacion_ministerios.id as idRecursoPrograma',
                 'programacion_id',

@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Jenssegers\Date\Date;
 
+use function PHPUnit\Framework\isNull;
+
 class ProgramacionIndex extends Component
 {
     public $idPrograma = 0;
@@ -49,7 +51,8 @@ class ProgramacionIndex extends Component
     public $idMiembro;
     public $tipoLlegada;
     public $textoBuscar;
-    public $tipoAgenda;
+    public $urlConsultaEventos;
+    public $tipoAgenda, $tipoPrograma, $lugar; //Variables para los filtros
 
 
 
@@ -63,9 +66,22 @@ class ProgramacionIndex extends Component
      * Luego, desde este componente livewire se pasa a la vista resources\views\livewire\programacion\programacion-index.blade.php
      * La vista anterior se encarga de ejecutar la ruta /eventos/{tipoAgenda} en el calendario. Ver método eventos() en el controlador ProgramacionController
      */
-    public function mount($tipoAgenda)
+    public function mount($tipoAgenda, $tipoPrograma, $lugar)
     {
+
+        if ($tipoPrograma>0 && $lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma/$lugar";
+        } elseif ($tipoPrograma>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma";
+        } elseif ($lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/0/$lugar";
+        } else {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda";
+        }
+
         $this->tipoAgenda = $tipoAgenda;
+        $this->tipoPrograma = $tipoPrograma;
+        $this->lugar = $lugar;
     }
 
 
@@ -83,6 +99,7 @@ class ProgramacionIndex extends Component
         $recursosPrograma = $this->recursosPrograma($this->idPrograma);
         //Lista recursos
         $listaRecursos = Recurso::join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
+            ->orderBy('recursos.nombre', 'asc')
             ->get([
                 'recursos.nombre as nombreRecurso',
                 'recursos.id as idRecurso',
@@ -289,6 +306,10 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
+                //Validar si el participante tiene el rol de Organizador para evitar su eliminación
+                if ($participacion->rol_id == 19) {
+                    return session()->flash('fail', 'El Participante organizador no se puede eliminar');
+                }
                 $this->enviarNotificacion($participacion, 'cancelar');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
@@ -382,6 +403,7 @@ class ProgramacionIndex extends Component
             ->join('recursos', 'recursos.id', 'recurso_id')
             ->join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
             ->where('programacion_id', $idPrograma)
+            ->orderBy('recursos.nombre', 'asc')
             ->get([
                 'recurso_programacion_ministerios.id as idRecursoPrograma',
                 'programacion_id',
@@ -402,7 +424,9 @@ class ProgramacionIndex extends Component
     public function asistenciaPrograma($idPrograma)
     {
         return AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
-            ->where('id_programa', $idPrograma)->get([
+            ->where('id_programa', $idPrograma)
+            ->orderBy('membrecias.nombre', 'asc')
+            ->get([
                 'asistencia_programas.id as idAsistencia',
                 'membrecias.nombre as nombreMiembro',
                 'membrecias.apellido as apellidoMiembro',
