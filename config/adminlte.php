@@ -251,14 +251,9 @@ return [
             'url'  => 'home',
             'icon' => 'fas fa-fw fa-home',
         ],
-        // [
-        //     'text' => 'Mis Compromisos',
-        //     'url'  => 'programacion/compromisos',
-        //     'icon' => 'fas fa-fw fa-tasks',
-        // ],
         [
             'text' => 'Calendario',
-            'url'  => 'programacion/index',
+            'url'  => 'programacion/index/generales',
             'icon' => 'fas fa-fw fa-calendar',
             'can' => ['admin', 'lider'],
         ],
