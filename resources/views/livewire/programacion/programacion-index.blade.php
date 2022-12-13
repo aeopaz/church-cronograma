@@ -1,10 +1,22 @@
 <div>
+    {{-- Filtrar por evento --}}
+    <div class="input-group mb-3">
+        <div class="form-group">
+            <label for="">Filtrar por programa:</label>
+            <select name="" id="tipoPrograma" class="form-control" wire:model='tipoPrograma'>
+                <option value="">Seleccione</option>
+                @foreach ($listaTipoPrograma as $tipo)
+                    <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
     <div id="calendar" wire:ignore></div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Obtener el elemento html que tendrá el calendario
             var calendarEl = document.getElementById('calendar');
-            var urlEventos = '/eventos/' + @js($tipoAgenda);
+            var urlEventos = @js($urlConsultaEventos);
 
             // Crear calendario
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -39,7 +51,7 @@
                 events: urlEventos,
                 // Capturar evento cuando se hace click en una fecha
                 //Solo los admin y lideres pueden crear eventos
-                @canany(['admin','lider'])
+                @canany(['admin', 'lider'])
                     dateClick: function(info) {
                         // Abrir el modal crear programa
                         Livewire.emit('create', info.dateStr);
@@ -67,6 +79,16 @@
             //Refrescar el calendario cuando se realice algún cambio
             Livewire.on(`refreshCalendar`, () => {
                 calendar.refetchEvents();
+            });
+            //Filtrar por programa
+            tipoPrograma.addEventListener('change', function() {
+                if (tipoPrograma.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value;
+                } else {
+                    location.href = '/programacion/index/' + tipoAgenda;
+                }
+
             });
         });
     </script>

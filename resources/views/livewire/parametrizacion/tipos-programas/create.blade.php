@@ -16,14 +16,26 @@
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
+                <label for="">Color</label>
+                <select class="form-control @error('color') is-invalid @enderror" wire:model='color'>
+                    <option value="">Seleccione...</option>
+                    @foreach ($colorArray as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+                @error('color')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" wire:click='store' wire:loading.remove
-                wire:target='store'>Guardar</button>
-            <div wire:loading wire:target='store'>
-                @include('componentes.carga')
-            </div>
+                    wire:target='store'>Guardar</button>
+                <div wire:loading wire:target='store'>
+                    @include('componentes.carga')
+                </div>
             </div>
         </div>
     </div>

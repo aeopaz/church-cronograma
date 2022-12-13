@@ -11,6 +11,7 @@ class TipoProgramacion extends Model
     protected $table='tipo_programacions';
     protected $fillable=[
         'nombre',
+        'color'
        
        
     ];

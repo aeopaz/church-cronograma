@@ -60,12 +60,15 @@ Route::middleware('auth')->group(function () {
         })->name('tipo-programa.index')->middleware('can:admin');
         //Programación
         Route::get('/programacion/index/{tipoAgenda}', function ($tipoAgenda) {
-
             return view('programacion.index', compact('tipoAgenda'));
+        })->name('programacion.index');
+        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}', function ($tipoAgenda,$tipoPrograma) {
+            return view('programacion.index', compact('tipoAgenda','tipoPrograma'));
         })->name('programacion.index');
 
 
         Route::get('eventos/{tipoAgenda}', [ProgramacionController::class, 'eventos']);
+        Route::get('eventos/{tipoAgenda}/{tipoPrograma}', [ProgramacionController::class, 'eventos']);
 
         Route::get('/programacion/compromisos', function () {
             return view('programacion.compromisos');
