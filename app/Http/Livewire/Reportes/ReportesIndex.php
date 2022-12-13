@@ -192,7 +192,7 @@ class ReportesIndex extends Component
                 "estado",
                 DB::raw("(select count(*) from asistencia_programas where id_miembro=membrecias.id) as numeroAsistencias"),
                 DB::raw("(select nombre as nombreultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
-                DB::raw("(select fecha as fechaultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
+                DB::raw("(select fecha_desde as fechaultimoprograma from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1))"),
                 DB::raw("(select nombre as nombreultimolugar from iglesias where id=(select iglesia_id from programacions where id=(select id_programa from asistencia_programas where id_miembro=membrecias.id order by created_at desc limit 1)))"),
             )
                 ->where(DB::raw('EXTRACT(YEAR from current_date)-EXTRACT(YEAR from fecha_nacimiento)'), '>=', $edadArray[0])
@@ -264,7 +264,7 @@ class ReportesIndex extends Component
                 "id as idPrograma",
                 DB::raw("(select nombre from tipo_programacions where id=tipo_programacion_id) as tipoPrograma"),
                 "nombre as nombrePrograma",
-                "fecha as fechaPrograma",
+                "fecha_desde as fechaPrograma",
                 "hora as horaPrograma",
                 DB::raw("(select nombre from iglesias where id=iglesia_id) as lugar"),
                 DB::raw("(select count(*) from asistencia_programas where id_programa=programacions.id) as numeroAsistentes"),
@@ -281,8 +281,8 @@ class ReportesIndex extends Component
                 ->where('estado', 'like',  $this->estadoPrograma)
                 ->where('user_id', 'like', $this->idOrganizadorPrograma)
                 ->where('nombre', 'like', '%' . $this->textoBuscar . '%')
-                ->whereDate('fecha', '>=', $this->fechaDesde)
-                ->whereDate('fecha', '<=', $this->fechaHasta)->paginate($this->registrosXPagina);
+                ->whereDate('fecha_desde', '>=', $this->fechaDesde)
+                ->whereDate('fecha_desde', '<=', $this->fechaHasta)->paginate($this->registrosXPagina);
 
             return $data;
         } catch (\Throwable $th) {
@@ -337,7 +337,7 @@ class ReportesIndex extends Component
             DB::raw("(select nombre from programacions 
                         where id=(select programacion_id from recurso_programacion_ministerios 
                         where recurso_id=recursos.id order by created_at desc limit 1)) as nombreUltimoPrograma"),
-            DB::raw("(select fecha from programacions 
+            DB::raw("(select fecha_desde from programacions 
                         where id=(select programacion_id from recurso_programacion_ministerios 
                         where recurso_id=recursos.id order by created_at desc limit 1)) as FechaUltimoPrograma"),
             DB::raw("(select nombre from iglesias 
@@ -366,8 +366,8 @@ class ReportesIndex extends Component
                 ->where('ministerio_id', 'like', $this->idTipoMinisterio)
                 ->where('rol_id', 'like', $this->idRol)
                 ->where('participantes_programacion_ministerios.user_id', 'like', $this->idParticipante)
-                ->whereDate('programacions.fecha', '>=', $this->fechaDesde)
-                ->whereDate('programacions.fecha', '<=', $this->fechaHasta)
+                ->whereDate('programacions.fecha_desde', '>=', $this->fechaDesde)
+                ->whereDate('programacions.fecha_desde', '<=', $this->fechaHasta)
                 ->where(function ($query) {
                     $query->where('ministerios.nombre', 'like', '%' . $this->textoBuscar . '%')
                         ->Orwhere('rols.nombre', 'like', '%' . $this->textoBuscar . '%')
@@ -377,7 +377,7 @@ class ReportesIndex extends Component
                 ->paginate($this->registrosXPagina, [
                     'programacions.id as idPrograma',
                     'programacions.nombre as nombrePrograma',
-                    'programacions.fecha as fechaPrograma',
+                    'programacions.fecha_desde as fechaPrograma',
                     'programacions.hora as horaPrograma',
                     'users.name as nombreParticipante',
                     'ministerios.nombre as nombreMinisterio',
@@ -445,7 +445,7 @@ class ReportesIndex extends Component
                 'tipo_programacions.nombre as tipoPrograma',
                 'iglesias.nombre as nombreLugar',
                 'users.name as nombreOrganizador',
-                'fecha',
+                'fecha_desde',
                 'hora'
 
             ]);
