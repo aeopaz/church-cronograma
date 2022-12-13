@@ -11,7 +11,8 @@ class Programacion extends Model
     use HasFactory;
     protected $table = 'programacions';
     protected $dates = [
-        'fecha'
+        'fecha_desde',
+        'fecha_hasta'
     ];
     protected $fillable = [
         'tipo_programacion_id',

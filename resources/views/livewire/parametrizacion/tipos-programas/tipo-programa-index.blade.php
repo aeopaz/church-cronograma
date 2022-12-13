@@ -16,6 +16,11 @@
                         <div class="fa fa-sort"></div>
                     @endif
                 </th>
+                <th wire:click='ordenar("color")'>Color
+                    @if ($columna == 'color')
+                        <div class="fa fa-sort"></div>
+                    @endif
+                </th>
                 <th>
                     Opciones
                 </th>
@@ -26,6 +31,7 @@
                 <tr>
                     <td>{{ $tipo->id }}</td>
                     <td>{{ $tipo->nombre }}</td>
+                    <td style="background: {{ $tipo->color }}"></td>
                     <td colspan="2">
                         <x-adminlte-button theme="primary" icon="fas fa-edit" wire:click='edit({{ $tipo->id }})' />
                         <x-adminlte-button theme="danger" icon="fas fa-trash"

@@ -1,52 +1,29 @@
 @extends('adminlte::page')
+@section('plugins.FullCalendar', true)
 
 @section('title', 'Mis Programas')
-
-@section('css')
-    <style>
-        /*
-    Full screen Modal
-    */
-        .fullscreen-modal .modal-dialog {
-            margin: 0;
-            margin-right: auto;
-            margin-left: auto;
-            width: 100%;
-        }
-
-        @media (min-width: 768px) {
-            .fullscreen-modal .modal-dialog {
-                width: 750px;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .fullscreen-modal .modal-dialog {
-                width: 970px;
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .fullscreen-modal .modal-dialog {
-                width: 1170px;
-            }
-        }
-
-        .redondo {
-            display: block;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-    </style>
-@stop
-
+{{-- Validar si se recibe variable tipoPrograma --}}
+@php
+    if (isset($tipoPrograma) && $tipoPrograma>0) {
+        $nombrePrograma = App\Models\TipoProgramacion::find($tipoPrograma)->nombre;
+    } else {
+        $tipoPrograma = null;
+        $nombrePrograma='Todos';
+    }
+    if (isset($lugar) && $lugar>0) {
+        $nombreLugar = App\Models\Iglesia::find($lugar)->nombre;
+    } else {
+        $lugar = null;
+        $nombreLugar='Todos';
+    }
+@endphp
 @section('content_header')
-    <h1>Programas que he creado</h1>
+    <h1>Eventos {{ $tipoAgenda }}. Programas {{ $nombrePrograma }}. Lugar {{$nombreLugar}}</h1>
 @stop
 
 @section('content')
-    @livewire('programacion.programacion-index',['tipoVista'=>'propia'])
+
+    @livewire('programacion.programacion-index', ['tipoAgenda' => $tipoAgenda, 'tipoPrograma' => $tipoPrograma,'lugar'=>$lugar])
 @stop
 
 

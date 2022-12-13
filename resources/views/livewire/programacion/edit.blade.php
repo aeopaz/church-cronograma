@@ -61,8 +61,7 @@
                             </select>
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span
-                                        class="fas fa-indent   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                    <span class="fas fa-indent   {{ config('adminlte.classes_auth_icon', '') }}"></span>
                                 </div>
                             </div>
 
@@ -117,9 +116,9 @@
                         </div>
                         {{-- Fecha Programa --}}
                         <div class="input-group mb-3">
-                            <input type="date" name="fechaPrograma"
-                                class="form-control @error('fechaPrograma') is-invalid @enderror"
-                                wire:model='fechaPrograma'>
+                            <input type="date" name="fechaProgramaDesde"
+                                class="form-control @error('fechaProgramaDesde') is-invalid @enderror"
+                                wire:model='fechaProgramaDesde'>
 
                             <div class="input-group-append">
                                 <div class="input-group-text">
@@ -128,7 +127,25 @@
                                 </div>
                             </div>
 
-                            @error('fechaPrograma')
+                            @error('fechaProgramaDesde')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="date" name="fechaProgramaHasta"
+                                class="form-control @error('fechaProgramaHasta') is-invalid @enderror"
+                                wire:model='fechaProgramaHasta'>
+
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span
+                                        class="fas fa-calendar {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                </div>
+                            </div>
+
+                            @error('fechaProgramaHasta')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -142,12 +159,31 @@
 
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span
-                                        class="fas fa-clock {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                    <span class="fas fa-clock {{ config('adminlte.classes_auth_icon', '') }}"></span>
                                 </div>
                             </div>
 
                             @error('horaPrograma')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        {{-- Nivel de privacidad Programa --}}
+                        <div class="input-group mb-3">
+                            <select name="" id=""
+                                class="form-control @error('nivelPrograma') is-invalid @enderror"
+                                wire:model='nivelPrograma'>
+                                <option value="1">Público</option>
+                                <option value="2">Privado</option>
+                            </select>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-eye   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                </div>
+                            </div>
+
+                            @error('nivelPrograma')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -177,7 +213,7 @@
                             @enderror
                         </div>
                         {{-- Solo podrá actualizar el programa si es un admin o si el programa es propio --}}
-                        @if (Auth::user()->can('lider') && $tipoVista == 'propia')
+                        @if (Auth::user()->can('lider') && Auth::user()->can('programa-update',$idPrograma))
                             <div class="row justify-content-center">
                                 <button type="button" class="btn btn-primary"
                                     wire:click='update({{ $idPrograma }})' wire:loading.remove
@@ -231,9 +267,8 @@
                                                             </div>
                                                         </div>
                                                     @else
-                                                        <img src="{{ asset($participante->avatar) }}"
-                                                            alt="" class="rounded-circle"
-                                                            style="width: 30%; height: 10%;">
+                                                        <img src="{{ asset($participante->avatar) }}" alt=""
+                                                            class="rounded-circle" style="width: 30%; height: 10%;">
                                                     @endif
                                                 </td>
                                                 <td>{{ $participante->nombreParticipante }}</td>
@@ -241,7 +276,7 @@
                                                 <td>
                                                     {{-- Solo puede eliminar participantes si es admin o lider --}}
                                                     @canany(['admin', 'lider'])
-                                                        <button class="btn btn-sm btn-danger"
+                                                        <button class="btn btn-sm btn-danger" {{$participante->rol_id==19?'disabled':''}}
                                                             wire:click='eliminarParticipante({{ $participante->idParticipacion }})'
                                                             wire:loading.remove wire:target='eliminarParticipante'><i
                                                                 class="fa fa-trash" aria-hidden="true"></i></button>

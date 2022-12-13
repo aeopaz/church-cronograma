@@ -40,5 +40,9 @@ class AuthServiceProvider extends ServiceProvider
             $perfilUsuario = TipoUsuario::find($user->tipo_usuario_id);
             return 'usuario' == $perfilUsuario->nombre;
         });
+        Gate::define('programa-update', function (User $user, $idPrograma) {
+            $programa = Programacion::find($idPrograma);
+            return $programa->user_id === $user->id;
+        });
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IglesiaController;
 use App\Http\Controllers\MinisterioController;
+use App\Http\Controllers\ProgramacionController;
 use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UserController;
@@ -58,9 +59,20 @@ Route::middleware('auth')->group(function () {
             return view('parametrizacion.tipos-programas.index');
         })->name('tipo-programa.index')->middleware('can:admin');
         //Programación
-        Route::get('/programacion/index', function () {
-            return view('programacion.index');
+        Route::get('/programacion/index/{tipoAgenda}', function ($tipoAgenda) {
+            return view('programacion.index', compact('tipoAgenda'));
         })->name('programacion.index');
+        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}', function ($tipoAgenda,$tipoPrograma) {
+            return view('programacion.index', compact('tipoAgenda','tipoPrograma'));
+        })->name('programacion.index');
+        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}/{lugar}', function ($tipoAgenda,$tipoPrograma,$lugar) {
+            return view('programacion.index', compact('tipoAgenda','tipoPrograma','lugar'));
+        })->name('programacion.index');
+
+
+        Route::get('eventos/{tipoAgenda}', [ProgramacionController::class, 'eventos']);
+        Route::get('eventos/{tipoAgenda}/{tipoPrograma}', [ProgramacionController::class, 'eventos']);
+        Route::get('eventos/{tipoAgenda}/{tipoPrograma}/{lugar}', [ProgramacionController::class, 'eventos']);
 
         Route::get('/programacion/compromisos', function () {
             return view('programacion.compromisos');
@@ -73,7 +85,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/recurso/index', function () {
             return view('recurso.index');
         })->name('recurso.index');
-        Route::post('/recurso/subir_foto/{idRecurso}', [RecursoController::class,'subirFoto'])->name('recurso.subirFoto');
+        Route::post('/recurso/subir_foto/{idRecurso}', [RecursoController::class, 'subirFoto'])->name('recurso.subirFoto');
         //membrecía
         Route::get('/membrecia/index', function () {
             return view('membrecia.index');

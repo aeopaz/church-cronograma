@@ -252,15 +252,9 @@ return [
             'icon' => 'fas fa-fw fa-home',
         ],
         [
-            'text' => 'Mis Compromisos',
-            'url'  => 'programacion/compromisos',
-            'icon' => 'fas fa-fw fa-tasks',
-        ],
-        [
-            'text' => 'Mis Programas',
-            'url'  => 'programacion/index',
+            'text' => 'Calendario',
+            'url'  => 'programacion/index/generales',
             'icon' => 'fas fa-fw fa-calendar',
-            'can' => ['admin', 'lider'],
         ],
         [
             'text' => 'Recursos',
@@ -455,6 +449,7 @@ return [
                 ],
             ],
         ],
+        
         'Select2' => [
             'active' => false,
             'files' => [
@@ -523,6 +518,26 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => '/js/funciones.js',
+                ],
+            ],
+        ],
+        'FullCalendar' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/locales/es.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.min.css',
                 ],
             ],
         ],

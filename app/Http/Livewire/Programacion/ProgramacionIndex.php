@@ -24,14 +24,17 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Jenssegers\Date\Date;
 
+use function PHPUnit\Framework\isNull;
+
 class ProgramacionIndex extends Component
 {
     public $idPrograma = 0;
     public $idTipoPrograma;
     public $nombrePrograma;
     public $idLugarPrograma;
-    public $nivelPrograma;
-    public $fechaPrograma;
+    public $nivelPrograma = 1;
+    public $fechaProgramaDesde;
+    public $fechaProgramaHasta;
     public $horaPrograma;
     public $estadoPrograma;
     public $idMinisterio;
@@ -48,134 +51,55 @@ class ProgramacionIndex extends Component
     public $idMiembro;
     public $tipoLlegada;
     public $textoBuscar;
+    public $urlConsultaEventos;
+    public $tipoAgenda, $tipoPrograma, $lugar; //Variables para los filtros
 
-    public function mount($tipoVista)
+
+
+    protected $listeners = ['create', 'edit'];
+
+    /**
+     * Para obtener los eventos, se recibe la variabel $tipoAgenda así:
+     * En la ruta /programacion/index/{tipoAgenda} se envía el tipo de agenda, que puede ser propios o generales
+     * Esa variable se recibe en la vista resources\views\programacion\index.blade.php
+     * En la vista resources\views\programacion\index.blade.php se envía a este componente la variable $tipoAgenda
+     * Luego, desde este componente livewire se pasa a la vista resources\views\livewire\programacion\programacion-index.blade.php
+     * La vista anterior se encarga de ejecutar la ruta /eventos/{tipoAgenda} en el calendario. Ver método eventos() en el controlador ProgramacionController
+     */
+    public function mount($tipoAgenda, $tipoPrograma, $lugar)
     {
-        $this->tipoVista = $tipoVista;
+
+        if ($tipoPrograma>0 && $lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma/$lugar";
+        } elseif ($tipoPrograma>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma";
+        } elseif ($lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/0/$lugar";
+        } else {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda";
+        }
+
+        $this->tipoAgenda = $tipoAgenda;
+        $this->tipoPrograma = $tipoPrograma;
+        $this->lugar = $lugar;
     }
 
 
     public function render()
     {
-     
-        $fecha = Carbon::now();
-
-        if ($this->tipoVista == 'propia') {
-            //Programas propios
-            //Consultar la agenda creada por el usuario
-            $programasGenerales = User::find(Auth::user()->id)->programacionPropia()
-                ->join('users', 'users.id', 'programacions.user_id')
-                ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
-                ->join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
-                ->where(function ($query) {
-                    $query->where('users.name', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.fecha', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.hora', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('iglesias.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('tipo_programacions.nombre', 'like', '%' . $this->textoBuscar . '%');
-                })->orderBy('fecha', 'asc')
-                // ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
-                ->get([
-                    'programacions.id as idPrograma',
-                    'programacions.nombre as nombrePrograma',
-                    'tipo_programacions.nombre as nombreTipoPrograma',
-                    'programacions.estado as estadoPrograma',
-                    'fecha',
-                    'programacions.hora as horaPrograma',
-                    'users.name as nombreUsuarioCreador',
-                    'iglesias.nombre as nombreLugar'
-
-                ]);
-        } else {
-            //Programas Generales
-            //Consultar Programas en los que esta inscrito el usuario
-            $programasGenerales = User::find(Auth::user()->id)->programacion()
-                ->join('programacions', 'programacions.id', 'programacion_id')
-                ->join('rols', 'rols.id', 'rol_id')
-                ->join('users', 'users.id', 'programacions.user_id')
-                ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
-                ->join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
-                ->where('programacions.estado', 'A')
-                ->whereDate('programacions.fecha', '>=', $fecha->format('Y-m-d'))
-                ->where(function ($query) {
-                    $query->where('users.name', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.fecha', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.hora', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('iglesias.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('tipo_programacions.nombre', 'like', '%' . $this->textoBuscar . '%')
-                        ->Orwhere('rols.nombre', 'like', '%' . $this->textoBuscar . '%');
-                })->orderBy('fecha', 'asc')
-                ->get([
-                    'programacions.id as idPrograma',
-                    'programacions.nombre as nombrePrograma',
-                    'tipo_programacions.nombre as nombreTipoPrograma',
-                    'programacions.estado as estadoPrograma',
-                    'fecha',
-                    'programacions.hora as horaPrograma',
-                    'users.name as nombreUsuarioCreador',
-                    'iglesias.nombre as nombreLugar',
-                    'rol_id',
-                    'rols.nombre as nombreRol',
-                ]);
-        }
-
-
-        //Definir Variables array
-        $anosPrograma = [];
-        $grupoxAnoxMes = [];
-        //Recorrer programas para crear array con los datos agrupados por año y mes
-        foreach ($programasGenerales as $programa) {
-            //Obtener año y mes de la fecha del programa
-            $anoMes = Date::parse($programa->fecha)->format('Y F');
-            //Validar si el año y mes del programa se encuentra registrado en el array grupoxAnoxMes
-            if (!in_array($anoMes, $grupoxAnoxMes)) {
-                //Agregar al array el año y mes del programa
-                $grupoxAnoxMes[] = [$anoMes => []];
-            }
-            //Crear un array con la información de cada programa
-            $array = [
-                'idPrograma' => $programa->idPrograma,
-                'nombrePrograma' => $programa->nombrePrograma,
-                'nombreTipoPrograma' => $programa->nombreTipoPrograma,
-                'estadoPrograma' => $programa->estadoPrograma,
-                'fecha' => $programa->fecha,
-                'diaPrograma' => Date::parse($programa->fecha)->format('l j'),
-                'horaPrograma' => $programa->horaPrograma,
-                'nombreUsuarioCreador' => $programa->nombreUsuarioCreador,
-                'nombreLugar' => $programa->nombreLugar,
-                'nombreRol' => $programa->nombreRol
-            ];
-            //Recorrer el array para crear la agrupación
-            for ($i = 0; $i < count($grupoxAnoxMes); $i++) {
-                //Validar si esta definido  el array con una clave  año y mes
-                if (isset($grupoxAnoxMes[$i][$anoMes])) {
-                    //Validar si el año y mes del programa es igual al clave del array grupo x ano x mes
-                    if ($anoMes == key($grupoxAnoxMes[$i])) {
-                        //Adicionar en el array grupoxAnoxMes el array del programa
-                        array_push($grupoxAnoxMes[$i][$anoMes], $array);
-                    }
-                }
-            }
-            //Validar si dentro del array anosPrograma existe un key anoMes. Este array facilita que se pueda recorrer los años en la vista
-            if (!in_array($anoMes, $anosPrograma)) {
-                //Adicionar anoMes al array anosPrograma
-                $anosPrograma[] = $anoMes;
-            }
-        }
         //Lugares
-        $listaLugares = Iglesia::orderBy('nombre','asc',['id', 'nombre'])->get();
+        $listaLugares = Iglesia::orderBy('nombre', 'asc', ['id', 'nombre'])->get();
         //Tipos de Programa
-        $listaTipoPrograma = TipoProgramacion::orderBy('nombre','asc',['id', 'nombre'])->get();
+        $listaTipoPrograma = TipoProgramacion::orderBy('nombre', 'asc', ['id', 'nombre'])->get();
         //Ministerios
-        $listaMinisterios = Ministerio::orderBy('nombre','asc',['id', 'nombre'])->get();
+        $listaMinisterios = Ministerio::orderBy('nombre', 'asc', ['id', 'nombre'])->get();
         //Participantes Programa
         $participantes = $this->participantesPrograma($this->idPrograma);
         //Recursos Programa
         $recursosPrograma = $this->recursosPrograma($this->idPrograma);
         //Lista recursos
         $listaRecursos = Recurso::join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
+            ->orderBy('recursos.nombre', 'asc')
             ->get([
                 'recursos.nombre as nombreRecurso',
                 'recursos.id as idRecurso',
@@ -188,18 +112,15 @@ class ProgramacionIndex extends Component
             ->orderBy('nombreUsuario', 'asc')
             ->get(['users.name as nombreUsuario', 'users.id as idUsuario']);
         //Roles
-        $roles = Rol::orderBy('nombre','asc',['id', 'nombre'])->get();
+        $roles = Rol::orderBy('nombre', 'asc', ['id', 'nombre'])->get();
         //Obtiene el listado de miembros
-        $miembros = Membrecia::orderBy('nombre','asc',['id', 'nombre', 'apellido'])->get();
+        $miembros = Membrecia::orderBy('nombre', 'asc', ['id', 'nombre', 'apellido'])->get();
         //Obtiene los miembros que asistieron al programa
         $asistenciaMiembros = $this->asistenciaPrograma($this->idPrograma);
         //Retornar datos a la vista
         return view(
             'livewire.programacion.programacion-index',
             compact(
-                'programasGenerales',
-                'anosPrograma',
-                'grupoxAnoxMes',
                 'listaTipoPrograma',
                 'participantes',
                 'recursosPrograma',
@@ -214,11 +135,15 @@ class ProgramacionIndex extends Component
         );
     }
 
-    public function create()
+    //Vista crear programa
+    public function create($fecha)
     {
         $this->limpiarCampos();
+        $this->fechaProgramaDesde = $fecha;
+        $this->fechaProgramaHasta = $fecha;
         $this->emit('modal', 'crearProgramaModal', 'show');
     }
+    //Crear programa
     public function store()
     {
         $fechaActual = Carbon::now()->subDay(1)->format('Y-m-d');
@@ -226,14 +151,17 @@ class ProgramacionIndex extends Component
             'idTipoPrograma' => 'required',
             'nombrePrograma' => 'required|string|max:50',
             'idLugarPrograma' => 'required',
-            'fechaPrograma' => 'required|date|after:' . $fechaActual,
+            'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
+            'fechaProgramaHasta' => 'required|date|after_or_equal:fechaProgramaDesde',
             'horaPrograma' => 'required|date_format:H:i',
+            'nivelPrograma' => 'required|in:1,2'
         ]);
 
         try {
+            DB::beginTransaction();
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
                 ->where('tipo_programacion_id', $this->idTipoPrograma)
-                ->where('fecha', $this->fechaPrograma)
+                ->where('fecha_desde', $this->fechaProgramaDesde)
                 ->where('estado', 'A')->first();
             if ($programa) {
                 return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');
@@ -243,32 +171,47 @@ class ProgramacionIndex extends Component
             $programa->tipo_programacion_id = $this->idTipoPrograma;
             $programa->nombre = $this->nombrePrograma;
             $programa->iglesia_id = $this->idLugarPrograma;
-            $programa->fecha = $this->fechaPrograma;
+            $programa->fecha_desde = $this->fechaProgramaDesde;
+            $programa->fecha_hasta = $this->fechaProgramaHasta;
             $programa->hora = $this->horaPrograma;
             $programa->user_id = auth()->id();
             $programa->estado = 'A';
-            $programa->nivel = 1;
+            $programa->nivel = $this->nivelPrograma;
             $programa->save();
+            //Asociar usuario creador al evento que acabó de crear
+            ParticipantesProgramacionMinisterio::create([
+                'programacion_id' => $programa->id,
+                'ministerio_id' => 13, //Eventos
+                'user_id' => Auth::user()->id,
+                'rol_id' => 19, //Organizador de evento
+                'user_created_id' => Auth::user()->id
+            ]);
             $this->limpiarCampos();
             $this->emit('modal', 'crearProgramaModal', 'hide');
-            $this->edit($programa);
+            $this->edit($programa->id);
+            $this->emit('refreshCalendar');
+            DB::commit();
             return session()->flash('success', 'Se ha creado el programa satisfactoriamente.');
         } catch (\Throwable $th) {
+            DB::rollBack();
             report($th);
             return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
         }
     }
     //Vista Editar Programa
-    public function edit(Programacion $programa)
+    public function edit($idPrograma)
     {
         //Programa
+        $programa = Programacion::find($idPrograma);
         $this->idPrograma = $programa->id;
         $this->idTipoPrograma = $programa->tipo_programacion_id;
         $this->nombrePrograma = $programa->nombre;
         $this->idLugarPrograma = $programa->iglesia_id;
-        $this->fechaPrograma = $programa->fecha->toDateString();
+        $this->fechaProgramaDesde = $programa->fecha_desde->toDateString();
+        $this->fechaProgramaHasta = $programa->fecha_hasta->toDateString();
         $this->horaPrograma = $programa->hora;
         $this->estadoPrograma = $programa->estado;
+        $this->nivelPrograma = $programa->nivel;
 
         $this->emit('modal', 'editarProgramaModal', 'show');
     }
@@ -281,15 +224,17 @@ class ProgramacionIndex extends Component
             'estadoPrograma' => 'required',
             'nombrePrograma' => 'required|string|max:50',
             'idLugarPrograma' => 'required',
-            'fechaPrograma' => 'required|date|after:' . $fechaActual,
+            'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
+            'fechaProgramaHasta' => 'nullable|date|after_or_equal:fechaProgramaDesde',
             'horaPrograma' => 'required|date_format:H:i',
+            'nivelPrograma' => 'required|in:1,2'
         ]);
 
 
         try {
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
                 ->where('tipo_programacion_id', $this->idTipoPrograma)
-                ->where('fecha', $this->fechaPrograma)
+                ->where('fecha_desde', $this->fechaProgramaDesde)
                 ->where('programacions.id', '<>', $idPrograma)
                 ->where('estado', 'A')->first();
             if ($programa) {
@@ -300,13 +245,15 @@ class ProgramacionIndex extends Component
             $programa->tipo_programacion_id = $this->idTipoPrograma;
             $programa->nombre = $this->nombrePrograma;
             $programa->iglesia_id = $this->idLugarPrograma;
-            $programa->fecha = $this->fechaPrograma;
+            $programa->fecha_desde = $this->fechaProgramaDesde;
+            $programa->fecha_hasta = $this->fechaProgramaHasta;
             $programa->hora = $this->horaPrograma;
             $programa->user_id = auth()->id();
             $programa->estado = $this->estadoPrograma;
-            $programa->nivel = 1;
+            $programa->nivel = $this->nivelPrograma;
             $programa->save();
-            // $this->emit('modal', 'editarProgramaModal', 'hide');
+            $this->emit('refreshCalendar');
+            $this->emit('modal', 'editarProgramaModal', 'hide');
             return session()->flash('success', 'Se ha modificado el programa satisfactoriamente.');
         } catch (\Throwable $th) {
             report($th);
@@ -351,7 +298,7 @@ class ProgramacionIndex extends Component
     //Eliminar Participante
     public function eliminarParticipante($idParticipacion)
     {
-        $this->pestana='participante';
+        $this->pestana = 'participante';
         try {
             //Buscar el participante en el programa
             $participacion = ParticipantesProgramacionMinisterio::find($idParticipacion);
@@ -359,6 +306,10 @@ class ProgramacionIndex extends Component
 
             //validar si el participanete existe
             if ($participacion) {
+                //Validar si el participante tiene el rol de Organizador para evitar su eliminación
+                if ($participacion->rol_id == 19) {
+                    return session()->flash('fail', 'El Participante organizador no se puede eliminar');
+                }
                 $this->enviarNotificacion($participacion, 'cancelar');
                 $participacion->delete();
                 return session()->flash('success', 'El Participante ha sido Eliminado del programa');
@@ -427,7 +378,7 @@ class ProgramacionIndex extends Component
     //Eliminar Recursos programa
     public function eliminarRecursoPrograma($idRecursoPrograma)
     {
-        $this->pestana='recurso';
+        $this->pestana = 'recurso';
         try {
             //Buscar el participante en el programa
             $recursoPrograma = RecursoProgramacionMinisterio::find($idRecursoPrograma);
@@ -452,6 +403,7 @@ class ProgramacionIndex extends Component
             ->join('recursos', 'recursos.id', 'recurso_id')
             ->join('tipo_recursos', 'tipo_recursos.id', 'tipo_recurso_id')
             ->where('programacion_id', $idPrograma)
+            ->orderBy('recursos.nombre', 'asc')
             ->get([
                 'recurso_programacion_ministerios.id as idRecursoPrograma',
                 'programacion_id',
@@ -472,7 +424,9 @@ class ProgramacionIndex extends Component
     public function asistenciaPrograma($idPrograma)
     {
         return AsistenciaPrograma::join('membrecias', 'membrecias.id', 'asistencia_programas.id_miembro')
-            ->where('id_programa', $idPrograma)->get([
+            ->where('id_programa', $idPrograma)
+            ->orderBy('membrecias.nombre', 'asc')
+            ->get([
                 'asistencia_programas.id as idAsistencia',
                 'membrecias.nombre as nombreMiembro',
                 'membrecias.apellido as apellidoMiembro',
@@ -481,7 +435,7 @@ class ProgramacionIndex extends Component
     }
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaPrograma', 'horaPrograma']);
+        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma']);
     }
 
     //Mostrar modal con la imagen del recurso
@@ -489,8 +443,8 @@ class ProgramacionIndex extends Component
     {
         $recurso = Recurso::find($idRecurso);
         $this->imagenRecurso = $recurso->url;
-        $this->nombreRecurso=$recurso->nombre;  
-        $this->extensionRecurso=$recurso->extension;
+        $this->nombreRecurso = $recurso->nombre;
+        $this->extensionRecurso = $recurso->extension;
         $this->pestana = 'recurso';
         $this->emit('modal', 'verRecursoModal', 'show');
     }
@@ -504,7 +458,7 @@ class ProgramacionIndex extends Component
     public function registrarAsistencia()
     {
         //Mantener pestaña asistencia
-        $this->pestana='asistencia';
+        $this->pestana = 'asistencia';
         //Validar Campos
         $this->validate([
             'idMiembro' => 'required',
@@ -540,7 +494,7 @@ class ProgramacionIndex extends Component
     //Eliminar asistencia de miembros al programa
     public function eliminarAsistencia($idMiembro)
     {
-        $this->pestana='asistencia';
+        $this->pestana = 'asistencia';
         try {
 
             $asistenciaMiembro = AsistenciaPrograma::find($idMiembro);
