@@ -52,7 +52,7 @@ class ProgramacionIndex extends Component
     public $tipoLlegada;
     public $textoBuscar;
     public $urlConsultaEventos;
-    public $tipoAgenda,$tipoPrograma;
+    public $tipoAgenda, $tipoPrograma, $lugar; //Variables para los filtros
 
 
 
@@ -66,15 +66,22 @@ class ProgramacionIndex extends Component
      * Luego, desde este componente livewire se pasa a la vista resources\views\livewire\programacion\programacion-index.blade.php
      * La vista anterior se encarga de ejecutar la ruta /eventos/{tipoAgenda} en el calendario. Ver método eventos() en el controlador ProgramacionController
      */
-    public function mount($tipoAgenda, $tipoPrograma)
+    public function mount($tipoAgenda, $tipoPrograma, $lugar)
     {
-        if (isset($tipoPrograma)) {
+
+        if ($tipoPrograma>0 && $lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma/$lugar";
+        } elseif ($tipoPrograma>0) {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma";
+        } elseif ($lugar>0) {
+            $this->urlConsultaEventos = "/eventos/$tipoAgenda/0/$lugar";
         } else {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda";
         }
+
         $this->tipoAgenda = $tipoAgenda;
         $this->tipoPrograma = $tipoPrograma;
+        $this->lugar = $lugar;
     }
 
 

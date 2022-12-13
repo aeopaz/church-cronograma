@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Iglesia;
 use App\Models\ParticipantesProgramacionMinisterio;
 use App\Models\Programacion;
 use App\Models\RecursoProgramacionMinisterio;
@@ -253,7 +254,7 @@ class ProgramacionController extends Controller
     }
 
     //Listar los eventos para mostrarlos en fullcalendar
-    public function eventos($tipoAgenda, $tipoPrograma = null)
+    public function eventos($tipoAgenda, $tipoPrograma = 0,$lugar=0)
     {
         //1=públicos
         //2=privados
@@ -261,12 +262,15 @@ class ProgramacionController extends Controller
         $fecha = Carbon::now()->subYear();
         $eventos = '';
         //Obtener los tipos de programas
-        $tipoPrograma=$tipoPrograma==null?TipoProgramacion::all(['id']):[$tipoPrograma];
+        $tipoPrograma=$tipoPrograma==0?TipoProgramacion::all(['id']):[$tipoPrograma];
+        //Obtener los lugares
+        $lugar=$lugar==0?Iglesia::all(['id']):[$lugar];
         //Generar todos los eventos en donde el usuario esta inscrito privados o públicos
         if ($tipoAgenda == 'propios') {
             $eventos = Programacion::select(
                 'programacions.nombre as title',
                 'programacions.id as id',
+                'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
                 DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
@@ -274,6 +278,7 @@ class ProgramacionController extends Controller
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->whereIn('tipo_programacion_id', $tipoPrograma)
+                ->whereIn('iglesia_id', $lugar)
                 ->where('participantes_programacion_ministerios.user_id', auth()->user()->id)->groupBy(['programacions.id', 'color'])
                 ->where('fecha_desde', '>=', $fecha)
                 ->get();
@@ -283,17 +288,20 @@ class ProgramacionController extends Controller
             $publicos = Programacion::select(
                 'programacions.nombre as title',
                 'programacions.id as id',
+                'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
                 DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
             )->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->whereIn('tipo_programacion_id', $tipoPrograma)
+                ->whereIn('iglesia_id', $lugar)
                 ->where('fecha_desde', '>=', $fecha)
                 ->where('nivel', 1) //1=Eventos públicos
                 ->get();
             $privados = Programacion::select(
                 'programacions.nombre as title',
                 'programacions.id as id',
+                'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
                 DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
@@ -301,6 +309,7 @@ class ProgramacionController extends Controller
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->whereIn('tipo_programacion_id', $tipoPrograma)
+                ->whereIn('iglesia_id', $lugar)
                 ->where('participantes_programacion_ministerios.user_id', auth()->user()->id)->groupBy(['programacions.id', 'color'])
                 ->where('fecha_desde', '>=', $fecha)
                 ->where('nivel', 2) //1=Eventos privados

@@ -4,20 +4,26 @@
 @section('title', 'Mis Programas')
 {{-- Validar si se recibe variable tipoPrograma --}}
 @php
-    if (isset($tipoPrograma)) {
+    if (isset($tipoPrograma) && $tipoPrograma>0) {
         $nombrePrograma = App\Models\TipoProgramacion::find($tipoPrograma)->nombre;
     } else {
         $tipoPrograma = null;
         $nombrePrograma='Todos';
     }
+    if (isset($lugar) && $lugar>0) {
+        $nombreLugar = App\Models\Iglesia::find($lugar)->nombre;
+    } else {
+        $lugar = null;
+        $nombreLugar='Todos';
+    }
 @endphp
 @section('content_header')
-    <h1>Eventos {{ $tipoAgenda }}. Programas {{ $nombrePrograma }}</h1>
+    <h1>Eventos {{ $tipoAgenda }}. Programas {{ $nombrePrograma }}. Lugar {{$nombreLugar}}</h1>
 @stop
 
 @section('content')
 
-    @livewire('programacion.programacion-index', ['tipoAgenda' => $tipoAgenda, 'tipoPrograma' => $tipoPrograma])
+    @livewire('programacion.programacion-index', ['tipoAgenda' => $tipoAgenda, 'tipoPrograma' => $tipoPrograma,'lugar'=>$lugar])
 @stop
 
 

@@ -1,16 +1,31 @@
 <div>
     {{-- Filtrar por evento --}}
-    <div class="input-group mb-3">
-        <div class="form-group">
+
+    <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
             <label for="">Filtrar por programa:</label>
             <select name="" id="tipoPrograma" class="form-control" wire:model='tipoPrograma'>
-                <option value="">Seleccione</option>
+                <option value="0">Seleccione</option>
                 @foreach ($listaTipoPrograma as $tipo)
                     <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                 @endforeach
             </select>
         </div>
+        {{-- Filtro por lugar Programa --}}
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <label for="">Filtrar por Lugar:</label>
+            <select name="" id="lugar" class="form-control " wire:model='lugar'>
+                <option value="0">Seleccione</option>
+                @foreach ($listaLugares as $lugar)
+                    <option value="{{ $lugar->id }}">{{ $lugar->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
     </div>
+
+
+
+
     <div id="calendar" wire:ignore></div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -82,13 +97,48 @@
             });
             //Filtrar por programa
             tipoPrograma.addEventListener('change', function() {
+                if (tipoPrograma.value > 0 && lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value + '/' +
+                        lugar.value;
+                    return;
+                }
                 if (tipoPrograma.value > 0) {
                     let tipoAgenda = @js($tipoAgenda);
                     location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value;
-                } else {
-                    location.href = '/programacion/index/' + tipoAgenda;
-                }
+                    return;
 
+                }
+                if (lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/null/' + lugar.value;
+                    return;
+
+                }
+                location.href = '/programacion/index/' + tipoAgenda;
+
+            });
+            //Filtrar por Lugar
+            lugar.addEventListener('change', function() {
+                if (tipoPrograma.value > 0 && lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value + '/' +
+                        lugar.value;
+                    return;
+                }
+                if (tipoPrograma.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/' + tipoPrograma.value;
+                    return;
+
+                }
+                if (lugar.value > 0) {
+                    let tipoAgenda = @js($tipoAgenda);
+                    location.href = '/programacion/index/' + tipoAgenda + '/0/' + lugar.value;
+                    return;
+
+                }
+                location.href = '/programacion/index/' + tipoAgenda;
             });
         });
     </script>
