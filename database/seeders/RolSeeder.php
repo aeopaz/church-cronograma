@@ -82,7 +82,14 @@ class RolSeeder extends Seeder
             'nombre'=>'Audiovisual',
 
         ]);
-       
+        Rol::create([
+            'nombre'=>'Coordinador(a) Audiovisual',
+
+        ]);
+        Rol::create([
+            'nombre'=>'Organizador de Evento',
+
+        ]);
     }
 
 }

@@ -17,8 +17,8 @@
 
                 {{-- Tipo Programa --}}
                 <div class="input-group mb-3">
-                    <select name="" id="" class="form-control @error('idTipoPrograma') is-invalid @enderror"
-                        wire:model='idTipoPrograma'>
+                    <select name="" id=""
+                        class="form-control @error('idTipoPrograma') is-invalid @enderror" wire:model='idTipoPrograma'>
                         <option value="">Seleccione</option>
                         @foreach ($listaTipoPrograma as $tipo)
                             <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
@@ -57,7 +57,8 @@
                 </div>
                 {{-- Lugar Programa --}}
                 <div class="input-group mb-3">
-                    <select name="" id="" class="form-control @error('idLugarPrograma') is-invalid @enderror"
+                    <select name="" id=""
+                        class="form-control @error('idLugarPrograma') is-invalid @enderror"
                         wire:model='idLugarPrograma'>
                         <option value="">Seleccione</option>
                         @foreach ($listaLugares as $lugar)
@@ -78,8 +79,9 @@
                 </div>
                 {{-- Fecha Programa --}}
                 <div class="input-group mb-3">
-                    <input type="date" name="fechaPrograma"
-                        class="form-control @error('fechaPrograma') is-invalid @enderror" wire:model='fechaPrograma'>
+                    <input type="date" name="fechaProgramaDesde"
+                        class="form-control @error('fechaProgramaDesde') is-invalid @enderror"
+                        wire:model='fechaProgramaDesde'>
 
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -87,7 +89,24 @@
                         </div>
                     </div>
 
-                    @error('fechaPrograma')
+                    @error('fechaProgramaDesde')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="input-group mb-3">
+                    <input type="date" name="fechaProgramaHasta"
+                        class="form-control @error('fechaProgramaHasta') is-invalid @enderror"
+                        wire:model='fechaProgramaHasta'>
+
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-calendar {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                        </div>
+                    </div>
+
+                    @error('fechaProgramaHasta')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -110,8 +129,28 @@
                         </span>
                     @enderror
                 </div>
+                {{-- Nivel de privacidad Programa --}}
+                <div class="input-group mb-3">
+                    <select name="" id=""
+                        class="form-control @error('nivelPrograma') is-invalid @enderror" wire:model='nivelPrograma'>
+                        <option value="1">Público</option>
+                        <option value="2">Privado</option>
+                    </select>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-eye   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                        </div>
+                    </div>
+
+                    @error('nivelPrograma')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" wire:click='store' wire:loading.remove

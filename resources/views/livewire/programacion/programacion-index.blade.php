@@ -1,79 +1,72 @@
 <div>
-    {{-- Opciones de búsqueda --}}
-    @include('componentes.buscador')
-    {{-- Crear programa --}}
-    @if ($tipoVista == 'propia')
-        <x-adminlte-button label="Nueva Programación" theme="primary" wire:click='create' /> <br>
-    @endif
-    {{-- <div class="card">
-        <div class="card-header">Opciones de búsqueda</div>
-        <div class="card-body">
-            <div class="row">
-                Filtro por fecha
-                <div class="col-sm-3">
-                    <div class="input-group mb-3">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span>Fecha Inicial</span>
-                            </div>
-                        </div>
-                        <input type="date" class="form-control" wire:model='fechaInicial'>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="input-group mb-3">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span>Fecha Final</span>
-                            </div>
-                        </div>
-                        <input type="date" class="form-control" wire:model='fechaFinal'>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+    <div id="calendar" wire:ignore></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el elemento html que tendrá el calendario
+            var calendarEl = document.getElementById('calendar');
+            var urlEventos = '/eventos/' + @js($tipoAgenda);
 
-    {{-- Primer for que recorre los años de los programas - --}}
-    @if (count($anosPrograma) == 0)
-        @if ($tipoVista == 'general')
-            No tienes compromisos asignados
-        @else
-            No tienes programas creados, para crear uno, has clic en el botón "Nueva Programación"
-        @endif
-    @else
-        @for ($i = 0; $i < count($anosPrograma); $i++)
-            <h1>{{ $anosPrograma[$i] }}</h1><br>
-            {{-- Segundo for que recorre los programas agrupados por años - --}}
-            @for ($j = 0; $j < count($grupoxAnoxMes); $j++)
-                {{-- Validar si el índice se encuentra definido en la variable - --}}
-                @if (isset($grupoxAnoxMes[$j][$anosPrograma[$i]]))
-                    <div class="puntero info-box @if ($grupoxAnoxMes[$j][$anosPrograma[$i]][0]['estadoPrograma'] == 'C') bg-secondary @else bg-success @endif"
-                        wire:click='edit({{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['idPrograma'] }})'>
-                        <span class="info-box-icon bg-light"
-                            style="width: 150px">{{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['diaPrograma'] }}</span>
-                        <div class="info-box-content">
-                            <span class="info-box-number">
-                                No. {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['idPrograma'] }}
-                                Nombre Programa:
-                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombrePrograma'] }}-Tipo:
-                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreTipoPrograma'] }} </span>
-                            <span class="info-box-text">Hora:
-                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['horaPrograma'] }}</span>
-                            <span class="info-box-text">Organizador:
-                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreUsuarioCreador'] }}</span>
-                            <span class="info-box-text">Lugar:
-                                {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreLugar'] }}</span>
-                            @if ($tipoVista == 'general')
-                                <span class="info-box-text">Compromiso:
-                                    {{ $grupoxAnoxMes[$j][$anosPrograma[$i]][0]['nombreRol'] }}</span>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-            @endfor
-        @endfor
-    @endif
+            // Crear calendario
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                // Establecer idioma (Previamente se tiene que vincular el archivos locales.js)
+                locale: 'es',
+                themeSystem: 'bootstrap', //Tema
+                initialView: 'dayGridMonth', //Día que se mostrará
+                // Botones personalizados
+                customButtons: {
+                    //Dirige a la vista eventos propios (donde esta inscrito el usuario)
+                    agendaPropia: {
+                        text: 'Propia',
+                        click: function() {
+                            location.href = '/programacion/index/propios';
+                        }
+                    },
+                    //Dirige a la vista eventos generales (públicos y  privados(donde esta inscrito el usuario))
+                    agendaGeneral: {
+                        text: 'General',
+                        click: function() {
+                            location.href = '/programacion/index/generales';
+                        }
+                    }
+                },
+                // Barra superior del calendarios
+                headerToolbar: {
+                    left: 'prev,next today agendaPropia agendaGeneral',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                },
+                // Array con los eventos que se mostrarán
+                events: urlEventos,
+                // Capturar evento cuando se hace click en una fecha
+                dateClick: function(info) {
+                    // Abrir el modal crear programa
+                    Livewire.emit('create', info.dateStr);
+                    // alert('Clicked on: ' + info.dateStr);
+                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                    // alert('Current view: ' + info.view.type);
+                    // // change the day's background color just for fun
+                    // info.dayEl.style.backgroundColor = 'red';
+                },
+                // Capturar evento cuando se hace click en un evento o programa
+                eventClick: function(info) {
+                    // Abrir modal editar evento o programa
+                    Livewire.emit('edit', info.event.id);
+                    // alert('Event: ' + info.event.title);
+                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                    // alert('View: ' + info.view.type);
+
+                    // // change the border color just for fun
+                    // info.el.style.borderColor = 'red';
+                }
+            });
+            // Renderizar calendario
+            calendar.render();
+            //Refrescar el calendario cuando se realice algún cambio
+            Livewire.on(`refreshCalendar`, () => {
+                calendar.refetchEvents();
+            });
+        });
+    </script>
     @include('livewire.programacion.create')
     @include('livewire.programacion.edit')
     @include('livewire.programacion.ver-recurso')

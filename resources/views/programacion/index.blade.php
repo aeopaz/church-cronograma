@@ -1,12 +1,13 @@
 @extends('adminlte::page')
+@section('plugins.FullCalendar', true)
 
 @section('title', 'Mis Programas')
 
 @section('css')
     <style>
         /*
-    Full screen Modal
-    */
+            Full screen Modal
+            */
         .fullscreen-modal .modal-dialog {
             margin: 0;
             margin-right: auto;
@@ -42,11 +43,11 @@
 @stop
 
 @section('content_header')
-    <h1>Programas que he creado</h1>
+    <h1>Eventos {{$tipoAgenda}}</h1>
 @stop
 
 @section('content')
-    @livewire('programacion.programacion-index',['tipoVista'=>'propia'])
+    @livewire('programacion.programacion-index',['tipoAgenda'=>$tipoAgenda])
 @stop
 
 
