@@ -68,21 +68,27 @@ class MinisterioSeeder extends Seeder
             'iglesia_id'=>1,
             'user_id'=>1
         ]);
-        //9
+        //10
         Ministerio::create([
             'nombre'=>'Medios Audiovisuales',
             'iglesia_id'=>1,
             'user_id'=>1
         ]);
-        //10
+        //11
         Ministerio::create([
             'nombre'=>'Damas',
             'iglesia_id'=>1,
             'user_id'=>1
         ]);
-        //11
+        //12
         Ministerio::create([
             'nombre'=>'Caballeros',
+            'iglesia_id'=>1,
+            'user_id'=>1
+        ]);
+        //13
+        Ministerio::create([
+            'nombre'=>'Eventos',
             'iglesia_id'=>1,
             'user_id'=>1
         ]);

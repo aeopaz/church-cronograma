@@ -21,6 +21,7 @@ class ProgramacionSeeder extends Seeder
         $estado=['A','C'];
         $faker = Factory::create('es_VEN');
         for ($i = 0; $i < 200; $i++) {
+            $fecha=$faker->dateTimeBetween($startDate = '-1 years', $endDate = '2022-12-31', $timezone = null);
             $tipoProgramacion = TipoProgramacion::inRandomOrder()->take(1)->first();
             $user = User::inRandomOrder()->take(1)->first();
             Programacion::create([
@@ -30,7 +31,8 @@ class ProgramacionSeeder extends Seeder
                 'nivel'=>$nivel[rand(0,2)],
                 'estado'=>$estado[rand(0,1)],
                 'user_id'=>$user->id,
-                'fecha' => $faker->dateTimeBetween($startDate = '-1 years', $endDate = '2022-12-31', $timezone = null),
+                'fecha_desde' => $fecha,
+                'fecha_hasta'=>$fecha,
                 'hora' => $faker->time('H:i')
             ]);
         }

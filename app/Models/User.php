@@ -52,10 +52,12 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    //Programaciones donde se encuentra inscrito
     public function programacion()
     {
         return $this->hasMany('App\Models\ParticipantesProgramacionMinisterio');
     }
+    //Programaciones que ha creado el usuario
     public function programacionPropia()
     {
         return $this->hasMany('App\Models\Programacion');
