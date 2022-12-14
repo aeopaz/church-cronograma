@@ -53,6 +53,7 @@ class ProgramacionIndex extends Component
     public $textoBuscar;
     public $urlConsultaEventos;
     public $tipoAgenda, $tipoPrograma, $lugar; //Variables para los filtros
+    public $observaciones;
 
 
 
@@ -154,7 +155,8 @@ class ProgramacionIndex extends Component
             'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
             'fechaProgramaHasta' => 'required|date|after_or_equal:fechaProgramaDesde',
             'horaPrograma' => 'required|date_format:H:i',
-            'nivelPrograma' => 'required|in:1,2'
+            'nivelPrograma' => 'required|in:1,2',
+            'observaciones'=>'nullable|string|max:200'
         ]);
 
         try {
@@ -177,6 +179,7 @@ class ProgramacionIndex extends Component
             $programa->user_id = auth()->id();
             $programa->estado = 'A';
             $programa->nivel = $this->nivelPrograma;
+            $programa->observaciones=$this->observaciones;
             $programa->save();
             //Asociar usuario creador al evento que acabó de crear
             ParticipantesProgramacionMinisterio::create([
@@ -212,6 +215,7 @@ class ProgramacionIndex extends Component
         $this->horaPrograma = $programa->hora;
         $this->estadoPrograma = $programa->estado;
         $this->nivelPrograma = $programa->nivel;
+        $this->observaciones=$programa->observaciones;
 
         $this->emit('modal', 'editarProgramaModal', 'show');
     }
@@ -227,7 +231,8 @@ class ProgramacionIndex extends Component
             'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
             'fechaProgramaHasta' => 'nullable|date|after_or_equal:fechaProgramaDesde',
             'horaPrograma' => 'required|date_format:H:i',
-            'nivelPrograma' => 'required|in:1,2'
+            'nivelPrograma' => 'required|in:1,2',
+            'observaciones'=>'nullable|string|max:200'
         ]);
 
 
@@ -251,6 +256,7 @@ class ProgramacionIndex extends Component
             $programa->user_id = auth()->id();
             $programa->estado = $this->estadoPrograma;
             $programa->nivel = $this->nivelPrograma;
+            $programa->observaciones=$this->observaciones;
             $programa->save();
             $this->emit('refreshCalendar');
             $this->emit('modal', 'editarProgramaModal', 'hide');
@@ -435,7 +441,7 @@ class ProgramacionIndex extends Component
     }
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma']);
+        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma','observaciones']);
     }
 
     //Mostrar modal con la imagen del recurso

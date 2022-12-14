@@ -148,6 +148,23 @@
                         </span>
                     @enderror
                 </div>
+                {{-- Observaciones --}}
+                <div class="input-group mb-3">
+                    <textarea name="" id="" maxlength="200"
+                        class="form-control @error('observaciones') is-invalid @enderror" wire:model='observaciones'>
+                    </textarea>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-comment   {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                        </div>
+                    </div>
+
+                    @error('observaciones')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
 
             </div>
 

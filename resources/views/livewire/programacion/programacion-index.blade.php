@@ -77,6 +77,13 @@
                         // info.dayEl.style.backgroundColor = 'red';
                     },
                 @endcan
+                //Eventos máximos para mostrar en undía
+                dayMaxEventRows: true, // for all non-TimeGrid views
+                views: {
+                    dayGrid: {
+                        dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+                    }
+                },
                 // Capturar evento cuando se hace click en un evento o programa
                 eventClick: function(info) {
                     // Abrir modal editar evento o programa

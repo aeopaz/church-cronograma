@@ -19,7 +19,8 @@ class Programacion extends Model
         'iglesia_id',
         'user_id',
         'nombre',
-        'hora'
+        'hora',
+        'observaciones'
     ];
 
     public function getMesDiaAttribute()
