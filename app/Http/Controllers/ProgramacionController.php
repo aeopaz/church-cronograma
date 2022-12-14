@@ -273,7 +273,7 @@ class ProgramacionController extends Controller
                 'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
-                DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
+                DB::raw("concat(fecha_hasta+interval '1 day','T',hora) as end") //Suma un día para que fullcalendar incluya el último día de hasta
             )
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
@@ -291,7 +291,7 @@ class ProgramacionController extends Controller
                 'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
-                DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
+                DB::raw("concat(fecha_hasta+interval '1 day','T',hora) as end") //Suma un día para que fullcalendar incluya el último día de hasta
             )->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
                 ->whereIn('tipo_programacion_id', $tipoPrograma)
                 ->whereIn('iglesia_id', $lugar)
@@ -304,7 +304,7 @@ class ProgramacionController extends Controller
                 'iglesia_id',
                 'color',
                 DB::raw("concat(fecha_desde,'T',hora) as start"),
-                DB::raw("concat(fecha_hasta+interval '1 day') as end") //Suma un día para que fullcalendar incluya el último día de hasta
+                DB::raw("concat(fecha_hasta+interval '1 day','T',hora) as end") //Suma un día para que fullcalendar incluya el último día de hasta
             )
                 ->join('participantes_programacion_ministerios', 'programacion_id', 'programacions.id')
                 ->join('tipo_programacions', 'tipo_programacions.id', 'tipo_programacion_id')
