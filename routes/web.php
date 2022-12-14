@@ -120,4 +120,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/error/error', function () {
         return view('error.error');
     })->name('error.error');
-});//Cierra middleware de auth
+});//Cierra middleware de auth.
