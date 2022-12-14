@@ -467,7 +467,7 @@ class ProgramacionIndex extends Component
     }
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma', 'observaciones']);
+        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma', 'observaciones','idLugarPrograma']);
     }
 
     //Mostrar modal con la imagen del recurso
