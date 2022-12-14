@@ -21,6 +21,7 @@
         "phpoffice/phpspreadsheet": "^1.23",
         "spatie/flysystem-dropbox": "1.0.0",
         "spatie/laravel-backup": "^6.16",
+        "spatie/laravel-google-calendar": "3.1.0",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {

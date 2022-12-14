@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Jenssegers\Date\Date;
+use Spatie\GoogleCalendar\Event;
 
 use function PHPUnit\Framework\isNull;
 
@@ -70,11 +71,11 @@ class ProgramacionIndex extends Component
     public function mount($tipoAgenda, $tipoPrograma, $lugar)
     {
 
-        if ($tipoPrograma>0 && $lugar>0) {
+        if ($tipoPrograma > 0 && $lugar > 0) {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma/$lugar";
-        } elseif ($tipoPrograma>0) {
+        } elseif ($tipoPrograma > 0) {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda/$tipoPrograma";
-        } elseif ($lugar>0) {
+        } elseif ($lugar > 0) {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda/0/$lugar";
         } else {
             $this->urlConsultaEventos = "/eventos/$tipoAgenda";
@@ -156,7 +157,7 @@ class ProgramacionIndex extends Component
             'fechaProgramaHasta' => 'required|date|after_or_equal:fechaProgramaDesde',
             'horaPrograma' => 'required|date_format:H:i',
             'nivelPrograma' => 'required|in:1,2',
-            'observaciones'=>'nullable|string|max:200'
+            'observaciones' => 'nullable|string|max:200'
         ]);
 
         try {
@@ -166,7 +167,7 @@ class ProgramacionIndex extends Component
                 ->where('fecha_desde', $this->fechaProgramaDesde)
                 ->where('estado', 'A')->first();
             if ($programa) {
-                return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');
+                return session()->flash('fail', 'Ya existe un programa activo similar para el día y lugar seleccionado.');
             }
 
             $programa = Programacion::create();
@@ -179,7 +180,7 @@ class ProgramacionIndex extends Component
             $programa->user_id = auth()->id();
             $programa->estado = 'A';
             $programa->nivel = $this->nivelPrograma;
-            $programa->observaciones=$this->observaciones;
+            $programa->observaciones = $this->observaciones;
             $programa->save();
             //Asociar usuario creador al evento que acabó de crear
             ParticipantesProgramacionMinisterio::create([
@@ -189,6 +190,9 @@ class ProgramacionIndex extends Component
                 'rol_id' => 19, //Organizador de evento
                 'user_created_id' => Auth::user()->id
             ]);
+            //Crear evento en google
+            $this->crearEventoGoogle($programa);
+
             $this->limpiarCampos();
             $this->emit('modal', 'crearProgramaModal', 'hide');
             $this->edit($programa->id);
@@ -198,7 +202,7 @@ class ProgramacionIndex extends Component
         } catch (\Throwable $th) {
             DB::rollBack();
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
     //Vista Editar Programa
@@ -215,7 +219,7 @@ class ProgramacionIndex extends Component
         $this->horaPrograma = $programa->hora;
         $this->estadoPrograma = $programa->estado;
         $this->nivelPrograma = $programa->nivel;
-        $this->observaciones=$programa->observaciones;
+        $this->observaciones = $programa->observaciones;
 
         $this->emit('modal', 'editarProgramaModal', 'show');
     }
@@ -223,18 +227,19 @@ class ProgramacionIndex extends Component
     public function update($idPrograma)
     {
         $fechaActual = Carbon::now()->subDay(1)->format('Y-m-d');
-        $validateData = $this->validate([
-            'idTipoPrograma' => 'required',
-            'estadoPrograma' => 'required',
-            'nombrePrograma' => 'required|string|max:50',
-            'idLugarPrograma' => 'required',
-            'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
-            'fechaProgramaHasta' => 'nullable|date|after_or_equal:fechaProgramaDesde',
-            'horaPrograma' => 'required|date_format:H:i',
-            'nivelPrograma' => 'required|in:1,2',
-            'observaciones'=>'nullable|string|max:200'
-        ]);
-
+        if ($this->estadoPrograma == 'A') {
+            $validateData = $this->validate([
+                'idTipoPrograma' => 'required',
+                'estadoPrograma' => 'required',
+                'nombrePrograma' => 'required|string|max:50',
+                'idLugarPrograma' => 'required',
+                'fechaProgramaDesde' => 'required|date|after:' . $fechaActual,
+                'fechaProgramaHasta' => 'nullable|date|after_or_equal:fechaProgramaDesde',
+                'horaPrograma' => 'required|date_format:H:i',
+                'nivelPrograma' => 'required|in:1,2',
+                'observaciones' => 'nullable|string|max:200'
+            ]);
+        }
 
         try {
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
@@ -256,14 +261,35 @@ class ProgramacionIndex extends Component
             $programa->user_id = auth()->id();
             $programa->estado = $this->estadoPrograma;
             $programa->nivel = $this->nivelPrograma;
-            $programa->observaciones=$this->observaciones;
+            $programa->observaciones = $this->observaciones;
             $programa->save();
+
+            //Actualizar el evento en google
+            $event = Event::find($programa->id_google_event);
+            //Validar si se encuentra registrado el evento en google y actualizaro
+            if ($event->id != null) {
+                //Validar si el programa se va a cancelar, para eliminarlo de google
+                if ($programa->estado == 'C') {
+                    $event->delete();
+                } else {
+                    //Sino, se actualiza
+                    $fechaGoogle = $this->obtenerFechaEventoGoogle($programa);
+                    $event->name = $programa->nombre;
+                    $event->startDateTime = $fechaGoogle['fechaDesde'];
+                    $event->endDateTime = $fechaGoogle['fechaHasta'];
+                    $event->save();
+                }
+                //Si no existe el evento en google, entonces crearlo, siempre y cuando el estado sea activo
+            } elseif ($programa->estado == 'A') {
+                $this->crearEventoGoogle($programa);
+            }
+
             $this->emit('refreshCalendar');
             $this->emit('modal', 'editarProgramaModal', 'hide');
             return session()->flash('success', 'Se ha modificado el programa satisfactoriamente.');
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
 
@@ -298,7 +324,7 @@ class ProgramacionIndex extends Component
             return session()->flash('success', 'El participante agregado correctamente');
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
     //Eliminar Participante
@@ -322,7 +348,7 @@ class ProgramacionIndex extends Component
             }
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
 
@@ -378,7 +404,7 @@ class ProgramacionIndex extends Component
             return session()->flash('success', 'Recurso agregado correctamente');
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
     //Eliminar Recursos programa
@@ -397,7 +423,7 @@ class ProgramacionIndex extends Component
             }
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
 
@@ -441,7 +467,7 @@ class ProgramacionIndex extends Component
     }
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma','observaciones']);
+        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma', 'observaciones']);
     }
 
     //Mostrar modal con la imagen del recurso
@@ -494,7 +520,7 @@ class ProgramacionIndex extends Component
             return session()->flash('success', 'Se ha registrado la asistencia');
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
     //Eliminar asistencia de miembros al programa
@@ -508,7 +534,7 @@ class ProgramacionIndex extends Component
             return session()->flash('success', 'Se ha eliminado la asistencia');
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error en Base de datos, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
 
@@ -549,7 +575,7 @@ class ProgramacionIndex extends Component
             }
         } catch (\Throwable $th) {
             report($th);
-            return session()->flash('fail', 'Error al Enviar la notificación, contacte al administrador del sistema.');
+            return session()->flash('fail', 'Error al Enviar la notificación, contacte al administrador del sistema. ' . $th->getMessage());
         }
     }
 
@@ -571,7 +597,34 @@ class ProgramacionIndex extends Component
 
         $this->pestana = 'recurso';
     }
+    /**Crear evento en google */
+    public function crearEventoGoogle($programa)
+    {
+        //Crear evento en el calendario de google
+        $fechaGoogle = $this->obtenerFechaEventoGoogle($programa);
+        $event = new Event;
+        $event->name = $programa->nombre;
+        $event->startDateTime = $fechaGoogle['fechaDesde'];
+        $event->endDateTime = $fechaGoogle['fechaHasta'];
+        $evento_google = $event->save();
+        //Almacenar id del evento de google en la base de datos
+        $programa->id_google_event = $evento_google->id;
+        $programa->save();
+    }
+
+    /**Obtener fecha para registrar el evento en google */
+    public function obtenerFechaEventoGoogle($programa)
+    {
+        $horas = substr($programa->hora, 0, 2);
+        $minutos = substr($programa->hora, 3, 2);
+        $fechaConHoraDesde = Carbon::parse($programa->fecha_desde)->addHours($horas)->addMinutes($minutos);
+        $fechaConHoraHasta = Carbon::parse($programa->fecha_hasta)->addHours($horas + 1)->addMinutes($minutos);
+
+        return ['fechaDesde' => $fechaConHoraDesde, 'fechaHasta' => $fechaConHoraHasta];
+    }
 }
+
+
 
 
 

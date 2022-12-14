@@ -20,7 +20,8 @@ class Programacion extends Model
         'user_id',
         'nombre',
         'hora',
-        'observaciones'
+        'observaciones',
+        'id_google_event',
     ];
 
     public function getMesDiaAttribute()

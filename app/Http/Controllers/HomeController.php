@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\DB;
 use App\File;
 use Spatie\Dropbox\Client;
 use Illuminate\Support\Facades\Storage;
+use Spatie\GoogleCalendar\Event;
 
 class HomeController extends Controller
 {
-  
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -29,6 +30,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // dd(Event::get()->first()->id);
+
+
         $fechaActual = Carbon::now();
         $fechaDesde = $fechaActual->subDays($fechaActual->format('j') - 1);
         $cumpleaneros = $data = Membrecia::select(
@@ -64,13 +68,12 @@ class HomeController extends Controller
 
     public function store(Request $request)
     {
-        $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient(); 
-        $nombreArchivo=auth()->user()->email.time().".".$request->file('file')->extension();
-        $ruta_enlace=Storage::disk('dropbox')->putFileAs('/avatar',$request->file('file'),$nombreArchivo);  
+        $dropbox = Storage::disk('dropbox')->getDriver()->getAdapter()->getClient();
+        $nombreArchivo = auth()->user()->email . time() . "." . $request->file('file')->extension();
+        $ruta_enlace = Storage::disk('dropbox')->putFileAs('/avatar', $request->file('file'), $nombreArchivo);
         $response = $dropbox->createSharedLinkWithSettings($ruta_enlace, ["requested_visibility" => "public"]);
-        $urlArchivo=str_replace('dl=0','raw=1',$response['url']);
+        $urlArchivo = str_replace('dl=0', 'raw=1', $response['url']);
 
         return back();
     }
-
 }
