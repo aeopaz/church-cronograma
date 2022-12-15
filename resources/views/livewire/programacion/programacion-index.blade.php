@@ -54,13 +54,22 @@
                         click: function() {
                             location.href = '/programacion/index/generales';
                         }
-                    }
+                    },
+                    //Generar eventos de cumpleaños
+                    @canany(['admin', 'lider'])
+                        generarCumpleanos: {
+                            text: 'Generar cumple',
+                            click: function() {
+                                Livewire.emit('generarEventoCumpleanos');
+                            }
+                        }
+                    @endcan
                 },
                 // Barra superior del calendarios
                 headerToolbar: {
-                    left: 'prev,next today agendaPropia agendaGeneral',
+                    left: 'prev,next today agendaPropia agendaGeneral generarCumpleanos',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
                 },
                 // Array con los eventos que se mostrarán
                 events: urlEventos,

@@ -10,9 +10,13 @@ use App\Http\Controllers\RecursoController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UserController;
 use App\Http\Livewire\Ministerio\MinisterioIndex;
+use App\Models\Membrecia;
+use App\Models\Programacion;
 use App\Models\Rol;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,13 +64,14 @@ Route::middleware('auth')->group(function () {
         })->name('tipo-programa.index')->middleware('can:admin');
         //Programación
         Route::get('/programacion/index/{tipoAgenda}', function ($tipoAgenda) {
+
             return view('programacion.index', compact('tipoAgenda'));
         })->name('programacion.index');
-        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}', function ($tipoAgenda,$tipoPrograma) {
-            return view('programacion.index', compact('tipoAgenda','tipoPrograma'));
+        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}', function ($tipoAgenda, $tipoPrograma) {
+            return view('programacion.index', compact('tipoAgenda', 'tipoPrograma'));
         });
-        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}/{lugar}', function ($tipoAgenda,$tipoPrograma,$lugar) {
-            return view('programacion.index', compact('tipoAgenda','tipoPrograma','lugar'));
+        Route::get('/programacion/index/{tipoAgenda}/{tipoPrograma}/{lugar}', function ($tipoAgenda, $tipoPrograma, $lugar) {
+            return view('programacion.index', compact('tipoAgenda', 'tipoPrograma', 'lugar'));
         });
 
 
@@ -120,4 +125,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/error/error', function () {
         return view('error.error');
     })->name('error.error');
-});//Cierra middleware de auth
+});//Cierra middleware de auth.
