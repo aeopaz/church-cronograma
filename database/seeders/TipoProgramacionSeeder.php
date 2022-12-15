@@ -65,5 +65,11 @@ class TipoProgramacionSeeder extends Seeder
         TipoProgramacion::create([
             'nombre'=>'Aseo y Limpieza'
         ]);
+        TipoProgramacion::create([
+            'nombre'=>'Evento'
+        ]);
+        TipoProgramacion::create([
+            'nombre'=>'Cumpleanos'
+        ]);
     }
 }

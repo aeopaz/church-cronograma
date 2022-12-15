@@ -58,7 +58,7 @@ class ProgramacionIndex extends Component
 
 
 
-    protected $listeners = ['create', 'edit'];
+    protected $listeners = ['create', 'edit', 'generarEventoCumpleanos'];
 
     /**
      * Para obtener los eventos, se recibe la variabel $tipoAgenda así:
@@ -467,7 +467,7 @@ class ProgramacionIndex extends Component
     }
     public function limpiarCampos()
     {
-        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma', 'observaciones','idLugarPrograma']);
+        $this->reset(['idTipoPrograma', 'nombrePrograma', 'fechaProgramaDesde', 'fechaProgramaHasta', 'horaPrograma', 'observaciones', 'idLugarPrograma']);
     }
 
     //Mostrar modal con la imagen del recurso
@@ -621,6 +621,38 @@ class ProgramacionIndex extends Component
         $fechaConHoraHasta = Carbon::parse($programa->fecha_hasta)->addHours($horas + 1)->addMinutes($minutos);
 
         return ['fechaDesde' => $fechaConHoraDesde, 'fechaHasta' => $fechaConHoraHasta];
+    }
+
+    //Generar Evento Cumpleaños de los miembros de la iglesia
+    public function generarEventoCumpleanos()
+    {
+        $miembros = Membrecia::all();
+        $anoActual = Carbon::now()->year;
+
+        foreach ($miembros as $miembro) {
+
+            $nombrePrograma = 'Cumple-' . $miembro->nombre;
+            $anoNacimiento = $miembro->fecha_nacimiento->year;
+            $fechaCumpleaños = $miembro->fecha_nacimiento->addYears($anoActual - $anoNacimiento);
+            $programa = Programacion::where('tipo_programacion_id', 19)->where('nombre', $nombrePrograma)->whereDate('fecha_desde', $fechaCumpleaños)->get();
+            if (count($programa) === 0) {
+                $programa = Programacion::create();
+                $programa->tipo_programacion_id = 19;
+                $programa->nombre = 'Cumple-' . $miembro->nombre;
+                $programa->iglesia_id = 1;
+                $programa->fecha_desde = $fechaCumpleaños;
+                $programa->fecha_hasta = $fechaCumpleaños;
+                $programa->hora = '12:00';
+                $programa->user_id = auth()->id();
+                $programa->estado = 'A';
+                $programa->nivel = 1;
+                $programa->observaciones = 'Cumpleaños';
+                $programa->save();
+                //Crear evento cumpleaños en google
+                $this->crearEventoGoogle($programa);
+            }
+        }
+        $this->emit('refreshCalendar');
     }
 }
 
