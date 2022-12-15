@@ -162,12 +162,13 @@ class ProgramacionIndex extends Component
 
         try {
             DB::beginTransaction();
+            //Consulta el programa para validar si existe un evento bajo el mismo nombre y fecha, de existir, lanza mensaje de error
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
-                ->where('tipo_programacion_id', $this->idTipoPrograma)
+                ->where('programacions.nombre', $this->nombrePrograma)
                 ->where('fecha_desde', $this->fechaProgramaDesde)
                 ->where('estado', 'A')->first();
             if ($programa) {
-                return session()->flash('fail', 'Ya existe un programa activo similar para el día y lugar seleccionado.');
+                return session()->flash('fail', 'Ya existe un programa bajo el mismo nombre para el día seleccionado.');
             }
 
             $programa = Programacion::create();
@@ -242,13 +243,14 @@ class ProgramacionIndex extends Component
         }
 
         try {
+             //Consulta el programa para validar si existe un evento bajo el mismo nombre y fecha, de existir, lanza mensaje de error
             $programa = Programacion::join('iglesias', 'iglesias.id', 'programacions.iglesia_id')
-                ->where('tipo_programacion_id', $this->idTipoPrograma)
+                ->where('programacions.nombre', $this->nombrePrograma)
                 ->where('fecha_desde', $this->fechaProgramaDesde)
                 ->where('programacions.id', '<>', $idPrograma)
                 ->where('estado', 'A')->first();
             if ($programa) {
-                return session()->flash('fail', 'Ya existe un programa similar para el día y lugar seleccionado.');
+                return session()->flash('fail', 'Ya existe un programa similar bajo el mismo nombre para el día seleccionado.');
             }
 
             $programa = Programacion::find($idPrograma);
